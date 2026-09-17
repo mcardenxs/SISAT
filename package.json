@@ -1,5 +1,5 @@
 {
-	"name": "hexacore-monorepo",
+	"name": "sisat-monorepo",
 	"version": "1.0.0",
 	"private": true,
 	"author": "Victor Raúl",
@@ -25,7 +25,8 @@
 	},
 
 	"keywords": [],
-	"description": "Monorepo Hexacore: backend (Bun + Hono + Prisma) y frontend (Vite + React + TanStack).",
+	"description": "SISAT: Sistema Integral de Soporte y Atención Técnica para Sistemas Institucionales.",
+
 	"devDependencies": {
 		"@biomejs/biome": "2.5.13"
 	}

@@ -31,7 +31,8 @@ app.get(
 	"/docs",
 	Scalar({
 		url: "/openapi.json",
-		pageTitle: "Hexacore API Reference",
+		pageTitle: "SISAT API Reference",
+
 		theme: "purple",
 	}),
 );

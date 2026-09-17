@@ -5,14 +5,15 @@ const swaggerOptions: swaggerJsDoc.Options = {
 	definition: {
 		openapi: "3.0.0",
 		info: {
-			title: "Hexacore API",
+			title: "SISAT API",
 			version: "1.0.0",
 			description:
-				"Documentación interactiva de la API de Hexacore generada con Scalar. Arquitectura hexagonal construida con Bun, Hono y PostgreSQL.",
+				"Documentación interactiva de la API de SISAT generada con Scalar. Arquitectura hexagonal construida con Bun, Hono y MariaDB.",
 			contact: {
-				name: "Soporte",
+				name: "Soporte SISAT",
 			},
 		},
+
 		servers: [
 			{
 				url: `http://localhost:${env.PORT}`,
