@@ -14,6 +14,9 @@ import { container } from "@/core/shared/infrastructure/di/container";
 import { UserRouter } from "@/core/user/infrastructure/http/routes/UserRouter";
 import { AuthRouter } from "@/modules/auth/infrastructure/http/routes/AuthRouter";
 import { PermissionRouter } from "@/modules/authorization/infrastructure/http/routes/PermissionRouter";
+import { CatalogoRouter } from "@/modules/catalogos/infrastructure/http/routes/CatalogoRouter";
+import { AreaRouter } from "@/modules/organizacion/infrastructure/http/routes/AreaRouter";
+import { SistemaRouter } from "@/modules/sistemas/infrastructure/http/routes/SistemaRouter";
 
 const app = new Hono();
 
@@ -42,6 +45,9 @@ app.get("/api-docs", (c) => c.redirect("/docs"));
 const userRouter = container.resolve(UserRouter);
 const authRouter = container.resolve(AuthRouter);
 const permissionRouter = container.resolve(PermissionRouter);
+const catalogoRouter = container.resolve(CatalogoRouter);
+const areaRouter = container.resolve(AreaRouter);
+const sistemaRouter = container.resolve(SistemaRouter);
 
 // 4. Registro de rutas
 // En Hono se usa .route() en lugar de .use() para anidar otros routers
@@ -49,6 +55,9 @@ app.route("/api/user", userRouter.router);
 app.route("/api/users", userRouter.router);
 app.route("/api/auth", authRouter.router);
 app.route("/api/permissions", permissionRouter.router);
+app.route("/api/catalogos", catalogoRouter.router);
+app.route("/api/areas", areaRouter.router);
+app.route("/api/sistemas", sistemaRouter.router);
 
 // 5. Global Error Handler
 app.onError((err, c) => {
@@ -67,7 +76,10 @@ app.onError((err, c) => {
 		}
 	}
 
-	return c.json({ error: err.message || "Internal Server Error" }, status);
+	return c.json(
+		{ error: err.message || "Internal Server Error" },
+		status as any,
+	);
 });
 
 // 6. Servir Frontend en Producción (SPA)

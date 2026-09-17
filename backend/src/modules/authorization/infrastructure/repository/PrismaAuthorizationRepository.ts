@@ -16,10 +16,6 @@ import { PermissionAlreadyExistsError } from "../../domain/error/PermissionAlrea
  *    - Un permiso directo con `granted = false` lo ELIMINA del set
  *      (permite revocar granularmente un permiso de rol).
  */
-import { injectable } from "tsyringe";
-import { prisma } from "@/core/config/prisma";
-import type { AuthorizationRepository } from "../../domain/repository/AuthorizationRepository";
-import { Permission } from "../../domain/Permission";
 
 const ROLE_PERMISSIONS: Record<
 	string,
@@ -123,7 +119,8 @@ export class PrismaAuthorizationRepository implements AuthorizationRepository {
 		const allPerms: Permission[] = [];
 		let id = 1;
 		for (const roleCode of Object.keys(ROLE_PERMISSIONS)) {
-			for (const item of ROLE_PERMISSIONS[roleCode]) {
+			const perms = ROLE_PERMISSIONS[roleCode] || [];
+			for (const item of perms) {
 				if (!allPerms.some((p) => p.matches(item.resource, item.action))) {
 					allPerms.push(
 						Permission.reconstitute(id++, item.resource, item.action),
