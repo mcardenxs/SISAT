@@ -15,45 +15,64 @@ async function main() {
 	}
 
 	try {
-		// 1. Verificar si el rol ADMIN existe
-		let role = await prisma.role.findUnique({ where: { name: "ADMIN" } });
+		// 1. Obtener rol ADMINISTRADOR de SISAT
+		let role = await prisma.rol.findFirst({
+			where: { rol_codigo: "ADMINISTRADOR" },
+		});
 		if (!role) {
-			console.log("⚙️  El rol ADMIN no existe. Creándolo globalmente...");
-			role = await prisma.role.create({
+			console.log("⚙️  El rol ADMINISTRADOR no existe. Creándolo...");
+			role = await prisma.rol.create({
 				data: {
-					name: "ADMIN",
-					description: "Administrator with full access",
+					rol_codigo: "ADMINISTRADOR",
+					rol_nombre: "Administrador",
 				},
 			});
 		}
 
-		// 2. Verificar si el usuario ya existe
-		const existingUser = await prisma.user.findUnique({ where: { email } });
+		// 2. Obtener área base
+		let area = await prisma.area.findFirst();
+		if (!area) {
+			area = await prisma.area.create({
+				data: {
+					are_nombre: "Tecnologías de la Información",
+					are_fkestado: 1,
+				},
+			});
+		}
+
+		// 3. Verificar si el usuario ya existe
+		const existingUser = await prisma.usuario.findUnique({
+			where: { usu_correo: email },
+		});
 		if (existingUser) {
 			console.log("❌ Error: Ya existe un usuario con ese email.");
 			process.exit(1);
 		}
 
-		// 3. Hashear la contraseña
+		// 4. Hashear la contraseña
 		const passwordHash = await bcrypt.hash(password, 10);
 
-		// 4. Crear el usuario y asignar el rol
-		const user = await prisma.user.create({
+		// 5. Crear el usuario y su perfil
+		const user = await prisma.usuario.create({
 			data: {
-				email,
-				name,
-				password: passwordHash,
-				roles: {
+				usu_correo: email,
+				usu_nombre: name,
+				usu_apellido: "Admin",
+				usu_contrasena: passwordHash,
+				usu_fkarea: area.are_id,
+				usu_fkestado: 1,
+				usu_puesto: "Administrador del Sistema",
+				perfil: {
 					create: {
-						roleId: role.id,
+						per_fkrol: role.rol_id,
 					},
 				},
 			},
 		});
 
 		console.log(`\n✅ ¡Éxito! Usuario administrador creado correctamente.`);
-		console.log(`   Email: ${user.email}`);
-		console.log(`   Rol:   ADMIN`);
+		console.log(`   Email: ${user.usu_correo}`);
+		console.log(`   Rol:   ADMINISTRADOR`);
 	} catch (error) {
 		console.error("❌ Error inesperado creando administrador:", error);
 		process.exit(1);

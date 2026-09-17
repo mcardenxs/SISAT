@@ -5,66 +5,70 @@ import type { UserRepository } from "../../domain/repository/UserRepository";
 import { prisma } from "@/core/config/prisma";
 import { User } from "../../domain/User";
 
-/**
- * Representa la estructura cruda del registro de Prisma.
- * Se define localmente para desacoplar la infraestructura de los tipos auto-generados.
- */
-interface PrismaUserRecord {
-	id: number;
-	email: string;
-	name: string;
-	password: string;
-	isActive: boolean;
-	roles: {
-		role: { name: string };
+interface PrismaUsuarioRecord {
+	usu_id: number;
+	usu_fkarea: number;
+	usu_fkestado: number;
+	usu_nombre: string;
+	usu_apellido: string;
+	usu_correo: string;
+	usu_contrasena: string;
+	usu_puesto: string;
+	perfil: {
+		rol: {
+			rol_id: number;
+			rol_codigo: string;
+			rol_nombre: string;
+		};
 	}[];
 }
 
 @injectable()
 export class PrismaUserRepository implements UserRepository {
-	/**
-	 * Transforma un registro de Prisma en una entidad de dominio.
-	 * Se utiliza `reconstitute` porque el usuario ya existe en la base de datos.
-	 */
-	private toDomain(raw: PrismaUserRecord): User {
-		// Con el esquema N-a-N un usuario puede tener varios roles.
-		// Tomamos el primero como "rol principal" para mantener compatibilidad
-		// con la entidad de dominio User que actualmente modela un único rol.
-		const primaryRole = raw.roles[0]?.role.name ?? "USER";
+	private toDomain(raw: PrismaUsuarioRecord): User {
+		const roles = raw.perfil.map((p) => p.rol.rol_codigo);
+		const primaryRole = roles[0] ?? "CONSULTA";
+		const isActive = raw.usu_fkestado === 1;
 
 		return User.reconstitute(
-			raw.name,
-			raw.email,
-			raw.password,
-			raw.isActive,
-			raw.id,
+			raw.usu_nombre,
+			raw.usu_correo,
+			raw.usu_contrasena,
+			isActive,
+			raw.usu_id,
 			primaryRole,
+			raw.usu_apellido,
+			raw.usu_fkarea,
+			raw.usu_puesto,
+			roles,
 		);
 	}
 
-	/**
-	 * Busca usuarios con paginación y filtros opcionales.
-	 * Calcula el offset basado en la página y el límite solicitados.
-	 */
 	async find(filters: UserFilters): Promise<Pagination<User>> {
 		const { page, limit, email } = filters;
 		const skip = (page - 1) * limit;
 
 		const where = {
 			...(email && {
-				email: { contains: email, mode: "insensitive" as const },
+				usu_correo: { contains: email },
 			}),
 		};
 
 		const [data, totalItems] = await prisma.$transaction([
-			prisma.user.findMany({
+			prisma.usuario.findMany({
 				where,
 				skip,
 				take: limit,
-				orderBy: { id: "asc" },
-				include: { roles: { include: { role: true } } },
+				orderBy: { usu_id: "asc" },
+				include: {
+					perfil: {
+						include: {
+							rol: true,
+						},
+					},
+				},
 			}),
-			prisma.user.count({ where }),
+			prisma.usuario.count({ where }),
 		]);
 
 		return {
@@ -75,14 +79,16 @@ export class PrismaUserRepository implements UserRepository {
 		};
 	}
 
-	/**
-	 * Busca un usuario por su ID.
-	 * Retorna null si no existe, delegando la validación al caso de uso.
-	 */
 	async findById(id: number): Promise<User | null> {
-		const record = await prisma.user.findUnique({
-			where: { id },
-			include: { roles: { include: { role: true } } },
+		const record = await prisma.usuario.findUnique({
+			where: { usu_id: id },
+			include: {
+				perfil: {
+					include: {
+						rol: true,
+					},
+				},
+			},
 		});
 
 		if (!record) return null;
@@ -90,55 +96,69 @@ export class PrismaUserRepository implements UserRepository {
 		return this.toDomain(record);
 	}
 
-	/**
-	 * Persiste un nuevo usuario en la base de datos.
-	 * Los datos se extraen de la entidad de dominio para respetar la separación de capas.
-	 */
 	async create(data: User): Promise<User> {
-		const record = await prisma.user.create({
+		const roleRecord = await prisma.rol.findFirst({
+			where: { rol_codigo: data.getRole() },
+		});
+
+		const rolId = roleRecord ? roleRecord.rol_id : 5; // Default 5: CONSULTA
+
+		const record = await prisma.usuario.create({
 			data: {
-				name: data.getName(),
-				email: data.getEmail(),
-				password: data.getPasswordHash(),
-				isActive: data.getIsActive(),
-				// Asignar el rol inicial del usuario via la tabla intermedia UserRole
-				roles: {
+				usu_nombre: data.getName(),
+				usu_apellido: data.getApellido() || "",
+				usu_correo: data.getEmail(),
+				usu_contrasena: data.getPasswordHash(),
+				usu_fkarea: data.getAreaId() || 1,
+				usu_fkestado: data.getIsActive() ? 1 : 2,
+				usu_puesto: data.getPuesto() || "",
+				perfil: {
 					create: {
-						role: { connect: { name: data.getRole() } },
+						per_fkrol: rolId,
 					},
 				},
 			},
-			include: { roles: { include: { role: true } } },
-		});
-
-		return this.toDomain(record);
-	}
-
-	/**
-	 * Actualiza un usuario existente en la base de datos.
-	 * Se actualiza por ID, extrayendo los datos actuales de la entidad de dominio.
-	 */
-	async update(data: User): Promise<User> {
-		const record = await prisma.user.update({
-			where: { id: data.getId() },
-			data: {
-				name: data.getName(),
-				email: data.getEmail(),
-				password: data.getPasswordHash(),
-				isActive: data.getIsActive(),
+			include: {
+				perfil: {
+					include: {
+						rol: true,
+					},
+				},
 			},
-			include: { roles: { include: { role: true } } },
 		});
 
 		return this.toDomain(record);
 	}
 
-	/**
-	 * Elimina un usuario por su ID.
-	 */
+	async update(data: User): Promise<User> {
+		const record = await prisma.usuario.update({
+			where: { usu_id: data.getId() },
+			data: {
+				usu_nombre: data.getName(),
+				usu_apellido: data.getApellido(),
+				usu_correo: data.getEmail(),
+				usu_contrasena: data.getPasswordHash(),
+				usu_fkestado: data.getIsActive() ? 1 : 2,
+				usu_fkarea: data.getAreaId(),
+				usu_puesto: data.getPuesto(),
+			},
+			include: {
+				perfil: {
+					include: {
+						rol: true,
+					},
+				},
+			},
+		});
+
+		return this.toDomain(record);
+	}
+
 	async delete(id: number): Promise<void> {
-		await prisma.user.delete({
-			where: { id },
+		// En SISAT las bajas son lógicas para preservar integridad
+		await prisma.usuario.update({
+			where: { usu_id: id },
+			data: { usu_fkestado: 2 },
 		});
 	}
 }

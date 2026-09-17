@@ -18,10 +18,12 @@
 		"build": "pnpm --filter frontend build",
 		"build:frontend": "pnpm --filter frontend build",
 		"test:backend": "pnpm --filter backend test",
-		"db:generate": "DATABASE_URL=${DATABASE_URL:-postgresql://user:password@localhost:5432/hexacore_db?schema=public} pnpm --filter backend exec prisma generate",
+		"db:generate": "pnpm --filter backend exec prisma generate",
+		"db:pull": "pnpm --filter backend exec prisma db pull",
 		"db:push": "pnpm --filter backend exec prisma db push",
 		"db:migrate": "pnpm --filter backend exec prisma migrate dev"
 	},
+
 	"keywords": [],
 	"description": "Monorepo Hexacore: backend (Bun + Hono + Prisma) y frontend (Vite + React + TanStack).",
 	"devDependencies": {

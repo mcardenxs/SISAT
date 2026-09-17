@@ -1,8 +1,25 @@
 import { BaseError } from "@/core/shared/domain/error/BaseError";
 
-export type RoleType = "USER" | "MOD" | "ADMIN";
+export type RoleType =
+	| "ADMINISTRADOR"
+	| "RESPONSABLE_DE_SISTEMA"
+	| "DESARROLLADOR"
+	| "JEFE_DE_AREA"
+	| "CONSULTA"
+	| "ADMIN"
+	| "USER"
+	| "MOD";
 
-const validRoles: RoleType[] = ["USER", "MOD", "ADMIN"];
+const validRoles: RoleType[] = [
+	"ADMINISTRADOR",
+	"RESPONSABLE_DE_SISTEMA",
+	"DESARROLLADOR",
+	"JEFE_DE_AREA",
+	"CONSULTA",
+	"ADMIN",
+	"USER",
+	"MOD",
+];
 
 export class Role {
 	public readonly value: RoleType;

@@ -4,120 +4,562 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
-// ─────────────────────────────────────────────
-//  1. Entidades principales
-// ─────────────────────────────────────────────
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model acta {
+  act_id            Int         @id @default(autoincrement())
+  act_fksistema     Int
+  act_fkarea        Int
+  act_fkusuario     Int
+  act_fksituacion   Int
+  act_sistema       String      @db.VarChar(200)
+  act_area          String      @db.VarChar(200)
+  act_firmante      String      @db.VarChar(200)
+  act_folio         String      @unique(map: "uk_acta_folio") @db.VarChar(200)
+  act_inicio        DateTime    @db.Date
+  act_fin           DateTime    @db.Date
+  act_generacion    DateTime    @default(now()) @db.DateTime(0)
+  act_observacion   String?     @db.Text
+  act_actualizacion DateTime    @default(now()) @db.DateTime(0)
+  area              area        @relation(fields: [act_fkarea], references: [are_id], onUpdate: Restrict, map: "fk_acta_area")
+  sistema           sistema     @relation(fields: [act_fksistema], references: [sis_id], onUpdate: Restrict, map: "fk_acta_sistema")
+  situacion         situacion   @relation(fields: [act_fksituacion], references: [sit_id], onUpdate: Restrict, map: "fk_acta_situacion")
+  usuario           usuario     @relation(fields: [act_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_acta_usuario")
+  archivo           archivo[]
+  inclusion         inclusion[]
 
-model User {
-  id        Int       @id @default(autoincrement()) @map("usr_id")
-  email     String    @unique @map("usr_email") @db.VarChar(128)
-  name      String    @map("usr_name") @db.VarChar(255)
-  password  String    @map("usr_password") @db.VarChar(255)
-  isActive  Boolean   @default(true) @map("is_active")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
-
-  // Relaciones N-a-N gestionadas por tablas intermedias explícitas
-  roles             UserRole[]
-  directPermissions UserPermission[]
-  refreshTokens     RefreshToken[]
-
-  @@map("user")
+  @@index([act_fkarea], map: "fk_acta_area")
+  @@index([act_fkusuario], map: "fk_acta_usuario")
+  @@index([act_fksistema, act_inicio, act_fin], map: "ix_acta_sistema_periodo")
+  @@index([act_fksituacion, act_generacion], map: "ix_acta_situacion")
 }
 
-model Role {
-  id          Int       @id @default(autoincrement()) @map("role_id")
-  name        String    @unique @map("role_name") @db.VarChar(150) // e.g., 'ADMIN', 'MOD', 'USER'
-  description String?   @map("role_description") @db.Text
-  isActive    Boolean   @default(true) @map("is_active")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @updatedAt @map("updated_at")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model archivo {
+  arc_id          Int      @id @default(autoincrement())
+  arc_fkacta      Int
+  arc_fkclase     Int
+  arc_fkusuario   Int
+  arc_nombre      String   @db.VarChar(200)
+  arc_ruta        String   @db.Text
+  arc_formato     String   @db.VarChar(200)
+  arc_tamano      Int
+  arc_observacion String?  @db.Text
+  arc_fecha       DateTime @default(now()) @db.DateTime(0)
+  acta            acta     @relation(fields: [arc_fkacta], references: [act_id], onUpdate: Restrict, map: "fk_archivo_acta")
+  clase           clase    @relation(fields: [arc_fkclase], references: [cla_id], onUpdate: Restrict, map: "fk_archivo_clase")
+  usuario         usuario  @relation(fields: [arc_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_archivo_usuario")
 
-  users       UserRole[]
-  permissions RolePermission[]
-
-  @@map("role")
+  @@index([arc_fkacta], map: "fk_archivo_acta")
+  @@index([arc_fkclase], map: "fk_archivo_clase")
+  @@index([arc_fkusuario], map: "fk_archivo_usuario")
 }
 
-/// Permiso atómico: combinación única de recurso + acción.
-/// Ejemplo: resource="turnos", action="create"
-model Permission {
-  id        Int       @id @default(autoincrement()) @map("permission_id")
-  resource  String    @map("per_resource") @db.VarChar(100) // e.g., "turnos", "users"
-  action    String    @map("per_action") @db.VarChar(50) // e.g., "create", "read", "update", "delete"
-  isActive  Boolean   @default(true) @map("is_active")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model area {
+  are_id            Int       @id @default(autoincrement())
+  are_nombre        String    @unique(map: "uk_area_nombre") @db.VarChar(200)
+  are_descripcion   String?   @db.Text
+  are_fkestado      Int
+  are_actualizacion DateTime  @default(now()) @db.DateTime(0)
+  acta              acta[]
+  estado            estado    @relation(fields: [are_fkestado], references: [est_id], onUpdate: Restrict, map: "fk_area_estado")
+  sistema           sistema[]
+  ticket            ticket[]
+  usuario           usuario[]
 
-  roles RolePermission[]
-  users UserPermission[]
-
-  @@unique([resource, action])
-  @@map("permission")
+  @@index([are_fkestado], map: "fk_area_estado")
 }
 
-// ─────────────────────────────────────────────
-//  2. Tablas intermedias (N-a-N explícitas)
-// ─────────────────────────────────────────────
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model asignacion {
+  asi_id                                                                      Int            @id @default(autoincrement())
+  asi_fkticket                                                                Int
+  asi_fkusuario                                                               Int
+  asi_fkestado                                                                Int
+  asi_fkusuario_asigna                                                        Int
+  asi_principal                                                               Boolean
+  asi_fecha                                                                   DateTime       @default(now()) @db.DateTime(0)
+  asi_fin                                                                     DateTime?      @db.DateTime(0)
+  asi_usuario_vigente                                                         Int?
+  asi_principal_vigente                                                       Int?           @unique(map: "uk_asignacion_principal")
+  estado                                                                      estado         @relation(fields: [asi_fkestado], references: [est_id], onUpdate: Restrict, map: "fk_asignacion_estado")
+  ticket                                                                      ticket         @relation(fields: [asi_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_asignacion_ticket")
+  usuario_asignacion_asi_fkusuarioTousuario                                   usuario        @relation("asignacion_asi_fkusuarioTousuario", fields: [asi_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_asignacion_usuario")
+  usuario_asignacion_asi_fkusuario_asignaTousuario                            usuario        @relation("asignacion_asi_fkusuario_asignaTousuario", fields: [asi_fkusuario_asigna], references: [usu_id], onUpdate: Restrict, map: "fk_asignacion_usuario_asigna")
+  reasignacion_reasignacion_rea_fkasignacion_destino_rea_fkticketToasignacion reasignacion?  @relation("reasignacion_rea_fkasignacion_destino_rea_fkticketToasignacion")
+  reasignacion_reasignacion_rea_fkasignacion_origen_rea_fkticketToasignacion  reasignacion?  @relation("reasignacion_rea_fkasignacion_origen_rea_fkticketToasignacion")
+  reasignacion_reasignacion_rea_fkasignacion_previa_rea_fkticketToasignacion  reasignacion[] @relation("reasignacion_rea_fkasignacion_previa_rea_fkticketToasignacion")
 
-/// Asigna roles a usuarios
-model UserRole {
-  userId    Int      @map("usrrol_fkuser")
-  roleId    Int      @map("usrrol_fkrole")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user User @relation(fields: [userId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
-
-  @@id([userId, roleId])
-  @@map("user_role")
+  @@unique([asi_id, asi_fkticket], map: "uk_asignacion_id_ticket")
+  @@unique([asi_fkticket, asi_usuario_vigente], map: "uk_asignacion_ticket_usuario")
+  @@index([asi_fkestado], map: "fk_asignacion_estado")
+  @@index([asi_fkusuario], map: "fk_asignacion_usuario")
+  @@index([asi_fkusuario_asigna], map: "fk_asignacion_usuario_asigna")
 }
 
-/// Permisos que posee un rol completo
-model RolePermission {
-  roleId       Int @map("rolper_fkrole")
-  permissionId Int @map("rolper_fkpermission")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model atencion {
+  ate_id                                                              Int            @id @default(autoincrement())
+  ate_fkticket                                                        Int
+  ate_ciclo                                                           Int
+  ate_inicio                                                          DateTime       @db.DateTime(0)
+  ate_diagnostico                                                     String?        @db.Text
+  ate_solucion                                                        String?        @db.Text
+  ate_cambios                                                         String?        @db.Text
+  ate_modulos                                                         String?        @db.Text
+  ate_datos                                                           String?        @db.Text
+  ate_comentarios                                                     String?        @db.Text
+  ticket                                                              ticket         @relation(fields: [ate_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_atencion_ticket")
+  cierre                                                              cierre?
+  evaluacion                                                          evaluacion?
+  evidencia                                                           evidencia[]
+  inclusion                                                           inclusion?
+  intervencion                                                        intervencion[]
+  reapertura_reapertura_rea_fkatencion_destino_rea_fkticketToatencion reapertura?    @relation("reapertura_rea_fkatencion_destino_rea_fkticketToatencion")
+  reapertura_reapertura_rea_fkatencion_origen_rea_fkticketToatencion  reapertura?    @relation("reapertura_rea_fkatencion_origen_rea_fkticketToatencion")
+  termino                                                             termino?
 
-  role       Role       @relation(fields: [roleId], references: [id])
-  permission Permission @relation(fields: [permissionId], references: [id])
-
-  @@id([roleId, permissionId])
-  @@map("role_permission")
+  @@unique([ate_id, ate_fkticket], map: "uk_atencion_id_ticket")
+  @@unique([ate_fkticket, ate_ciclo], map: "uk_atencion_ticket_ciclo")
 }
 
-/// Permisos directos o excepcionales por usuario (pueden conceder O denegar)
-model UserPermission {
-  userId       Int     @map("usrper_fkuser")
-  permissionId Int     @map("usrper_fkpermission")
-  /// true = conceder, false = denegar (override sobre el rol)
-  granted      Boolean @default(true) @map("usrper_granted")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cierre {
+  cie_id         Int      @id @default(autoincrement())
+  cie_fkticket   Int
+  cie_fkatencion Int      @unique(map: "uk_cierre_atencion")
+  cie_fkusuario  Int
+  cie_comentario String?  @db.Text
+  cie_fecha      DateTime @default(now()) @db.DateTime(0)
+  atencion       atencion @relation(fields: [cie_fkatencion, cie_fkticket], references: [ate_id, ate_fkticket], onUpdate: Restrict, map: "fk_cierre_atencion")
+  ticket         ticket   @relation(fields: [cie_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_cierre_ticket")
+  usuario        usuario  @relation(fields: [cie_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_cierre_usuario")
 
-  user       User       @relation(fields: [userId], references: [id])
-  permission Permission @relation(fields: [permissionId], references: [id])
-
-  @@id([userId, permissionId])
-  @@map("user_permission")
+  @@unique([cie_fkatencion, cie_fkticket])
+  @@index([cie_fkatencion, cie_fkticket], map: "fk_cierre_atencion")
+  @@index([cie_fkticket], map: "fk_cierre_ticket")
+  @@index([cie_fkusuario], map: "fk_cierre_usuario")
 }
 
-// ─────────────────────────────────────────────
-//  3. Refresh Tokens
-// ─────────────────────────────────────────────
 
-/// Token de refresco para la rotación segura de sesiones.
-/// Se almacena un hash del token, nunca el token en claro.
-model RefreshToken {
-  id        Int      @id @default(autoincrement()) @map("rft_id")
-  tokenHash String   @unique @map("rft_token_hash") @db.VarChar(512)
-  userId    Int      @map("rft_fkuser")
-  expiresAt DateTime @map("rft_expires_at")
-  revoked   Boolean  @default(false) @map("rft_revoked")
-  createdAt DateTime @default(now()) @map("rft_created_at")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model clase {
+  cla_id     Int         @id @default(autoincrement())
+  cla_codigo String      @unique(map: "uk_clase_codigo") @db.VarChar(50)
+  cla_nombre String      @unique(map: "uk_clase_nombre") @db.VarChar(200)
+  archivo    archivo[]
+  evidencia  evidencia[]
+}
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model constancia {
+  con_id     Int      @id @default(autoincrement())
+  con_codigo String   @unique(map: "uk_constancia_codigo") @db.VarChar(50)
+  con_nombre String   @unique(map: "uk_constancia_nombre") @db.VarChar(200)
+  ticket     ticket[]
+}
 
-  @@index([userId])
-  @@map("refresh_token")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model desarrollador {
+  des_id              Int       @id @default(autoincrement())
+  des_fksistema       Int
+  des_fkusuario       Int
+  des_fkestado        Int
+  des_inicio          DateTime  @db.DateTime(0)
+  des_fin             DateTime? @db.DateTime(0)
+  des_usuario_vigente Int?
+  estado              estado    @relation(fields: [des_fkestado], references: [est_id], onUpdate: Restrict, map: "fk_desarrollador_estado")
+  sistema             sistema   @relation(fields: [des_fksistema], references: [sis_id], onUpdate: Restrict, map: "fk_desarrollador_sistema")
+  usuario             usuario   @relation(fields: [des_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_desarrollador_usuario")
+
+  @@unique([des_fksistema, des_usuario_vigente], map: "uk_desarrollador_sistema_usuario")
+  @@index([des_fkestado], map: "fk_desarrollador_estado")
+  @@index([des_fkusuario], map: "fk_desarrollador_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model estado {
+  est_id        Int             @id @default(autoincrement())
+  est_codigo    String          @unique(map: "uk_estado_codigo") @db.VarChar(50)
+  est_nombre    String          @unique(map: "uk_estado_nombre") @db.VarChar(200)
+  area          area[]
+  asignacion    asignacion[]
+  desarrollador desarrollador[]
+  responsable   responsable[]
+  sistema       sistema[]
+  usuario       usuario[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model evaluacion {
+  eva_id            Int      @id @default(autoincrement())
+  eva_fkticket      Int
+  eva_fkatencion    Int      @unique(map: "uk_evaluacion_atencion")
+  eva_fkusuario     Int
+  eva_calificacion  Int
+  eva_confirmacion  Boolean
+  eva_conformidad   String?  @db.Text
+  eva_inconformidad String?  @db.Text
+  eva_fecha         DateTime @default(now()) @db.DateTime(0)
+  atencion          atencion @relation(fields: [eva_fkatencion, eva_fkticket], references: [ate_id, ate_fkticket], onUpdate: Restrict, map: "fk_evaluacion_atencion")
+  ticket            ticket   @relation(fields: [eva_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_evaluacion_ticket")
+  usuario           usuario  @relation(fields: [eva_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_evaluacion_usuario")
+
+  @@unique([eva_fkatencion, eva_fkticket])
+  @@index([eva_fkatencion, eva_fkticket], map: "fk_evaluacion_atencion")
+  @@index([eva_fkticket], map: "fk_evaluacion_ticket")
+  @@index([eva_fkusuario], map: "fk_evaluacion_usuario")
+}
+
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model evidencia {
+  evi_id           Int         @id @default(autoincrement())
+  evi_fkticket     Int
+  evi_fkatencion   Int?
+  evi_fkreapertura Int?
+  evi_fkclase      Int
+  evi_fkusuario    Int
+  evi_nombre       String      @db.VarChar(200)
+  evi_ruta         String      @db.Text
+  evi_formato      String      @db.VarChar(20)
+  evi_tamano       Int
+  evi_descripcion  String?     @db.Text
+  evi_fecha        DateTime    @default(now()) @db.DateTime(0)
+  atencion         atencion?   @relation(fields: [evi_fkatencion, evi_fkticket], references: [ate_id, ate_fkticket], onUpdate: Restrict, map: "fk_evidencia_atencion")
+  clase            clase       @relation(fields: [evi_fkclase], references: [cla_id], onUpdate: Restrict, map: "fk_evidencia_clase")
+  reapertura       reapertura? @relation(fields: [evi_fkreapertura, evi_fkticket], references: [rea_id, rea_fkticket], onUpdate: Restrict, map: "fk_evidencia_reapertura")
+  ticket           ticket      @relation(fields: [evi_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_evidencia_ticket")
+  usuario          usuario     @relation(fields: [evi_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_evidencia_usuario")
+
+  @@index([evi_fkatencion, evi_fkticket], map: "fk_evidencia_atencion")
+  @@index([evi_fkclase], map: "fk_evidencia_clase")
+  @@index([evi_fkreapertura, evi_fkticket], map: "fk_evidencia_reapertura")
+  @@index([evi_fkticket], map: "fk_evidencia_ticket")
+  @@index([evi_fkusuario], map: "fk_evidencia_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model fase {
+  fas_id                                         Int          @id @default(autoincrement())
+  fas_codigo                                     String       @unique(map: "uk_fase_codigo") @db.VarChar(50)
+  fas_nombre                                     String       @unique(map: "uk_fase_nombre") @db.VarChar(200)
+  ticket                                         ticket[]
+  transicion_transicion_tra_fkfase_destinoTofase transicion[] @relation("transicion_tra_fkfase_destinoTofase")
+  transicion_transicion_tra_fkfase_origenTofase  transicion[] @relation("transicion_tra_fkfase_origenTofase")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model inclusion {
+  inc_id              Int      @id @default(autoincrement())
+  inc_fkacta          Int
+  inc_fkticket        Int
+  inc_fkatencion      Int      @unique(map: "uk_inclusion_ciclo")
+  inc_inicio          DateTime @db.DateTime(0)
+  inc_fin             DateTime @db.DateTime(0)
+  inc_responsable     String?  @db.VarChar(200)
+  inc_desarrolladores String   @db.Text
+  inc_evidencias      String   @db.Text
+  inc_problema        String   @db.Text
+  inc_solucion        String   @db.Text
+  inc_calificacion    Int?
+  acta                acta     @relation(fields: [inc_fkacta], references: [act_id], onUpdate: Restrict, map: "fk_inclusion_acta")
+  atencion            atencion @relation(fields: [inc_fkatencion, inc_fkticket], references: [ate_id, ate_fkticket], onUpdate: Restrict, map: "fk_inclusion_atencion")
+  ticket              ticket   @relation(fields: [inc_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_inclusion_ticket")
+
+  @@unique([inc_fkatencion, inc_fkticket])
+  @@unique([inc_fkacta, inc_fkatencion], map: "uk_inclusion_acta_ciclo")
+  @@index([inc_fkatencion, inc_fkticket], map: "fk_inclusion_atencion")
+  @@index([inc_fkticket], map: "fk_inclusion_ticket")
+}
+
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model intervencion {
+  int_id          Int      @id @default(autoincrement())
+  int_fkatencion  Int
+  int_fkusuario   Int
+  int_descripcion String   @db.Text
+  int_minutos     Int
+  int_interno     Boolean
+  int_fecha       DateTime @default(now()) @db.DateTime(0)
+  atencion        atencion @relation(fields: [int_fkatencion], references: [ate_id], onUpdate: Restrict, map: "fk_intervencion_atencion")
+  usuario         usuario  @relation(fields: [int_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_intervencion_usuario")
+
+  @@index([int_fkatencion], map: "fk_intervencion_atencion")
+  @@index([int_fkusuario], map: "fk_intervencion_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model movimiento {
+  mov_id                                            Int      @id @default(autoincrement())
+  mov_fkticket                                      Int
+  mov_fksistema_origen                              Int
+  mov_fksistema_destino                             Int
+  mov_fkusuario                                     Int
+  mov_motivo                                        String   @db.Text
+  mov_fecha                                         DateTime @default(now()) @db.DateTime(0)
+  sistema_movimiento_mov_fksistema_destinoTosistema sistema  @relation("movimiento_mov_fksistema_destinoTosistema", fields: [mov_fksistema_destino], references: [sis_id], onUpdate: Restrict, map: "fk_movimiento_sistema_destino")
+  sistema_movimiento_mov_fksistema_origenTosistema  sistema  @relation("movimiento_mov_fksistema_origenTosistema", fields: [mov_fksistema_origen], references: [sis_id], onUpdate: Restrict, map: "fk_movimiento_sistema_origen")
+  ticket                                            ticket   @relation(fields: [mov_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_movimiento_ticket")
+  usuario                                           usuario  @relation(fields: [mov_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_movimiento_usuario")
+
+  @@index([mov_fksistema_destino], map: "fk_movimiento_sistema_destino")
+  @@index([mov_fksistema_origen], map: "fk_movimiento_sistema_origen")
+  @@index([mov_fkticket], map: "fk_movimiento_ticket")
+  @@index([mov_fkusuario], map: "fk_movimiento_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model perfil {
+  per_id        Int     @id @default(autoincrement())
+  per_fkusuario Int
+  per_fkrol     Int
+  rol           rol     @relation(fields: [per_fkrol], references: [rol_id], onUpdate: Restrict, map: "fk_perfil_rol")
+  usuario       usuario @relation(fields: [per_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_perfil_usuario")
+
+  @@unique([per_fkusuario, per_fkrol], map: "uk_perfil_usuario_rol")
+  @@index([per_fkrol], map: "fk_perfil_rol")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model prioridad {
+  pri_id     Int      @id @default(autoincrement())
+  pri_codigo String   @unique(map: "uk_prioridad_codigo") @db.VarChar(50)
+  pri_nombre String   @unique(map: "uk_prioridad_nombre") @db.VarChar(200)
+  ticket     ticket[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model reapertura {
+  rea_id                                                            Int         @id @default(autoincrement())
+  rea_fkticket                                                      Int
+  rea_fkatencion_origen                                             Int         @unique(map: "uk_reapertura_origen")
+  rea_fkatencion_destino                                            Int         @unique(map: "uk_reapertura_destino")
+  rea_fkusuario                                                     Int
+  rea_motivo                                                        String      @db.Text
+  rea_comentario                                                    String?     @db.Text
+  rea_fecha                                                         DateTime    @default(now()) @db.DateTime(0)
+  evidencia                                                         evidencia[]
+  atencion_reapertura_rea_fkatencion_destino_rea_fkticketToatencion atencion    @relation("reapertura_rea_fkatencion_destino_rea_fkticketToatencion", fields: [rea_fkatencion_destino, rea_fkticket], references: [ate_id, ate_fkticket], onUpdate: Restrict, map: "fk_reapertura_destino")
+  atencion_reapertura_rea_fkatencion_origen_rea_fkticketToatencion  atencion    @relation("reapertura_rea_fkatencion_origen_rea_fkticketToatencion", fields: [rea_fkatencion_origen, rea_fkticket], references: [ate_id, ate_fkticket], onUpdate: Restrict, map: "fk_reapertura_origen")
+  ticket                                                            ticket      @relation(fields: [rea_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_reapertura_ticket")
+  usuario                                                           usuario     @relation(fields: [rea_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_reapertura_usuario")
+
+  @@unique([rea_fkatencion_destino, rea_fkticket])
+  @@unique([rea_fkatencion_origen, rea_fkticket])
+  @@unique([rea_id, rea_fkticket], map: "uk_reapertura_id_ticket")
+  @@index([rea_fkatencion_destino, rea_fkticket], map: "fk_reapertura_destino")
+  @@index([rea_fkatencion_origen, rea_fkticket], map: "fk_reapertura_origen")
+  @@index([rea_fkticket], map: "fk_reapertura_ticket")
+  @@index([rea_fkusuario], map: "fk_reapertura_usuario")
+}
+
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model reasignacion {
+  rea_id                                                                    Int         @id @default(autoincrement())
+  rea_fkticket                                                              Int
+  rea_fkasignacion_origen                                                   Int         @unique(map: "uk_reasignacion_origen")
+  rea_fkasignacion_destino                                                  Int         @unique(map: "uk_reasignacion_destino")
+  rea_fkasignacion_previa                                                   Int?
+  rea_fkusuario                                                             Int
+  rea_motivo                                                                String      @db.Text
+  rea_fecha                                                                 DateTime    @default(now()) @db.DateTime(0)
+  asignacion_reasignacion_rea_fkasignacion_destino_rea_fkticketToasignacion asignacion  @relation("reasignacion_rea_fkasignacion_destino_rea_fkticketToasignacion", fields: [rea_fkasignacion_destino, rea_fkticket], references: [asi_id, asi_fkticket], onUpdate: Restrict, map: "fk_reasignacion_destino")
+  asignacion_reasignacion_rea_fkasignacion_origen_rea_fkticketToasignacion  asignacion  @relation("reasignacion_rea_fkasignacion_origen_rea_fkticketToasignacion", fields: [rea_fkasignacion_origen, rea_fkticket], references: [asi_id, asi_fkticket], onUpdate: Restrict, map: "fk_reasignacion_origen")
+  asignacion_reasignacion_rea_fkasignacion_previa_rea_fkticketToasignacion  asignacion? @relation("reasignacion_rea_fkasignacion_previa_rea_fkticketToasignacion", fields: [rea_fkasignacion_previa, rea_fkticket], references: [asi_id, asi_fkticket], onUpdate: Restrict, map: "fk_reasignacion_previa")
+  ticket                                                                    ticket      @relation(fields: [rea_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_reasignacion_ticket")
+  usuario                                                                   usuario     @relation(fields: [rea_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_reasignacion_usuario")
+
+  @@unique([rea_fkasignacion_destino, rea_fkticket])
+  @@unique([rea_fkasignacion_origen, rea_fkticket])
+  @@index([rea_fkasignacion_destino, rea_fkticket], map: "fk_reasignacion_destino")
+  @@index([rea_fkasignacion_origen, rea_fkticket], map: "fk_reasignacion_origen")
+  @@index([rea_fkasignacion_previa, rea_fkticket], map: "fk_reasignacion_previa")
+  @@index([rea_fkticket], map: "fk_reasignacion_ticket")
+  @@index([rea_fkusuario], map: "fk_reasignacion_usuario")
+}
+
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model responsable {
+  res_id                Int       @id @default(autoincrement())
+  res_fksistema         Int
+  res_fkusuario         Int
+  res_fkestado          Int
+  res_principal         Boolean
+  res_inicio            DateTime  @db.DateTime(0)
+  res_fin               DateTime? @db.DateTime(0)
+  res_usuario_vigente   Int?
+  res_principal_vigente Int?      @unique(map: "uk_responsable_principal")
+  estado                estado    @relation(fields: [res_fkestado], references: [est_id], onUpdate: Restrict, map: "fk_responsable_estado")
+  sistema               sistema   @relation(fields: [res_fksistema], references: [sis_id], onUpdate: Restrict, map: "fk_responsable_sistema")
+  usuario               usuario   @relation(fields: [res_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_responsable_usuario")
+
+  @@unique([res_fksistema, res_usuario_vigente], map: "uk_responsable_sistema_usuario")
+  @@index([res_fkestado], map: "fk_responsable_estado")
+  @@index([res_fkusuario], map: "fk_responsable_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model rol {
+  rol_id     Int      @id @default(autoincrement())
+  rol_codigo String   @unique(map: "uk_rol_codigo") @db.VarChar(50)
+  rol_nombre String   @unique(map: "uk_rol_nombre") @db.VarChar(200)
+  perfil     perfil[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sistema {
+  sis_id                                               Int             @id @default(autoincrement())
+  sis_fkarea                                           Int
+  sis_fkestado                                         Int
+  sis_clave                                            String          @unique(map: "uk_sistema_clave") @db.VarChar(200)
+  sis_nombre                                           String          @db.VarChar(200)
+  sis_descripcion                                      String          @db.Text
+  sis_url                                              String?         @db.Text
+  sis_observacion                                      String?         @db.Text
+  sis_registro                                         DateTime        @default(now()) @db.DateTime(0)
+  sis_actualizacion                                    DateTime        @default(now()) @db.DateTime(0)
+  acta                                                 acta[]
+  desarrollador                                        desarrollador[]
+  movimiento_movimiento_mov_fksistema_destinoTosistema movimiento[]    @relation("movimiento_mov_fksistema_destinoTosistema")
+  movimiento_movimiento_mov_fksistema_origenTosistema  movimiento[]    @relation("movimiento_mov_fksistema_origenTosistema")
+  responsable                                          responsable[]
+  area                                                 area            @relation(fields: [sis_fkarea], references: [are_id], onUpdate: Restrict, map: "fk_sistema_area")
+  estado                                               estado          @relation(fields: [sis_fkestado], references: [est_id], onUpdate: Restrict, map: "fk_sistema_estado")
+  ticket                                               ticket[]
+
+  @@index([sis_fkarea], map: "fk_sistema_area")
+  @@index([sis_fkestado], map: "fk_sistema_estado")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model situacion {
+  sit_id     Int    @id @default(autoincrement())
+  sit_codigo String @unique(map: "uk_situacion_codigo") @db.VarChar(50)
+  sit_nombre String @unique(map: "uk_situacion_nombre") @db.VarChar(200)
+  acta       acta[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model solicitud {
+  sol_id     Int      @id @default(autoincrement())
+  sol_codigo String   @unique(map: "uk_solicitud_codigo") @db.VarChar(50)
+  sol_nombre String   @unique(map: "uk_solicitud_nombre") @db.VarChar(200)
+  ticket     ticket[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model termino {
+  ter_id         Int      @id @default(autoincrement())
+  ter_fkatencion Int      @unique(map: "uk_termino_atencion")
+  ter_fkusuario  Int
+  ter_fecha      DateTime @default(now()) @db.DateTime(0)
+  atencion       atencion @relation(fields: [ter_fkatencion], references: [ate_id], onUpdate: Restrict, map: "fk_termino_atencion")
+  usuario        usuario  @relation(fields: [ter_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_termino_usuario")
+
+  @@index([ter_fkusuario], map: "fk_termino_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ticket {
+  tic_id            Int            @id @default(autoincrement())
+  tic_fksistema     Int
+  tic_fkarea        Int
+  tic_fkusuario     Int
+  tic_fkprioridad   Int
+  tic_fksolicitud   Int
+  tic_fkfase        Int
+  tic_fkconstancia  Int
+  tic_folio         String         @unique(map: "uk_ticket_folio") @db.VarChar(200)
+  tic_titulo        String         @db.VarChar(200)
+  tic_descripcion   String         @db.Text
+  tic_registro      DateTime       @default(now()) @db.DateTime(0)
+  tic_actualizacion DateTime       @default(now()) @db.DateTime(0)
+  asignacion        asignacion[]
+  atencion          atencion[]
+  cierre            cierre[]
+  evaluacion        evaluacion[]
+  evidencia         evidencia[]
+  inclusion         inclusion[]
+  movimiento        movimiento[]
+  reapertura        reapertura[]
+  reasignacion      reasignacion[]
+  area              area           @relation(fields: [tic_fkarea], references: [are_id], onUpdate: Restrict, map: "fk_ticket_area")
+  constancia        constancia     @relation(fields: [tic_fkconstancia], references: [con_id], onUpdate: Restrict, map: "fk_ticket_constancia")
+  fase              fase           @relation(fields: [tic_fkfase], references: [fas_id], onUpdate: Restrict, map: "fk_ticket_fase")
+  prioridad         prioridad      @relation(fields: [tic_fkprioridad], references: [pri_id], onUpdate: Restrict, map: "fk_ticket_prioridad")
+  sistema           sistema        @relation(fields: [tic_fksistema], references: [sis_id], onUpdate: Restrict, map: "fk_ticket_sistema")
+  solicitud         solicitud      @relation(fields: [tic_fksolicitud], references: [sol_id], onUpdate: Restrict, map: "fk_ticket_solicitud")
+  usuario           usuario        @relation(fields: [tic_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_ticket_usuario")
+  transicion        transicion[]
+
+  @@index([tic_fkconstancia], map: "fk_ticket_constancia")
+  @@index([tic_fkfase], map: "fk_ticket_fase")
+  @@index([tic_fkprioridad], map: "fk_ticket_prioridad")
+  @@index([tic_fksolicitud], map: "fk_ticket_solicitud")
+  @@index([tic_fkusuario], map: "fk_ticket_usuario")
+  @@index([tic_fkarea, tic_fkfase], map: "ix_ticket_area_fase")
+  @@index([tic_fksistema, tic_fkfase, tic_registro], map: "ix_ticket_sistema_fase_fecha")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model transicion {
+  tra_id                                   Int      @id @default(autoincrement())
+  tra_fkticket                             Int
+  tra_fkfase_origen                        Int
+  tra_fkfase_destino                       Int
+  tra_fkusuario                            Int
+  tra_comentario                           String?  @db.Text
+  tra_fecha                                DateTime @default(now()) @db.DateTime(0)
+  fase_transicion_tra_fkfase_destinoTofase fase     @relation("transicion_tra_fkfase_destinoTofase", fields: [tra_fkfase_destino], references: [fas_id], onUpdate: Restrict, map: "fk_transicion_fase_destino")
+  fase_transicion_tra_fkfase_origenTofase  fase     @relation("transicion_tra_fkfase_origenTofase", fields: [tra_fkfase_origen], references: [fas_id], onUpdate: Restrict, map: "fk_transicion_fase_origen")
+  ticket                                   ticket   @relation(fields: [tra_fkticket], references: [tic_id], onUpdate: Restrict, map: "fk_transicion_ticket")
+  usuario                                  usuario  @relation(fields: [tra_fkusuario], references: [usu_id], onUpdate: Restrict, map: "fk_transicion_usuario")
+
+  @@index([tra_fkfase_destino], map: "fk_transicion_fase_destino")
+  @@index([tra_fkfase_origen], map: "fk_transicion_fase_origen")
+  @@index([tra_fkusuario], map: "fk_transicion_usuario")
+  @@index([tra_fkticket, tra_fecha], map: "ix_transicion_ticket_fecha")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model usuario {
+  usu_id                                              Int             @id @default(autoincrement())
+  usu_fkarea                                          Int
+  usu_fkestado                                        Int
+  usu_nombre                                          String          @db.VarChar(200)
+  usu_apellido                                        String          @db.VarChar(200)
+  usu_correo                                          String          @unique(map: "uk_usuario_correo") @db.VarChar(200)
+  usu_contrasena                                      String          @db.Text
+  usu_puesto                                          String          @db.VarChar(200)
+  usu_registro                                        DateTime        @default(now()) @db.DateTime(0)
+  usu_actualizacion                                   DateTime        @default(now()) @db.DateTime(0)
+  acta                                                acta[]
+  archivo                                             archivo[]
+  asignacion_asignacion_asi_fkusuarioTousuario        asignacion[]    @relation("asignacion_asi_fkusuarioTousuario")
+  asignacion_asignacion_asi_fkusuario_asignaTousuario asignacion[]    @relation("asignacion_asi_fkusuario_asignaTousuario")
+  cierre                                              cierre[]
+  desarrollador                                       desarrollador[]
+  evaluacion                                          evaluacion[]
+  evidencia                                           evidencia[]
+  intervencion                                        intervencion[]
+  movimiento                                          movimiento[]
+  perfil                                              perfil[]
+  reapertura                                          reapertura[]
+  reasignacion                                        reasignacion[]
+  responsable                                         responsable[]
+  termino                                             termino[]
+  ticket                                              ticket[]
+  transicion                                          transicion[]
+  area                                                area            @relation(fields: [usu_fkarea], references: [are_id], onUpdate: Restrict, map: "fk_usuario_area")
+  estado                                              estado          @relation(fields: [usu_fkestado], references: [est_id], onUpdate: Restrict, map: "fk_usuario_estado")
+
+  @@index([usu_fkarea], map: "fk_usuario_area")
+  @@index([usu_fkestado], map: "fk_usuario_estado")
 }

@@ -5,6 +5,8 @@ import { LoginController } from "../controllers/LoginController";
 import { RegisterController } from "../controllers/RegisterController";
 import { RefreshTokenController } from "../controllers/RefreshTokenController";
 import { LogoutController } from "../controllers/LogoutController";
+import { MeController } from "../controllers/MeController";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
 
 @injectable()
 export class AuthRouter {
@@ -15,6 +17,8 @@ export class AuthRouter {
 		private readonly registerController: RegisterController,
 		private readonly refreshTokenController: RefreshTokenController,
 		private readonly logoutController: LogoutController,
+		private readonly meController: MeController,
+		private readonly authMiddleware: AuthMiddleware,
 	) {
 		this.router = new Hono();
 		this.initRoutes();
@@ -200,5 +204,21 @@ export class AuthRouter {
 		 *               $ref: '#/components/schemas/ErrorResponse'
 		 */
 		this.router.post("/logout", this.logoutController.run);
+
+		/**
+		 * @openapi
+		 * /api/auth/me:
+		 *   get:
+		 *     tags: [Auth]
+		 *     summary: Obtener usuario autenticado actual
+		 *     security:
+		 *       - bearerAuth: []
+		 *     responses:
+		 *       200:
+		 *         description: Perfil del usuario autenticado
+		 *       401:
+		 *         description: No autenticado
+		 */
+		this.router.get("/me", this.authMiddleware.handle, this.meController.run);
 	}
 }

@@ -6,9 +6,13 @@ export class UserMapper {
 		return {
 			id: user.getId(),
 			name: user.getName(),
+			apellido: user.getApellido(),
 			email: user.getEmail(),
 			isActive: user.getIsActive(),
 			role: user.getRole(),
+			roles: user.getRoles(),
+			areaId: user.getAreaId(),
+			puesto: user.getPuesto(),
 		};
 	}
 }

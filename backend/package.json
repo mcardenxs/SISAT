@@ -5,8 +5,9 @@
 	"author": "Victor Raúl",
 	"license": "MIT",
 	"scripts": {
-		"postinstall": "DATABASE_URL=${DATABASE_URL:-postgresql://user:password@localhost:5432/hexacore_db?schema=public} prisma generate",
+		"postinstall": "DATABASE_URL=${DATABASE_URL:-mysql://sisat:sisat_local_password@localhost:3306/sisat} prisma generate",
 		"start": "bun build/index.js",
+
 		"dev": "bun --hot src/index.ts",
 		"test": "bun test",
 		"test:coverage": "bun test --coverage",
@@ -20,7 +21,7 @@
 	"keywords": [],
 	"description": "",
 	"dependencies": {
-		"@prisma/adapter-pg": "7.10.0",
+		"@prisma/adapter-mariadb": "7.10.0",
 		"@prisma/client": "7.10.0",
 		"@scalar/hono-api-reference": "0.12.1",
 		"bcrypt": "6.0.0",
@@ -29,7 +30,7 @@
 		"express-rate-limit": "8.7.0",
 		"hono": "4.13.7",
 		"jsonwebtoken": "9.0.3",
-		"pg": "8.23.0",
+		"mariadb": "3.5.4",
 		"reflect-metadata": "0.2.2",
 		"swagger-jsdoc": "6.3.0",
 		"tsyringe": "4.10.0",
@@ -40,7 +41,6 @@
 		"@types/bun": "1.4.2",
 		"@types/jsonwebtoken": "9.0.10",
 		"@types/node": "26.5.1",
-		"@types/pg": "8.23.1",
 		"@types/supertest": "7.2.1",
 		"@types/swagger-jsdoc": "6.0.4",
 		"prisma": "7.10.0",

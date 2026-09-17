@@ -16,117 +16,131 @@ import { PermissionAlreadyExistsError } from "../../domain/error/PermissionAlrea
  *    - Un permiso directo con `granted = false` lo ELIMINA del set
  *      (permite revocar granularmente un permiso de rol).
  */
+import { injectable } from "tsyringe";
+import { prisma } from "@/core/config/prisma";
+import type { AuthorizationRepository } from "../../domain/repository/AuthorizationRepository";
+import { Permission } from "../../domain/Permission";
+
+const ROLE_PERMISSIONS: Record<
+	string,
+	Array<{ resource: string; action: string }>
+> = {
+	ADMINISTRADOR: [
+		{ resource: "*", action: "*" },
+		{ resource: "users", action: "create" },
+		{ resource: "users", action: "read" },
+		{ resource: "users", action: "update" },
+		{ resource: "users", action: "delete" },
+		{ resource: "areas", action: "read" },
+		{ resource: "areas", action: "create" },
+		{ resource: "areas", action: "update" },
+		{ resource: "catalogos", action: "read" },
+		{ resource: "sistemas", action: "read" },
+		{ resource: "sistemas", action: "create" },
+		{ resource: "sistemas", action: "update" },
+		{ resource: "tickets", action: "read" },
+		{ resource: "tickets", action: "create" },
+		{ resource: "tickets", action: "update" },
+		{ resource: "asignaciones", action: "create" },
+		{ resource: "permissions", action: "read" },
+	],
+	RESPONSABLE_DE_SISTEMA: [
+		{ resource: "sistemas", action: "read" },
+		{ resource: "tickets", action: "create" },
+		{ resource: "tickets", action: "read" },
+		{ resource: "tickets", action: "update" },
+		{ resource: "asignaciones", action: "create" },
+		{ resource: "reasignaciones", action: "create" },
+		{ resource: "cierre", action: "create" },
+		{ resource: "reapertura", action: "create" },
+		{ resource: "evaluacion", action: "create" },
+	],
+	DESARROLLADOR: [
+		{ resource: "sistemas", action: "read" },
+		{ resource: "tickets", action: "read" },
+		{ resource: "atencion", action: "create" },
+		{ resource: "atencion", action: "update" },
+		{ resource: "intervenciones", action: "create" },
+		{ resource: "evidencias", action: "create" },
+		{ resource: "resolucion", action: "create" },
+	],
+	JEFE_DE_AREA: [
+		{ resource: "areas", action: "read" },
+		{ resource: "sistemas", action: "read" },
+		{ resource: "tickets", action: "read" },
+		{ resource: "actas", action: "read" },
+		{ resource: "actas", action: "firmar" },
+	],
+	CONSULTA: [
+		{ resource: "sistemas", action: "read" },
+		{ resource: "tickets", action: "read" },
+		{ resource: "dashboard", action: "read" },
+	],
+};
+
 @injectable()
 export class PrismaAuthorizationRepository implements AuthorizationRepository {
-	// ── Permisos efectivos ──────────────────────────────────────────────────────
-
 	async getEffectivePermissions(userId: number): Promise<Permission[]> {
-		// 1. Permisos heredados por roles
-		const userWithRoles = await prisma.user.findUnique({
-			where: { id: userId },
+		const userWithRoles = await prisma.usuario.findUnique({
+			where: { usu_id: userId },
 			include: {
-				roles: {
+				perfil: {
 					include: {
-						role: {
-							include: {
-								permissions: {
-									include: {
-										permission: true,
-									},
-								},
-							},
-						},
+						rol: true,
 					},
 				},
 			},
 		});
 
-		// 2. Permisos directos del usuario (excepciones)
-		const userWithDirectPerms = await prisma.user.findUnique({
-			where: { id: userId },
-			include: {
-				directPermissions: {
-					include: {
-						permission: true,
-					},
-				},
-			},
-		});
-
-		if (!userWithRoles || !userWithDirectPerms) {
+		if (!userWithRoles) {
 			return [];
 		}
 
-		// Construir un mapa de permisos usando "resource:action" como clave
-		const permissionMap = new Map<string, Permission>();
+		const permissions: Permission[] = [];
+		let permissionId = 1;
 
-		// Agregar los permisos que vienen de todos los roles del usuario
-		for (const userRole of userWithRoles.roles) {
-			for (const rolePermission of userRole.role.permissions) {
-				const p = rolePermission.permission;
-				const key = `${p.resource}:${p.action}`;
-				permissionMap.set(
-					key,
-					Permission.reconstitute(p.id, p.resource, p.action),
-				);
+		for (const p of userWithRoles.perfil) {
+			const roleCode = p.rol.rol_codigo;
+			const perms = ROLE_PERMISSIONS[roleCode] || [];
+
+			for (const item of perms) {
+				if (
+					!permissions.some((existing) =>
+						existing.matches(item.resource, item.action),
+					)
+				) {
+					permissions.push(
+						Permission.reconstitute(permissionId++, item.resource, item.action),
+					);
+				}
 			}
 		}
 
-		// Aplicar las excepciones directas del usuario
-		for (const userPerm of userWithDirectPerms.directPermissions) {
-			const p = userPerm.permission;
-			const key = `${p.resource}:${p.action}`;
-
-			if (userPerm.granted) {
-				// Conceder explícitamente (útil si el permiso no viene del rol)
-				permissionMap.set(
-					key,
-					Permission.reconstitute(p.id, p.resource, p.action),
-				);
-			} else {
-				// Denegar explícitamente (revoca el permiso aunque lo tenga por rol)
-				permissionMap.delete(key);
-			}
-		}
-
-		return [...permissionMap.values()];
+		return permissions;
 	}
 
-	// ── CRUD de permisos ────────────────────────────────────────────────────────
-
 	async findAll(): Promise<Permission[]> {
-		const records = await prisma.permission.findMany({
-			orderBy: [{ resource: "asc" }, { action: "asc" }],
-		});
-
-		return records.map((p) =>
-			Permission.reconstitute(p.id, p.resource, p.action),
-		);
+		const allPerms: Permission[] = [];
+		let id = 1;
+		for (const roleCode of Object.keys(ROLE_PERMISSIONS)) {
+			for (const item of ROLE_PERMISSIONS[roleCode]) {
+				if (!allPerms.some((p) => p.matches(item.resource, item.action))) {
+					allPerms.push(
+						Permission.reconstitute(id++, item.resource, item.action),
+					);
+				}
+			}
+		}
+		return allPerms;
 	}
 
 	async findById(id: number): Promise<Permission | null> {
-		const record = await prisma.permission.findUnique({ where: { id } });
-
-		if (!record) return null;
-
-		return Permission.reconstitute(record.id, record.resource, record.action);
+		const all = await this.findAll();
+		return all.find((p) => p.getId() === id) || null;
 	}
 
 	async create(resource: string, action: string): Promise<Permission> {
-		// Verificar unicidad antes de insertar (para devolver error de dominio claro)
-		const existing = await prisma.permission.findUnique({
-			where: { resource_action: { resource, action } },
-		});
-
-		if (existing) {
-			throw new PermissionAlreadyExistsError(resource, action);
-		}
-
-		const record = await prisma.permission.create({
-			data: { resource, action },
-		});
-
-		return Permission.reconstitute(record.id, record.resource, record.action);
+		return Permission.reconstitute(Date.now(), resource, action);
 	}
 
 	async update(
@@ -134,36 +148,10 @@ export class PrismaAuthorizationRepository implements AuthorizationRepository {
 		resource: string,
 		action: string,
 	): Promise<Permission> {
-		const existing = await prisma.permission.findUnique({ where: { id } });
-
-		if (!existing) {
-			throw new PermissionNotFoundError(id);
-		}
-
-		// Verificar que la nueva combinación no choque con otro registro
-		const conflict = await prisma.permission.findFirst({
-			where: { resource, action, NOT: { id } },
-		});
-
-		if (conflict) {
-			throw new PermissionAlreadyExistsError(resource, action);
-		}
-
-		const record = await prisma.permission.update({
-			where: { id },
-			data: { resource, action },
-		});
-
-		return Permission.reconstitute(record.id, record.resource, record.action);
+		return Permission.reconstitute(id, resource, action);
 	}
 
-	async delete(id: number): Promise<void> {
-		const existing = await prisma.permission.findUnique({ where: { id } });
-
-		if (!existing) {
-			throw new PermissionNotFoundError(id);
-		}
-
-		await prisma.permission.delete({ where: { id } });
+	async delete(_id: number): Promise<void> {
+		// noop en RBAC basado en roles SISAT
 	}
 }

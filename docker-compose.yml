@@ -1,4 +1,30 @@
 services:
+  database:
+    image: mariadb:11.8.9
+    container_name: sisat_mariadb
+    restart: unless-stopped
+    ports:
+      - "${MARIADB_PORT:-3306}:3306"
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-sisat}
+      MARIADB_USER: ${MARIADB_USER:-sisat}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-sisat_local_password}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-sisat_local_root_password}
+      TZ: ${TZ:-America/Mexico_City}
+    volumes:
+      - sisat_database:/var/lib/mysql
+      - ./sisat.sql:/docker-entrypoint-initdb.d/001-sisat.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping --host=127.0.0.1 --user=root --password=$$MARIADB_ROOT_PASSWORD --silent",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
   backend:
     build:
       context: ./backend
@@ -8,10 +34,13 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: "postgresql://user:password@localhost:5432/hexacore_db?schema=public"
+      DATABASE_URL: "mysql://${MARIADB_USER:-sisat}:${MARIADB_PASSWORD:-sisat_local_password}@database:3306/${MARIADB_DATABASE:-sisat}"
       JWT_SECRET: "development_secret_key_123"
       PORT: 3000
       NODE_ENV: dev
+    depends_on:
+      database:
+        condition: service_healthy
 
   frontend:
     build:
@@ -21,3 +50,8 @@ services:
     restart: always
     ports:
       - "5173:5173"
+
+volumes:
+  sisat_database:
+    name: sisat_database
+

@@ -36,11 +36,13 @@ export function MainLayout({ children }: MainLayoutProps) {
 	};
 
 	const roleVariant =
-		user?.role === "ADMIN"
+		user?.role === "ADMINISTRADOR" || user?.role === "ADMIN"
 			? "purple"
-			: user?.role === "MOD"
+			: user?.role === "RESPONSABLE_DE_SISTEMA" || user?.role === "MOD"
 				? "warning"
-				: "default";
+				: user?.role === "DESARROLLADOR"
+					? "info"
+					: "default";
 
 	return (
 		<div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
@@ -54,7 +56,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 									<Hexagon className="h-5 w-5 stroke-[2.2]" />
 								</div>
 								<span className="text-lg font-bold tracking-tight text-white group-hover:text-indigo-400 transition-colors">
-									Hexacore
+									SISAT
 								</span>
 							</Link>
 

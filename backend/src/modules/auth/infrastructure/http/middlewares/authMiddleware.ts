@@ -26,7 +26,7 @@ export class AuthMiddleware {
 	 * @param {Next} next - Función asíncrona para ceder el control al siguiente middleware o controlador.
 	 * @returns {Promise<Response | void>} Retorna una respuesta HTTP 401 si falla, o cede el control con `await next()`.
 	 */
-	handle = async (c: Context, next: Next): Promise<Response | void> => {
+	handle = async (c: Context, next: Next): Promise<Response | undefined> => {
 		// En Hono, los headers se obtienen a través de c.req.header()
 		const authHeader = c.req.header("Authorization");
 

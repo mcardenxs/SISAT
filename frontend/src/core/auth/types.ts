@@ -1,8 +1,12 @@
 export interface User {
 	id: number;
 	name: string;
+	apellido?: string;
 	email: string;
 	role: string;
+	roles?: string[];
+	areaId?: number;
+	puesto?: string;
 	isActive: boolean;
 }
 
