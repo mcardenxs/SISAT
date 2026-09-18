@@ -18,6 +18,7 @@ import { CatalogoRouter } from "@/modules/catalogos/infrastructure/http/routes/C
 import { AreaRouter } from "@/modules/organizacion/infrastructure/http/routes/AreaRouter";
 import { SistemaRouter } from "@/modules/sistemas/infrastructure/http/routes/SistemaRouter";
 import { TicketRouter } from "@/modules/tickets/infrastructure/http/routes/TicketRouter";
+import { ActaRouter } from "@/modules/actas/infrastructure/http/routes/ActaRouter";
 
 const app = new Hono();
 
@@ -50,6 +51,7 @@ const catalogoRouter = container.resolve(CatalogoRouter);
 const areaRouter = container.resolve(AreaRouter);
 const sistemaRouter = container.resolve(SistemaRouter);
 const ticketRouter = container.resolve(TicketRouter);
+const actaRouter = container.resolve(ActaRouter);
 
 // 4. Registro de rutas
 // En Hono se usa .route() en lugar de .use() para anidar otros routers
@@ -61,6 +63,7 @@ app.route("/api/catalogos", catalogoRouter.router);
 app.route("/api/areas", areaRouter.router);
 app.route("/api/sistemas", sistemaRouter.router);
 app.route("/api/tickets", ticketRouter.router);
+app.route("/api/actas", actaRouter.router);
 
 // 5. Global Error Handler
 app.onError((err, c) => {
