@@ -1,130 +1,186 @@
-# Hexacore (monorepo)
+# SISAT (Sistema Integral de Soporte y Atención Técnica)
 
-Monorepo con **backend** hexagonal (Bun + Hono + Prisma 7 + PostgreSQL) y **frontend** reservado. Solo dos carpetas: `backend/` y `frontend/` (sin `apps/` ni `packages/`).
+Monorepo fullstack con arquitectura hexagonal en el backend y arquitectura modular basada en características en el frontend, diseñado para la gestión integral de incidencias, tickets de soporte técnico, ciclos de atención, evidencias y actas semanales de entrega-recepción para sistemas institucionales.
 
-- Gestión e instalación: **pnpm** desde la raíz (única fuente de verdad: `pnpm-lock.yaml`).
-- Ejecución del backend: **Bun**.
-- Linter/formatter: **Biome** en la raíz para ambos proyectos.
-
----
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT - mira el archivo [LICENCE.md](LICENCE.md) para detalles.
-
-## Stack
-
-| Capa                      | Tecnología                                        |
-| ------------------------- | ------------------------------------------------- |
-| Monorepo & instalación    | [pnpm](https://pnpm.io/) (workspaces)             |
-| Backend runtime           | [Bun](https://bun.sh/) (solo ejecución)           |
-| Lenguaje                  | TypeScript (nativo)                               |
-| Framework Web             | Hono                                              |
-| Base de datos             | PostgreSQL                                        |
-| ORM                       | Prisma v7 (pinnado a `7.x`)                       |
-| Inyección de dependencias | [TSyringe](https://github.com/microsoft/tsyringe) |
-| Validación                | Zod                                               |
-| Auth & Seguridad          | JWT · Bcrypt · CORS                               |
-| Linter / Formatter        | Biome (raíz)                                      |
-| Frontend                  | Reservado (`frontend/`, sin stack aún)            |
+- **Backend:** Hono + Bun + TypeScript + Prisma 7 + TSyringe (Inyección de Dependencias) + MariaDB 11.8.
+- **Frontend:** React 19 + Vite + TypeScript + TanStack Suite (Query, Router, Form) + Tailwind CSS v4 + Biome.
+- **Base de Datos:** MariaDB 11.8 con integridad relacional estricta, triggers de auditoría y procedimientos almacenados (`sisat_reasignar_ticket`).
+- **Gestión de paquetes:** **pnpm** como único gestor (`pnpm-lock.yaml`).
 
 ---
 
-## Estructura
+## Características Principales
+
+1. **Autenticación y Control de Acceso (RBAC):**
+   - JWT con rotación y persistencia de Refresh Tokens.
+   - 5 roles institucionales: `ADMINISTRADOR`, `RESPONSABLE_DE_SISTEMA`, `DESARROLLADOR`, `JEFE_DE_AREA` y `CONSULTA`.
+2. **Organización y Catálogos:**
+   - Gestión de áreas institucionales y catálogos normalizados (`estado`, `fase`, `constancia`, `situacion`, `prioridad`, `solicitud`, `rol`, `clase`).
+   - CRUD de sistemas institucionales con asignación de Responsables (con validación de responsable principal único) y Desarrolladores asignados.
+3. **Flujo de Tickets de Soporte:**
+   - Generación automática de folios correlativos (`TIC-YYYYMM-XXXX`).
+   - Asignación y reasignación de tickets con auditoría histórica y procedimiento almacenado (`sisat_reasignar_ticket`).
+   - Ciclos consecutivos de atención (`atencion`), bitácora de intervenciones con cálculo de minutos (`intervencion`), y gestión de evidencias técnicas (`evidencia`).
+   - Finalización formal con diagnóstico y solución técnica (`termino`), evaluación por estrellas de 1 a 5 (`evaluacion`), cierre formal (`cierre`) y reapertura controlada (`reapertura`).
+4. **Actas Semanales de Entrega-Recepción:**
+   - Agrupación periódica de soporte semanal con validación de periodo estricto de 7 días (`DATEDIFF(act_fin, act_inicio) = 6`).
+   - Inclusión automática con snapshot histórico en JSON de participantes y evidencias.
+   - Carga y validación de actas firmadas por Jefaturas de Área (`archivo`).
+5. **Frontend Modular y Reactivo:**
+   - Dashboards, tablas reactivas, badges de estado en tiempo real y modales interactivos para registro de tickets y generación de actas.
+
+---
+
+## Credenciales por Defecto
+
+Para acceder al sistema en el entorno de desarrollo local:
+
+* **URL Frontend:** `http://localhost:5173`
+* **API / Backend:** `http://localhost:3000`
+* **Documentación Interactiva (Scalar):** `http://localhost:3000/docs`
+* **Correo:** `admin@sisat.local`
+* **Contraseña:** `Admin123456!`
+* **Roles asignados:** `ADMINISTRADOR`, `RESPONSABLE_DE_SISTEMA`, `DESARROLLADOR`, `JEFE_DE_AREA`.
+
+---
+
+## Stack Tecnológico
+
+| Capa | Tecnología |
+| :--- | :--- |
+| **Monorepo & Package Manager** | [pnpm](https://pnpm.io/) (workspaces) |
+| **Backend Runtime** | [Bun](https://bun.sh/) |
+| **Framework HTTP Backend** | [Hono](https://hono.dev/) |
+| **Base de Datos** | [MariaDB 11.8](https://mariadb.org/) |
+| **Driver Adapter & ORM** | [Prisma v7](https://www.prisma.io/) + `@prisma/adapter-mariadb` |
+| **Inyección de Dependencias** | [TSyringe](https://github.com/microsoft/tsyringe) |
+| **Frontend Framework** | [React 19](https://react.dev/) + [Vite](https://vitejs.dev/) |
+| **Enrutamiento** | [TanStack Router](https://tanstack.com/router) (File-based routing tipado) |
+| **Gestión de Estado y Cache** | [TanStack Query v5](https://tanstack.com/query) + [Zustand](https://zustand-demo.pmnd.rs/) |
+| **Estilos & UI** | [Tailwind CSS v4](https://tailwindcss.com/) + [Lucide React](https://lucide.dev/) + [Sonner](https://sonner.emilkowal.ski/) |
+| **Linter / Formatter** | [Biome](https://biomejs.dev/) |
+
+---
+
+## Estructura del Proyecto
 
 ```text
-biome.json / package.json / pnpm-workspace.yaml  # raíz
-backend/
-├── src/                     # Servidor, base compartida y módulos de negocio
-│   ├── core/                # Abstracciones base, user (transversal), config
-│   └── modules/             # auth, authorization, ... (domain/application/infrastructure)
-├── prisma/                  # Esquemas y migraciones
-├── scripts/                 # create-admin.ts, ...
-├── docs/                    # guías (crear módulo, auth, testing)
-├── Dockerfile / .env.example
-frontend/                    # Vite + React 19 + TypeScript + TanStack Suite + Tailwind v4
+├── package.json / pnpm-workspace.yaml / biome.json
+├── docker-compose.yml              # Contenedores para MariaDB 11.8, Backend y Frontend
+├── sisat.sql                       # Esquema canónico DDL con triggers y stored procedures
+├── backend/
+│   ├── prisma/
+│   │   └── schema.prisma           # Modelos mapeados con adaptador MariaDB
+│   └── src/
+│       ├── core/                   # Configuraciones de Prisma, servidor Hono, contenedor TSyringe
+│       └── modules/
+│           ├── auth/               # Autenticación JWT y Refresh Tokens
+│           ├── authorization/      # Resolución de permisos y roles RBAC
+│           ├── catalogos/          # Catálogos del sistema
+│           ├── organizacion/       # Áreas institucionales
+│           ├── sistemas/           # Sistemas, Responsables y Desarrolladores
+│           ├── tickets/            # Flujo completo de tickets, atención y cierre
+│           └── actas/              # Generación de actas e inclusiones
+└── frontend/
+    └── src/
+        ├── core/                   # Axios client, auth store, componentes UI (Modal, Button, Input)
+        ├── modules/
+        │   ├── auth/               # Formularios de Login y Registro
+        │   ├── users/              # Gestión de usuarios y perfil
+        │   ├── sistemas/           # Vista de Sistemas Institucionales
+        │   ├── organizacion/       # Vista de Áreas
+        │   ├── tickets/            # Vista y Modal de Tickets
+        │   └── actas/              # Vista y Modal de Actas
+        └── routes/                 # Árbol de rutas tipadas TanStack Router
 ```
 
 ---
 
-## Requisitos
+## Requisitos Previos
 
-- pnpm v11+
-- Bun v1.0+
-- PostgreSQL (local o Docker)
+- [Node.js](https://nodejs.org/) v20+
+- [pnpm](https://pnpm.io/) v11+
+- [Bun](https://bun.sh/) v1.0+
+- [Docker](https://www.docker.com/) o [Colima](https://github.com/abiosoft/colima) (para MariaDB 11.8)
 
 ---
 
-## Setup
+## Guía de Instalación y Ejecución
 
-**1. Instalar dependencias (desde la raíz, con pnpm)**
+### 1. Clonar el repositorio e instalar dependencias
 
 ```bash
+git clone git@github.com:mcardenxs/SISAT.git
+cd SISAT
 pnpm install
 ```
 
-> Prohibido `bun install` / `bun add`. Para añadir paquetes: `pnpm add -E <paquete> --filter backend`.
+> **Importante:** Usar exclusivamente `pnpm install`. No ejecutar `bun install` ni `npm install`.
 
-**2. Variables de entorno**
+### 2. Iniciar la Base de Datos con Docker
+
+```bash
+docker compose up -d database
+```
+
+Esto levantará el contenedor `sisat_mariadb` en el puerto `3306` ejecutando automáticamente el script `sisat.sql`.
+
+### 3. Variables de Entorno
+
+Crear el archivo `.env` en la raíz de `backend/`:
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-Ajusta `DATABASE_URL` para tu instancia de PostgreSQL. Bun carga `.env` automáticamente, sin librerías externas.
+Configurar los parámetros de conexión:
+```env
+DATABASE_URL="mariadb://sisat:sisat_local_password@localhost:3306/sisat"
+JWT_SECRET="sisat_super_secret_jwt_key"
+PORT=3000
+NODE_ENV=dev
+```
 
-**3. Sincronizar base de datos**
+### 4. Generar Cliente de Prisma
 
 ```bash
 pnpm db:generate
-pnpm db:push
-
-# Para migraciones formales:
-pnpm db:migrate
 ```
 
-**4. Desarrollo**
+### 5. Iniciar en Modo Desarrollo
+
+Para ejecutar backend y frontend simultáneamente:
 
 ```bash
-pnpm dev           # corre backend y frontend concurrentemente en paralelo
-pnpm dev:backend   # solo backend con Bun (hot reload)
-pnpm dev:frontend  # solo frontend con Vite (puerto 5173)
+pnpm dev
 ```
 
-**5. Lint (Biome, desde la raíz)**
+O si deseas ejecutarlos en terminales independientes:
 
 ```bash
-pnpm lint       # revisa backend + frontend
-pnpm lint:fix   # corrige automáticamente
+# Terminal 1: Backend con Hono + Bun (puerto 3000 con recarga en caliente)
+pnpm dev:backend
+
+# Terminal 2: Frontend con Vite (puerto 5173 con HMR)
+pnpm dev:frontend
 ```
 
 ---
 
-## Docker
+## Comandos Útiles
 
-```bash
-docker compose up
-```
-
----
-
-## Producción
-
-```bash
-pnpm --filter backend start   # ejecuta build/index.js con Bun
-```
-
-> Bun puede correr `.ts` directamente, el build es opcional según el entorno de deploy.
+| Comando | Descripción |
+| :--- | :--- |
+| `pnpm dev` | Inicia Backend y Frontend en paralelo. |
+| `pnpm build:frontend` | Compila y valida el tipado del Frontend para producción. |
+| `pnpm lint` | Analiza el código con Biome. |
+| `pnpm format:fix` | Aplica corrección y formato de código automático con Biome. |
+| `pnpm test:backend` | Ejecuta las pruebas unitarias e integrales del Backend. |
+| `pnpm db:pull` | Actualiza `schema.prisma` a partir de la base de datos MariaDB. |
+| `pnpm db:generate` | Regenera los tipos y cliente de Prisma Client. |
 
 ---
 
-## Testing
+## Licencia
 
-Tests con el runner nativo de Bun. Cada test vive junto al archivo que prueba.
-
-```bash
-pnpm test:backend                          # todos los specs
-pnpm --filter backend test:watch           # watch mode
-pnpm --filter backend test:coverage        # con coverage
-pnpm --filter backend exec bun test src/modules/auth   # módulo específico
-```
+Este proyecto está bajo la Licencia MIT.
