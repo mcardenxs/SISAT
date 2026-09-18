@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ticketApi } from "../api/ticketApi";
 import {
@@ -7,7 +8,9 @@ import {
 	CardContent,
 } from "@/core/components/ui/Card";
 import { Badge } from "@/core/components/ui/Badge";
-import { Ticket as TicketIcon, Clock, User, Server } from "lucide-react";
+import { Button } from "@/core/components/ui/Button";
+import { Ticket as TicketIcon, Clock, User, Server, Plus } from "lucide-react";
+import { CreateTicketModal } from "../components/CreateTicketModal";
 
 export function TicketsPage() {
 	const {
@@ -52,6 +55,8 @@ export function TicketsPage() {
 		);
 	}
 
+	const [isCreateOpen, setIsCreateOpen] = useState(false);
+
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -64,7 +69,19 @@ export function TicketsPage() {
 						institucionales.
 					</p>
 				</div>
+				<Button
+					onClick={() => setIsCreateOpen(true)}
+					className="gap-2 self-start sm:self-auto"
+				>
+					<Plus className="h-4 w-4" />
+					Nuevo Ticket
+				</Button>
 			</div>
+
+			<CreateTicketModal
+				isOpen={isCreateOpen}
+				onClose={() => setIsCreateOpen(false)}
+			/>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 				{tickets?.map((ticket) => (
