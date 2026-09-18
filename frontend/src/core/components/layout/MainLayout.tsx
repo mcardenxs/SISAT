@@ -8,6 +8,7 @@ import {
 	LogOut,
 	Monitor,
 	Building2,
+	Ticket,
 } from "lucide-react";
 import { useAuthStore } from "@/core/auth/store";
 import { Badge } from "@/core/components/ui/Badge";
@@ -69,6 +70,13 @@ export function MainLayout({ children }: MainLayoutProps) {
 								>
 									<LayoutDashboard className="h-4 w-4" />
 									Dashboard
+								</Link>
+								<Link
+									to="/tickets"
+									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+								>
+									<Ticket className="h-4 w-4" />
+									Tickets
 								</Link>
 								<Link
 									to="/sistemas"

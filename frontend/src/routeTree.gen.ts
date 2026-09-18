@@ -18,6 +18,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedAreasIndexRouteImport } from './routes/_authenticated/areas/index'
 import { Route as AuthenticatedSistemasIndexRouteImport } from './routes/_authenticated/sistemas/index'
+import { Route as AuthenticatedTicketsIndexRouteImport } from './routes/_authenticated/tickets/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +65,12 @@ const AuthenticatedSistemasIndexRoute =
     path: '/sistemas/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedTicketsIndexRoute =
+  AuthenticatedTicketsIndexRouteImport.update({
+    id: '/tickets/',
+    path: '/tickets/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/users': typeof AuthenticatedUsersRoute
   '/areas/': typeof AuthenticatedAreasIndexRoute
   '/sistemas/': typeof AuthenticatedSistemasIndexRoute
+  '/tickets/': typeof AuthenticatedTicketsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
   '/users': typeof AuthenticatedUsersRoute
   '/areas': typeof AuthenticatedAreasIndexRoute
   '/sistemas': typeof AuthenticatedSistemasIndexRoute
+  '/tickets': typeof AuthenticatedTicketsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/areas/': typeof AuthenticatedAreasIndexRoute
   '/_authenticated/sistemas/': typeof AuthenticatedSistemasIndexRoute
+  '/_authenticated/tickets/': typeof AuthenticatedTicketsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/areas/'
     | '/sistemas/'
+    | '/tickets/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/areas'
     | '/sistemas'
+    | '/tickets'
   id:
     | '__root__'
     | '/'
@@ -129,6 +141,7 @@ export interface FileRouteTypes {
     | '/_authenticated/users'
     | '/_authenticated/areas/'
     | '/_authenticated/sistemas/'
+    | '/_authenticated/tickets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSistemasIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/tickets/': {
+      id: '/_authenticated/tickets/'
+      path: '/tickets'
+      fullPath: '/tickets/'
+      preLoaderRoute: typeof AuthenticatedTicketsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -212,6 +232,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedAreasIndexRoute: typeof AuthenticatedAreasIndexRoute
   AuthenticatedSistemasIndexRoute: typeof AuthenticatedSistemasIndexRoute
+  AuthenticatedTicketsIndexRoute: typeof AuthenticatedTicketsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -220,6 +241,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedAreasIndexRoute: AuthenticatedAreasIndexRoute,
   AuthenticatedSistemasIndexRoute: AuthenticatedSistemasIndexRoute,
+  AuthenticatedTicketsIndexRoute: AuthenticatedTicketsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
