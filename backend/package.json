@@ -13,7 +13,8 @@
 		"test:coverage": "bun test --coverage",
 		"test:e2e": "bun test '**/*.e2e.spec.ts'",
 		"test:watch": "bun test --watch",
-		"create:admin": "bun scripts/create-admin.ts"
+		"create:admin": "bun scripts/create-admin.ts",
+		"seed:demo": "bun scripts/seed-demo-data.ts"
 	},
 	"prisma": {
 		"seed": "bun prisma/seed.ts"

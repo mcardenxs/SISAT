@@ -21,7 +21,8 @@
 		"db:generate": "pnpm --filter backend exec prisma generate",
 		"db:pull": "pnpm --filter backend exec prisma db pull",
 		"db:push": "pnpm --filter backend exec prisma db push",
-		"db:migrate": "pnpm --filter backend exec prisma migrate dev"
+		"db:migrate": "pnpm --filter backend exec prisma migrate dev",
+		"db:seed:demo": "pnpm --filter backend seed:demo"
 	},
 
 	"keywords": [],
