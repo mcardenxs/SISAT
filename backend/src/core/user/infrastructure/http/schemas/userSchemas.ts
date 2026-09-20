@@ -30,5 +30,5 @@ export const userIdSchema = z.object({
 export const getAllUsersSchema = z.object({
 	page: z.string().regex(/^\d+$/).transform(Number).optional().default(1),
 	limit: z.string().regex(/^\d+$/).transform(Number).optional().default(10),
-	email: z.email("Must be a valid email").optional(),
+	email: z.string().optional(),
 });

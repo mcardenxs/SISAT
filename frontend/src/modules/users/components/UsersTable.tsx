@@ -86,11 +86,15 @@ export function UsersTable({
 						<tbody className="divide-y divide-slate-800/60">
 							{users.map((user) => {
 								const roleVariant =
-									user.role === "ADMIN"
+									user.role === "ADMINISTRADOR"
 										? "purple"
-										: user.role === "MOD"
-											? "warning"
-											: "default";
+										: user.role === "JEFE_DE_AREA"
+											? "info"
+											: user.role === "RESPONSABLE_DE_SISTEMA"
+												? "warning"
+												: user.role === "DESARROLLADOR"
+													? "success"
+													: "default";
 
 								return (
 									<tr
