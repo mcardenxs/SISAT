@@ -13,6 +13,8 @@ import { Ticket as TicketIcon, Clock, User, Server, Plus } from "lucide-react";
 import { CreateTicketModal } from "../components/CreateTicketModal";
 
 export function TicketsPage() {
+	const [isCreateOpen, setIsCreateOpen] = useState(false);
+
 	const {
 		data: tickets,
 		isLoading,
@@ -54,8 +56,6 @@ export function TicketsPage() {
 			</div>
 		);
 	}
-
-	const [isCreateOpen, setIsCreateOpen] = useState(false);
 
 	return (
 		<div className="space-y-6">

@@ -20,6 +20,8 @@ import {
 import { CreateActaModal } from "../components/CreateActaModal";
 
 export function ActasPage() {
+	const [isCreateOpen, setIsCreateOpen] = useState(false);
+
 	const {
 		data: actas,
 		isLoading,
@@ -57,8 +59,6 @@ export function ActasPage() {
 			</div>
 		);
 	}
-
-	const [isCreateOpen, setIsCreateOpen] = useState(false);
 
 	return (
 		<div className="space-y-6">
