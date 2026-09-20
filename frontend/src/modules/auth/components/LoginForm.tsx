@@ -30,8 +30,8 @@ export function LoginForm() {
 
 	const form = useForm({
 		defaultValues: {
-			email: "",
-			password: "",
+			email: "admin@sisat.local",
+			password: "Admin123456!",
 		} as LoginInput,
 		validators: {
 			onChange: loginSchema,
@@ -51,9 +51,9 @@ export function LoginForm() {
 		},
 	});
 
-	const fillDemoAdmin = () => {
-		form.setFieldValue("email", "admin@dev.com");
-		form.setFieldValue("password", "SecurePass123!");
+	const fillDemo = (email: string, pass: string) => {
+		form.setFieldValue("email", email);
+		form.setFieldValue("password", pass);
 	};
 
 	return (
@@ -109,16 +109,54 @@ export function LoginForm() {
 				<p className="text-xs text-slate-400 mb-2 font-medium">
 					Credenciales de prueba del sistema:
 				</p>
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					onClick={fillDemoAdmin}
-					className="w-full text-xs text-indigo-300 border-indigo-900/50 hover:bg-indigo-950/40"
-				>
-					<Sparkles className="h-3.5 w-3.5 text-indigo-400 mr-1.5" />
-					Rellenar como Administrador (admin@dev.com)
-				</Button>
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={() => fillDemo("admin@sisat.local", "Admin123456!")}
+						className="text-xs text-indigo-300 border-indigo-900/50 hover:bg-indigo-950/40 justify-start"
+					>
+						<Sparkles className="h-3.5 w-3.5 text-indigo-400 mr-1.5 shrink-0" />
+						Admin General
+					</Button>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={() =>
+							fillDemo("carlos.mendoza@sisat.local", "Password123!")
+						}
+						className="text-xs text-emerald-300 border-emerald-900/50 hover:bg-emerald-950/40 justify-start"
+					>
+						<Sparkles className="h-3.5 w-3.5 text-emerald-400 mr-1.5 shrink-0" />
+						Responsable (SIA)
+					</Button>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={() =>
+							fillDemo("alejandro.torres@sisat.local", "Password123!")
+						}
+						className="text-xs text-amber-300 border-amber-900/50 hover:bg-amber-950/40 justify-start"
+					>
+						<Sparkles className="h-3.5 w-3.5 text-amber-400 mr-1.5 shrink-0" />
+						Desarrollador
+					</Button>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={() =>
+							fillDemo("patricia.solis@sisat.local", "Password123!")
+						}
+						className="text-xs text-cyan-300 border-cyan-900/50 hover:bg-cyan-950/40 justify-start"
+					>
+						<Sparkles className="h-3.5 w-3.5 text-cyan-400 mr-1.5 shrink-0" />
+						Jefa de Área
+					</Button>
+				</div>
 			</div>
 		</form>
 	);

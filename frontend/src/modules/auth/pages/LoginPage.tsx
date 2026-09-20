@@ -6,7 +6,7 @@ export function LoginPage() {
 	return (
 		<AuthLayout
 			title="Iniciar Sesión"
-			subtitle="Ingresa tus credenciales para acceder a Hexacore"
+			subtitle="Ingresa tus credenciales para acceder a SISAT"
 		>
 			<LoginForm />
 			<div className="mt-6 text-center text-xs text-slate-400">
