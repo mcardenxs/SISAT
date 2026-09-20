@@ -94,19 +94,19 @@ export const ticketApi = {
 		sistemaId?: number;
 		faseId?: number;
 	}): Promise<Ticket[]> => {
-		const response = await apiClient.get<Ticket[]>("/api/tickets", {
+		const response = await apiClient.get<Ticket[]>("/tickets", {
 			params: filters,
 		});
 		return response.data;
 	},
 
 	getById: async (id: number): Promise<Ticket> => {
-		const response = await apiClient.get<Ticket>(`/api/tickets/${id}`);
+		const response = await apiClient.get<Ticket>(`/tickets/${id}`);
 		return response.data;
 	},
 
 	create: async (data: CreateTicketInput): Promise<Ticket> => {
-		const response = await apiClient.post<Ticket>("/api/tickets", data);
+		const response = await apiClient.post<Ticket>("/tickets", data);
 		return response.data;
 	},
 };

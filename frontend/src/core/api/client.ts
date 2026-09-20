@@ -17,9 +17,13 @@ export const apiClient = axios.create({
 	},
 });
 
-// Request Interceptor: Inyectar token de autenticación
+// Request Interceptor: Inyectar token de autenticación y normalizar rutas
 apiClient.interceptors.request.use(
 	(config: InternalAxiosRequestConfig) => {
+		// Evitar duplicación de /api cuando baseURL ya es /api
+		if (config.url?.startsWith("/api/")) {
+			config.url = config.url.replace(/^\/api/, "");
+		}
 		const token = useAuthStore.getState().accessToken;
 		if (token && config.headers) {
 			config.headers.Authorization = `Bearer ${token}`;

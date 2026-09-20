@@ -53,17 +53,17 @@ export interface CreateSistemaInput {
 
 export const sistemaApi = {
 	getAll: async (): Promise<Sistema[]> => {
-		const response = await apiClient.get<Sistema[]>("/api/sistemas");
+		const response = await apiClient.get<Sistema[]>("/sistemas");
 		return response.data;
 	},
 
 	getById: async (id: number): Promise<Sistema> => {
-		const response = await apiClient.get<Sistema>(`/api/sistemas/${id}`);
+		const response = await apiClient.get<Sistema>(`/sistemas/${id}`);
 		return response.data;
 	},
 
 	create: async (data: CreateSistemaInput): Promise<Sistema> => {
-		const response = await apiClient.post<Sistema>("/api/sistemas", data);
+		const response = await apiClient.post<Sistema>("/sistemas", data);
 		return response.data;
 	},
 };

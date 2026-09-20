@@ -64,19 +64,19 @@ export const actaApi = {
 		areaId?: number;
 		situacionId?: number;
 	}): Promise<Acta[]> => {
-		const response = await apiClient.get<Acta[]>("/api/actas", {
+		const response = await apiClient.get<Acta[]>("/actas", {
 			params: filters,
 		});
 		return response.data;
 	},
 
 	getById: async (id: number): Promise<Acta> => {
-		const response = await apiClient.get<Acta>(`/api/actas/${id}`);
+		const response = await apiClient.get<Acta>(`/actas/${id}`);
 		return response.data;
 	},
 
 	create: async (data: CreateActaInput): Promise<Acta> => {
-		const response = await apiClient.post<Acta>("/api/actas", data);
+		const response = await apiClient.post<Acta>("/actas", data);
 		return response.data;
 	},
 };

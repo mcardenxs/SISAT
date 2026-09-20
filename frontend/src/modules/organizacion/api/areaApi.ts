@@ -17,17 +17,17 @@ export interface CreateAreaInput {
 
 export const areaApi = {
 	getAll: async (): Promise<Area[]> => {
-		const response = await apiClient.get<Area[]>("/api/areas");
+		const response = await apiClient.get<Area[]>("/areas");
 		return response.data;
 	},
 
 	getById: async (id: number): Promise<Area> => {
-		const response = await apiClient.get<Area>(`/api/areas/${id}`);
+		const response = await apiClient.get<Area>(`/areas/${id}`);
 		return response.data;
 	},
 
 	create: async (data: CreateAreaInput): Promise<Area> => {
-		const response = await apiClient.post<Area>("/api/areas", data);
+		const response = await apiClient.post<Area>("/areas", data);
 		return response.data;
 	},
 };
