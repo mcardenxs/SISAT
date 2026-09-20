@@ -152,6 +152,24 @@ async function main() {
 			password: passwordHash,
 			roles: ["JEFE_DE_AREA", "CONSULTA"],
 		},
+		{
+			email: "sofia.hernandez@sisat.local",
+			nombre: "Mtra. Sofía",
+			apellido: "Hernández Ramos",
+			puesto: "Directora de Recursos Humanos",
+			areaId: 2,
+			password: passwordHash,
+			roles: ["JEFE_DE_AREA"],
+		},
+		{
+			email: "fernando.morales@sisat.local",
+			nombre: "C.P. Fernando",
+			apellido: "Morales Castro",
+			puesto: "Director de Finanzas y Presupuesto",
+			areaId: 3,
+			password: passwordHash,
+			roles: ["JEFE_DE_AREA"],
+		},
 	];
 
 	const userMap = new Map<string, number>();

@@ -165,6 +165,38 @@ export class ActaUseCases {
 			throw new BaseError(`Sistema con ID ${dto.sistemaId} no encontrado`, 404);
 		}
 
+		// Determinar el firmante (Jefe de Área correspondiente al sistema)
+		let firmanteId = actorId;
+		const actorUser = await prisma.usuario.findUnique({
+			where: { usu_id: actorId },
+			include: { perfil: { include: { rol: true } } },
+		});
+
+		const isActorJefeOfArea =
+			actorUser?.usu_fkarea === sistema.sis_fkarea &&
+			actorUser?.perfil.some((p) => p.rol.rol_codigo === "JEFE_DE_AREA");
+
+		if (!isActorJefeOfArea) {
+			const jefeArea = await prisma.usuario.findFirst({
+				where: {
+					usu_fkarea: sistema.sis_fkarea,
+					usu_fkestado: 1,
+					perfil: {
+						some: { rol: { rol_codigo: "JEFE_DE_AREA" } },
+					},
+				},
+			});
+
+			if (!jefeArea) {
+				throw new BaseError(
+					`El área '${sistema.area.are_nombre}' no cuenta con un Jefe de Área activo asignado para firmar el acta oficial.`,
+					400,
+				);
+			}
+
+			firmanteId = jefeArea.usu_id;
+		}
+
 		// Validar diferencia de 6 días: DATEDIFF(fin, inicio) = 6
 		const startDate = new Date(`${dto.inicio}T00:00:00Z`);
 		const endDate = new Date(`${dto.fin}T00:00:00Z`);
@@ -196,7 +228,7 @@ export class ActaUseCases {
 			data: {
 				act_fksistema: sistema.sis_id,
 				act_fkarea: sistema.sis_fkarea,
-				act_fkusuario: actorId,
+				act_fkusuario: firmanteId,
 				act_fksituacion: situacionGenerada.sit_id,
 				act_sistema: sistema.sis_nombre,
 				act_area: sistema.area.are_nombre,
