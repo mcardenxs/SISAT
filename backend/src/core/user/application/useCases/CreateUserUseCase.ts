@@ -28,7 +28,16 @@ export class CreateUserUseCase {
 		}
 
 		const passwordHash = await this.passwordHasherService.hash(dto.password);
-		const user = User.create(dto.name || "", dto.email, passwordHash);
+		const user = User.create(
+			dto.name || "",
+			dto.email,
+			passwordHash,
+			dto.role || (dto.roles && dto.roles[0]) || "CONSULTA",
+			dto.apellido || "",
+			dto.areaId || 1,
+			dto.puesto || "",
+			dto.roles || [],
+		);
 		const createdUser = await this.userRepository.create(user);
 
 		createdUser.addCreateEvent();

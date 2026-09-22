@@ -14,13 +14,24 @@ const passwordSchema = z
 export const createUserSchema = z.object({
 	email: z.email("Must be a valid email"),
 	name: z.string().optional(),
+	apellido: z.string().optional(),
 	password: passwordSchema,
+	areaId: z.number().int().positive().optional(),
+	puesto: z.string().optional(),
+	role: z.string().optional(),
+	roles: z.array(z.string()).optional(),
 });
 
 export const updateUserSchema = z.object({
 	email: z.email("Must be a valid email").optional(),
 	name: z.string().optional(),
+	apellido: z.string().optional(),
 	password: passwordSchema.optional(),
+	areaId: z.number().int().positive().optional(),
+	puesto: z.string().optional(),
+	role: z.string().optional(),
+	roles: z.array(z.string()).optional(),
+	isActive: z.boolean().optional(),
 });
 
 export const userIdSchema = z.object({

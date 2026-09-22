@@ -49,9 +49,14 @@ export class User extends Entity {
 		apellido: string = "",
 		areaId: number = 1,
 		puesto: string = "",
+		roles: string[] = [],
 	): User {
 		const emailVO = new Email(emailStr);
 		const roleVO = new Role(roleStr);
+		const effectiveRoles =
+			roles.length > 0
+				? roles
+				: [roleVO.value];
 
 		// Aquí el ID es undefined porque es nuevo
 		const user = new User(
@@ -62,12 +67,42 @@ export class User extends Entity {
 			passwordHash,
 			true,
 			roleVO,
-			[roleVO.value],
+			effectiveRoles,
 			areaId,
 			puesto,
 		);
 
 		return user;
+	}
+
+	public updateProfile(data: {
+		name?: string;
+		apellido?: string;
+		emailStr?: string;
+		areaId?: number;
+		puesto?: string;
+		roleStr?: string;
+		roles?: string[];
+		isActive?: boolean;
+		passwordHash?: string;
+	}): void {
+		if (data.name !== undefined) this.name = data.name;
+		if (data.apellido !== undefined) this.apellido = data.apellido;
+		if (data.emailStr !== undefined) this.email = new Email(data.emailStr);
+		if (data.areaId !== undefined) this.areaId = data.areaId;
+		if (data.puesto !== undefined) this.puesto = data.puesto;
+		if (data.roleStr !== undefined) {
+			this.role = new Role(data.roleStr);
+			if (!this.roles.includes(data.roleStr)) {
+				this.roles = [data.roleStr, ...this.roles];
+			}
+		}
+		if (data.roles !== undefined && data.roles.length > 0) {
+			this.roles = data.roles;
+			this.role = new Role(data.roles[0]);
+		}
+		if (data.isActive !== undefined) this.isActive = data.isActive;
+		if (data.passwordHash !== undefined) this.passwordHash = data.passwordHash;
 	}
 
 	// Reconstruir un usuario EXISTENTE desde la Base de Datos (Usado por el Mapper)

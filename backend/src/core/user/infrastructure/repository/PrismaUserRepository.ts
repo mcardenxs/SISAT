@@ -97,11 +97,21 @@ export class PrismaUserRepository implements UserRepository {
 	}
 
 	async create(data: User): Promise<User> {
-		const roleRecord = await prisma.rol.findFirst({
-			where: { rol_codigo: data.getRole() },
+		const roleCodes =
+			data.getRoles().length > 0 ? data.getRoles() : [data.getRole()];
+		const roles = await prisma.rol.findMany({
+			where: { rol_codigo: { in: roleCodes } },
 		});
 
-		const rolId = roleRecord ? roleRecord.rol_id : 5; // Default 5: CONSULTA
+		const defaultRole = await prisma.rol.findFirst({
+			where: { rol_codigo: "CONSULTA" },
+		});
+		const rolIds =
+			roles.length > 0
+				? roles.map((r) => r.rol_id)
+				: defaultRole
+					? [defaultRole.rol_id]
+					: [5];
 
 		const record = await prisma.usuario.create({
 			data: {
@@ -113,9 +123,7 @@ export class PrismaUserRepository implements UserRepository {
 				usu_fkestado: data.getIsActive() ? 1 : 2,
 				usu_puesto: data.getPuesto() || "",
 				perfil: {
-					create: {
-						per_fkrol: rolId,
-					},
+					create: rolIds.map((rId) => ({ per_fkrol: rId })),
 				},
 			},
 			include: {
@@ -131,8 +139,27 @@ export class PrismaUserRepository implements UserRepository {
 	}
 
 	async update(data: User): Promise<User> {
+		const userId = data.getId();
+		const roleCodes =
+			data.getRoles().length > 0 ? data.getRoles() : [data.getRole()];
+		const roles = await prisma.rol.findMany({
+			where: { rol_codigo: { in: roleCodes } },
+		});
+
+		if (roles.length > 0) {
+			await prisma.perfil.deleteMany({
+				where: { per_fkusuario: userId },
+			});
+			await prisma.perfil.createMany({
+				data: roles.map((r) => ({
+					per_fkusuario: userId,
+					per_fkrol: r.rol_id,
+				})),
+			});
+		}
+
 		const record = await prisma.usuario.update({
-			where: { usu_id: data.getId() },
+			where: { usu_id: userId },
 			data: {
 				usu_nombre: data.getName(),
 				usu_apellido: data.getApellido(),
