@@ -26,6 +26,42 @@ export interface TicketDto {
 	asignaciones?: AsignacionDto[];
 	atenciones?: AtencionDto[];
 	transiciones?: TransicionDto[];
+	movimientos?: MovimientoDto[];
+}
+
+export interface MovimientoDto {
+	id: number;
+	ticketId: number;
+	sistemaOrigenId: number;
+	sistemaOrigenNombre?: string;
+	sistemaDestinoId: number;
+	sistemaDestinoNombre?: string;
+	usuarioId: number;
+	usuarioNombre?: string;
+	motivo: string;
+	fecha: Date;
+}
+
+export interface MoveTicketDto {
+	ticketId: number;
+	sistemaDestinoId: number;
+	motivo: string;
+}
+
+export interface UpdateTicketDto {
+	titulo?: string;
+	descripcion?: string;
+	prioridadId?: number;
+	areaId?: number;
+	solicitudId?: number;
+}
+
+export interface PauseTicketDto {
+	motivo: string;
+}
+
+export interface CancelTicketDto {
+	motivo: string;
 }
 
 export interface CreateTicketDto {

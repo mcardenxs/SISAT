@@ -14,6 +14,10 @@ import {
 	createEvaluacionSchema,
 	createCierreSchema,
 	createReaperturaSchema,
+	moveTicketSchema,
+	updateTicketSchema,
+	pauseTicketSchema,
+	cancelTicketSchema,
 } from "../schemas/ticketSchemas";
 
 @injectable()
@@ -186,6 +190,69 @@ export class TicketController extends BaseController {
 			const dto = validate(createReaperturaSchema, body);
 			const ticket = await this.ticketUseCases.reopenTicket(
 				{ ticketId, ...dto },
+				user.id,
+			);
+			return this.ok(c, ticket);
+		});
+	};
+
+	move = async (c: Context): Promise<Response> => {
+		return this.executeSafely(c, async () => {
+			const user = c.get("user");
+			const ticketId = Number(c.req.param("id"));
+			const body = await c.req.json();
+			const dto = validate(moveTicketSchema, body);
+			const ticket = await this.ticketUseCases.moveTicket(
+				{ ticketId, ...dto },
+				user.id,
+			);
+			return this.ok(c, ticket);
+		});
+	};
+
+	update = async (c: Context): Promise<Response> => {
+		return this.executeSafely(c, async () => {
+			const ticketId = Number(c.req.param("id"));
+			const body = await c.req.json();
+			const dto = validate(updateTicketSchema, body);
+			const ticket = await this.ticketUseCases.update(ticketId, dto);
+			return this.ok(c, ticket);
+		});
+	};
+
+	pause = async (c: Context): Promise<Response> => {
+		return this.executeSafely(c, async () => {
+			const user = c.get("user");
+			const ticketId = Number(c.req.param("id"));
+			const body = await c.req.json();
+			const dto = validate(pauseTicketSchema, body);
+			const ticket = await this.ticketUseCases.pauseTicket(
+				ticketId,
+				dto.motivo,
+				user.id,
+			);
+			return this.ok(c, ticket);
+		});
+	};
+
+	resume = async (c: Context): Promise<Response> => {
+		return this.executeSafely(c, async () => {
+			const user = c.get("user");
+			const ticketId = Number(c.req.param("id"));
+			const ticket = await this.ticketUseCases.resumeTicket(ticketId, user.id);
+			return this.ok(c, ticket);
+		});
+	};
+
+	cancel = async (c: Context): Promise<Response> => {
+		return this.executeSafely(c, async () => {
+			const user = c.get("user");
+			const ticketId = Number(c.req.param("id"));
+			const body = await c.req.json();
+			const dto = validate(cancelTicketSchema, body);
+			const ticket = await this.ticketUseCases.cancelTicket(
+				ticketId,
+				dto.motivo,
 				user.id,
 			);
 			return this.ok(c, ticket);

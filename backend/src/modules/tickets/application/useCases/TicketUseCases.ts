@@ -18,6 +18,8 @@ import type {
 	CreateCierreDto,
 	CierreDto,
 	CreateReaperturaDto,
+	MoveTicketDto,
+	UpdateTicketDto,
 } from "../dtos/TicketDto";
 import { BaseError } from "@/core/shared/domain/error/BaseError";
 
@@ -189,6 +191,22 @@ export class TicketUseCases {
 				comentario: tr.tra_comentario,
 				fecha: tr.tra_fecha,
 			})),
+			movimientos: t.movimiento?.map((m: any) => ({
+				id: m.mov_id,
+				ticketId: m.mov_fkticket,
+				sistemaOrigenId: m.mov_fksistema_origen,
+				sistemaOrigenNombre:
+					m.sistema_movimiento_mov_fksistema_origenTosistema?.sis_nombre,
+				sistemaDestinoId: m.mov_fksistema_destino,
+				sistemaDestinoNombre:
+					m.sistema_movimiento_mov_fksistema_destinoTosistema?.sis_nombre,
+				usuarioId: m.mov_fkusuario,
+				usuarioNombre: m.usuario
+					? `${m.usuario.usu_nombre} ${m.usuario.usu_apellido}`.trim()
+					: undefined,
+				motivo: m.mov_motivo,
+				fecha: m.mov_fecha,
+			})),
 		};
 	}
 
@@ -277,6 +295,14 @@ export class TicketUseCases {
 						usuario: true,
 					},
 					orderBy: { tra_id: "asc" },
+				},
+				movimiento: {
+					include: {
+						sistema_movimiento_mov_fksistema_origenTosistema: true,
+						sistema_movimiento_mov_fksistema_destinoTosistema: true,
+						usuario: true,
+					},
+					orderBy: { mov_id: "asc" },
 				},
 			},
 		});
@@ -627,14 +653,22 @@ export class TicketUseCases {
 			include: { usuario: true },
 		});
 
-		// Actualizar fase a 'RESUELTO_POR_DESARROLLO'
+		// Actualizar fase a 'RESUELTO_POR_DESARROLLO' y constancia a 'PENDIENTE_DE_ACTA'
 		const faseResuelto = await prisma.fase.findUnique({
 			where: { fas_codigo: "RESUELTO_POR_DESARROLLO" },
+		});
+		const constanciaPendiente = await prisma.constancia.findUnique({
+			where: { con_codigo: "PENDIENTE_DE_ACTA" },
 		});
 		if (faseResuelto) {
 			await prisma.ticket.update({
 				where: { tic_id: atencion.ate_fkticket },
-				data: { tic_fkfase: faseResuelto.fas_id },
+				data: {
+					tic_fkfase: faseResuelto.fas_id,
+					...(constanciaPendiente && {
+						tic_fkconstancia: constanciaPendiente.con_id,
+					}),
+				},
 			});
 			await prisma.transicion.create({
 				data: {
@@ -722,14 +756,22 @@ export class TicketUseCases {
 			include: { usuario: true },
 		});
 
-		// Actualizar fase a 'CERRADO_POR_RESPONSABLE'
+		// Actualizar fase a 'CERRADO_POR_RESPONSABLE' y constancia a 'PENDIENTE_DE_ACTA'
 		const faseCerrado = await prisma.fase.findUnique({
 			where: { fas_codigo: "CERRADO_POR_RESPONSABLE" },
+		});
+		const constanciaPendiente = await prisma.constancia.findUnique({
+			where: { con_codigo: "PENDIENTE_DE_ACTA" },
 		});
 		if (faseCerrado) {
 			await prisma.ticket.update({
 				where: { tic_id: dto.ticketId },
-				data: { tic_fkfase: faseCerrado.fas_id },
+				data: {
+					tic_fkfase: faseCerrado.fas_id,
+					...(constanciaPendiente && {
+						tic_fkconstancia: constanciaPendiente.con_id,
+					}),
+				},
 			});
 			await prisma.transicion.create({
 				data: {
@@ -819,5 +861,249 @@ export class TicketUseCases {
 		}
 
 		return this.findById(dto.ticketId);
+	}
+
+	// ----------------- TRANSFERENCIA ENTRE SISTEMAS -----------------
+
+	async moveTicket(dto: MoveTicketDto, actorId: number): Promise<TicketDto> {
+		const ticket = await prisma.ticket.findUnique({
+			where: { tic_id: dto.ticketId },
+			include: { fase: true },
+		});
+		if (!ticket) {
+			throw new BaseError(`Ticket con ID ${dto.ticketId} no encontrado`, 404);
+		}
+
+		if (ticket.tic_fksistema === dto.sistemaDestinoId) {
+			throw new BaseError(
+				"El sistema de destino debe ser diferente al sistema actual",
+				400,
+			);
+		}
+
+		const sistemaDestino = await prisma.sistema.findUnique({
+			where: { sis_id: dto.sistemaDestinoId },
+		});
+		if (!sistemaDestino) {
+			throw new BaseError(
+				`El sistema de destino con ID ${dto.sistemaDestinoId} no existe`,
+				404,
+			);
+		}
+
+		const now = new Date();
+
+		// Finalizar cualquier asignación activa del sistema previo
+		await prisma.asignacion.updateMany({
+			where: {
+				asi_fkticket: dto.ticketId,
+				asi_fin: null,
+			},
+			data: {
+				asi_fin: now,
+				asi_fkestado: 2, // Inactivo
+			},
+		});
+
+		// Registrar movimiento
+		await prisma.movimiento.create({
+			data: {
+				mov_fkticket: dto.ticketId,
+				mov_fksistema_origen: ticket.tic_fksistema,
+				mov_fksistema_destino: dto.sistemaDestinoId,
+				mov_fkusuario: actorId,
+				mov_motivo: dto.motivo,
+				mov_fecha: now,
+			},
+		});
+
+		// Si el ticket estaba asignado o en proceso, retornarlo a 'REGISTRADO' en el nuevo sistema
+		const faseRegistrado = await prisma.fase.findUnique({
+			where: { fas_codigo: "REGISTRADO" },
+		});
+		const nuevaFaseId = faseRegistrado?.fas_id ?? ticket.tic_fkfase;
+
+		await prisma.ticket.update({
+			where: { tic_id: dto.ticketId },
+			data: {
+				tic_fksistema: dto.sistemaDestinoId,
+				tic_fkarea: sistemaDestino.sis_fkarea,
+				tic_fkfase: nuevaFaseId,
+				tic_actualizacion: now,
+			},
+		});
+
+		if (faseRegistrado && ticket.tic_fkfase !== faseRegistrado.fas_id) {
+			await prisma.transicion.create({
+				data: {
+					tra_fkticket: dto.ticketId,
+					tra_fkfase_origen: ticket.tic_fkfase,
+					tra_fkfase_destino: faseRegistrado.fas_id,
+					tra_fkusuario: actorId,
+					tra_comentario: `Transferido al sistema ${sistemaDestino.sis_nombre}: ${dto.motivo}`,
+				},
+			});
+		}
+
+		return this.findById(dto.ticketId);
+	}
+
+	// ----------------- FASES: PAUSA, REANUDAR, CANCELAR -----------------
+
+	async pauseTicket(
+		id: number,
+		motivo: string,
+		actorId: number,
+	): Promise<TicketDto> {
+		const ticket = await prisma.ticket.findUnique({
+			where: { tic_id: id },
+			include: { fase: true },
+		});
+		if (!ticket) {
+			throw new BaseError(`Ticket con ID ${id} no encontrado`, 404);
+		}
+
+		const fasePausa = await prisma.fase.findUnique({
+			where: { fas_codigo: "EN_ESPERA_DE_INFORMACION" },
+		});
+		if (!fasePausa) {
+			throw new BaseError("Fase EN_ESPERA_DE_INFORMACION no encontrada", 500);
+		}
+
+		await prisma.ticket.update({
+			where: { tic_id: id },
+			data: {
+				tic_fkfase: fasePausa.fas_id,
+				tic_actualizacion: new Date(),
+			},
+		});
+
+		await prisma.transicion.create({
+			data: {
+				tra_fkticket: id,
+				tra_fkfase_origen: ticket.tic_fkfase,
+				tra_fkfase_destino: fasePausa.fas_id,
+				tra_fkusuario: actorId,
+				tra_comentario: `En espera de información: ${motivo}`,
+			},
+		});
+
+		return this.findById(id);
+	}
+
+	async resumeTicket(id: number, actorId: number): Promise<TicketDto> {
+		const ticket = await prisma.ticket.findUnique({
+			where: { tic_id: id },
+			include: { fase: true },
+		});
+		if (!ticket) {
+			throw new BaseError(`Ticket con ID ${id} no encontrado`, 404);
+		}
+
+		const faseEnProceso = await prisma.fase.findUnique({
+			where: { fas_codigo: "EN_PROCESO" },
+		});
+		if (!faseEnProceso) {
+			throw new BaseError("Fase EN_PROCESO no encontrada", 500);
+		}
+
+		await prisma.ticket.update({
+			where: { tic_id: id },
+			data: {
+				tic_fkfase: faseEnProceso.fas_id,
+				tic_actualizacion: new Date(),
+			},
+		});
+
+		await prisma.transicion.create({
+			data: {
+				tra_fkticket: id,
+				tra_fkfase_origen: ticket.tic_fkfase,
+				tra_fkfase_destino: faseEnProceso.fas_id,
+				tra_fkusuario: actorId,
+				tra_comentario: "Reanudación de atención técnica",
+			},
+		});
+
+		return this.findById(id);
+	}
+
+	async cancelTicket(
+		id: number,
+		motivo: string,
+		actorId: number,
+	): Promise<TicketDto> {
+		const ticket = await prisma.ticket.findUnique({
+			where: { tic_id: id },
+			include: { fase: true },
+		});
+		if (!ticket) {
+			throw new BaseError(`Ticket con ID ${id} no encontrado`, 404);
+		}
+
+		if (ticket.fase.fas_codigo === "CERRADO_POR_RESPONSABLE") {
+			throw new BaseError(
+				"No se puede cancelar un ticket que ya fue cerrado formalmente",
+				400,
+			);
+		}
+
+		const faseCancelado = await prisma.fase.findUnique({
+			where: { fas_codigo: "CANCELADO" },
+		});
+		if (!faseCancelado) {
+			throw new BaseError("Fase CANCELADO no encontrada", 500);
+		}
+
+		const now = new Date();
+
+		// Finalizar asignaciones vigentes
+		await prisma.asignacion.updateMany({
+			where: { asi_fkticket: id, asi_fin: null },
+			data: { asi_fin: now, asi_fkestado: 2 },
+		});
+
+		await prisma.ticket.update({
+			where: { tic_id: id },
+			data: {
+				tic_fkfase: faseCancelado.fas_id,
+				tic_actualizacion: now,
+			},
+		});
+
+		await prisma.transicion.create({
+			data: {
+				tra_fkticket: id,
+				tra_fkfase_origen: ticket.tic_fkfase,
+				tra_fkfase_destino: faseCancelado.fas_id,
+				tra_fkusuario: actorId,
+				tra_comentario: `Ticket cancelado: ${motivo}`,
+			},
+		});
+
+		return this.findById(id);
+	}
+
+	async update(id: number, dto: UpdateTicketDto): Promise<TicketDto> {
+		const ticket = await prisma.ticket.findUnique({
+			where: { tic_id: id },
+		});
+		if (!ticket) {
+			throw new BaseError(`Ticket con ID ${id} no encontrado`, 404);
+		}
+
+		await prisma.ticket.update({
+			where: { tic_id: id },
+			data: {
+				...(dto.titulo && { tic_titulo: dto.titulo }),
+				...(dto.descripcion && { tic_descripcion: dto.descripcion }),
+				...(dto.prioridadId && { tic_fkprioridad: dto.prioridadId }),
+				...(dto.areaId && { tic_fkarea: dto.areaId }),
+				...(dto.solicitudId && { tic_fksolicitud: dto.solicitudId }),
+				tic_actualizacion: new Date(),
+			},
+		});
+
+		return this.findById(id);
 	}
 }

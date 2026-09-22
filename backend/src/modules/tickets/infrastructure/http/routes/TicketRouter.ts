@@ -199,5 +199,75 @@ export class TicketRouter {
 		 *         description: Ticket reabierto
 		 */
 		this.router.post("/:id/reapertura", this.ticketController.reopenTicket);
+
+		/**
+		 * @openapi
+		 * /api/tickets/{id}/movimiento:
+		 *   post:
+		 *     tags: [Tickets]
+		 *     summary: Reclasificar / transferir ticket a otro sistema institucional
+		 *     security:
+		 *       - bearerAuth: []
+		 *     responses:
+		 *       200:
+		 *         description: Ticket transferido exitosamente
+		 */
+		this.router.post("/:id/movimiento", this.ticketController.move);
+
+		/**
+		 * @openapi
+		 * /api/tickets/{id}:
+		 *   patch:
+		 *     tags: [Tickets]
+		 *     summary: Actualizar datos básicos de un ticket
+		 *     security:
+		 *       - bearerAuth: []
+		 *     responses:
+		 *       200:
+		 *         description: Ticket actualizado
+		 */
+		this.router.patch("/:id", this.ticketController.update);
+
+		/**
+		 * @openapi
+		 * /api/tickets/{id}/pausar:
+		 *   post:
+		 *     tags: [Tickets]
+		 *     summary: Pausar ticket en espera de información
+		 *     security:
+		 *       - bearerAuth: []
+		 *     responses:
+		 *       200:
+		 *         description: Ticket en espera de información
+		 */
+		this.router.post("/:id/pausar", this.ticketController.pause);
+
+		/**
+		 * @openapi
+		 * /api/tickets/{id}/reanudar:
+		 *   post:
+		 *     tags: [Tickets]
+		 *     summary: Reanudar ticket a fase en proceso
+		 *     security:
+		 *       - bearerAuth: []
+		 *     responses:
+		 *       200:
+		 *         description: Ticket en proceso
+		 */
+		this.router.post("/:id/reanudar", this.ticketController.resume);
+
+		/**
+		 * @openapi
+		 * /api/tickets/{id}/cancelar:
+		 *   post:
+		 *     tags: [Tickets]
+		 *     summary: Cancelar formalmente un ticket
+		 *     security:
+		 *       - bearerAuth: []
+		 *     responses:
+		 *       200:
+		 *         description: Ticket cancelado
+		 */
+		this.router.post("/:id/cancelar", this.ticketController.cancel);
 	}
 }

@@ -107,3 +107,45 @@ export const createReaperturaSchema = z.object({
 	motivo: z.string().min(5, "El motivo de reapertura es requerido").trim(),
 	comentario: z.string().optional(),
 });
+
+export const moveTicketSchema = z.object({
+	sistemaDestinoId: z
+		.number()
+		.int()
+		.positive("El sistema de destino es requerido"),
+	motivo: z
+		.string()
+		.min(5, "El motivo de la reclasificación debe tener al menos 5 caracteres")
+		.trim(),
+});
+
+export const updateTicketSchema = z.object({
+	titulo: z
+		.string()
+		.min(3, "El título debe tener al menos 3 caracteres")
+		.max(200)
+		.trim()
+		.optional(),
+	descripcion: z
+		.string()
+		.min(5, "La descripción debe tener al menos 5 caracteres")
+		.trim()
+		.optional(),
+	prioridadId: z.number().int().positive().optional(),
+	areaId: z.number().int().positive().optional(),
+	solicitudId: z.number().int().positive().optional(),
+});
+
+export const pauseTicketSchema = z.object({
+	motivo: z
+		.string()
+		.min(5, "El motivo de espera de información es requerido")
+		.trim(),
+});
+
+export const cancelTicketSchema = z.object({
+	motivo: z
+		.string()
+		.min(5, "El motivo de cancelación del ticket es requerido")
+		.trim(),
+});
