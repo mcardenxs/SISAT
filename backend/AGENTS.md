@@ -13,7 +13,7 @@
 
 - **Runtime:** Bun (solo ejecución, nunca instalación)
 - **Framework:** Hono
-- **DB:** Solo Prisma v7 con PostgreSQL (pinnado a `7.x`, prohibido v8)
+- **DB:** Solo Prisma v7 con MariaDB / MySQL (pinnado a `7.x`, prohibido v8)
 - **Idioma de respuesta:** Español
 
 ## Dependencias
