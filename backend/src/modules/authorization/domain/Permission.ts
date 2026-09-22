@@ -29,8 +29,10 @@ export class Permission {
 		return this.action;
 	}
 
-	/** Comprueba si este permiso coincide con el recurso y acción dados. */
+	/** Comprueba si este permiso coincide con el recurso y acción dados (soporta comodín '*'). */
 	matches(resource: string, action: string): boolean {
-		return this.resource === resource && this.action === action;
+		const resourceMatch = this.resource === "*" || this.resource === resource;
+		const actionMatch = this.action === "*" || this.action === action;
+		return resourceMatch && actionMatch;
 	}
 }
