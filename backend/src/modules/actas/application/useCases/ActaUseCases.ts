@@ -321,6 +321,17 @@ export class ActaUseCases {
 					inc_calificacion: atencion.evaluacion?.eva_calificacion ?? null,
 				},
 			});
+
+			// Actualizar estado documental del ticket a 'EN_ACTA_GENERADA'
+			const constanciaEnActa = await prisma.constancia.findUnique({
+				where: { con_codigo: "EN_ACTA_GENERADA" },
+			});
+			if (constanciaEnActa) {
+				await prisma.ticket.update({
+					where: { tic_id: t.tic_id },
+					data: { tic_fkconstancia: constanciaEnActa.con_id },
+				});
+			}
 		}
 
 		return this.findById(acta.act_id);
@@ -354,7 +365,7 @@ export class ActaUseCases {
 			include: { clase: true },
 		});
 
-		// Si el archivo es 'ACTA_FIRMADA', actualizar situación a 'CARGADA'
+		// Si el archivo es 'ACTA_FIRMADA', actualizar situación a 'CARGADA' y tickets a 'ACTA_FIRMADA_CARGADA'
 		if (record.clase.cla_codigo === "ACTA_FIRMADA") {
 			const situacionCargada = await prisma.situacion.findUnique({
 				where: { sit_codigo: "CARGADA" },
@@ -364,6 +375,23 @@ export class ActaUseCases {
 					where: { act_id: dto.actaId },
 					data: { act_fksituacion: situacionCargada.sit_id },
 				});
+			}
+
+			const constanciaFirmada = await prisma.constancia.findUnique({
+				where: { con_codigo: "ACTA_FIRMADA_CARGADA" },
+			});
+			if (constanciaFirmada) {
+				const inclusiones = await prisma.inclusion.findMany({
+					where: { inc_fkacta: dto.actaId },
+					select: { inc_fkticket: true },
+				});
+				const ticketIds = inclusiones.map((inc) => inc.inc_fkticket);
+				if (ticketIds.length > 0) {
+					await prisma.ticket.updateMany({
+						where: { tic_id: { in: ticketIds } },
+						data: { tic_fkconstancia: constanciaFirmada.con_id },
+					});
+				}
 			}
 		}
 
