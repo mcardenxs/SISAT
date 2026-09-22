@@ -19,6 +19,9 @@ import { AreaRouter } from "@/modules/organizacion/infrastructure/http/routes/Ar
 import { SistemaRouter } from "@/modules/sistemas/infrastructure/http/routes/SistemaRouter";
 import { TicketRouter } from "@/modules/tickets/infrastructure/http/routes/TicketRouter";
 import { ActaRouter } from "@/modules/actas/infrastructure/http/routes/ActaRouter";
+import { UploadController } from "./UploadController";
+import { DashboardController } from "@/modules/tickets/infrastructure/http/controllers/DashboardController";
+import type { AuthMiddleware } from "@/modules/auth/infrastructure/http/middlewares/authMiddleware";
 
 const app = new Hono();
 
@@ -28,6 +31,9 @@ app.use("*", cors());
 app.use("*", logger());
 // Nota: express.json() desaparece. Hono procesa el JSON automáticamente
 // cuando llamas a c.req.json() en tus controladores.
+
+// Servir archivos estáticos subidos
+app.use("/uploads/*", serveStatic({ root: "./" }));
 
 // 2. Documentación de la API (Scalar)
 app.get("/openapi.json", (c) => c.json(openApiSpec));
@@ -52,6 +58,9 @@ const areaRouter = container.resolve(AreaRouter);
 const sistemaRouter = container.resolve(SistemaRouter);
 const ticketRouter = container.resolve(TicketRouter);
 const actaRouter = container.resolve(ActaRouter);
+const uploadController = container.resolve(UploadController);
+const dashboardController = container.resolve(DashboardController);
+const authMiddleware = container.resolve<AuthMiddleware>("AuthMiddleware");
 
 // 4. Registro de rutas
 // En Hono se usa .route() en lugar de .use() para anidar otros routers
@@ -64,6 +73,10 @@ app.route("/api/areas", areaRouter.router);
 app.route("/api/sistemas", sistemaRouter.router);
 app.route("/api/tickets", ticketRouter.router);
 app.route("/api/actas", actaRouter.router);
+
+// Endpoints globales de uploads y dashboard
+app.post("/api/uploads", authMiddleware.handle, uploadController.run);
+app.get("/api/dashboard/stats", authMiddleware.handle, dashboardController.run);
 
 // 5. Global Error Handler
 app.onError((err, c) => {
@@ -111,7 +124,8 @@ if (
 			reqPath.startsWith("/api") ||
 			reqPath.startsWith("/docs") ||
 			reqPath.startsWith("/openapi") ||
-			reqPath.startsWith("/api-docs")
+			reqPath.startsWith("/api-docs") ||
+			reqPath.startsWith("/uploads")
 		) {
 			return c.notFound();
 		}
