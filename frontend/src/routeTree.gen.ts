@@ -17,9 +17,13 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedActasIndexRouteImport } from './routes/_authenticated/actas/index'
+import { Route as AuthenticatedActasActaIdRouteImport } from './routes/_authenticated/actas/$actaId'
 import { Route as AuthenticatedAreasIndexRouteImport } from './routes/_authenticated/areas/index'
+import { Route as AuthenticatedPermissionsIndexRouteImport } from './routes/_authenticated/permissions/index'
 import { Route as AuthenticatedSistemasIndexRouteImport } from './routes/_authenticated/sistemas/index'
+import { Route as AuthenticatedSistemasSistemaIdRouteImport } from './routes/_authenticated/sistemas/$sistemaId'
 import { Route as AuthenticatedTicketsIndexRouteImport } from './routes/_authenticated/tickets/index'
+import { Route as AuthenticatedTicketsTicketIdRouteImport } from './routes/_authenticated/tickets/$ticketId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -60,21 +64,45 @@ const AuthenticatedActasIndexRoute = AuthenticatedActasIndexRouteImport.update({
   path: '/actas/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedActasActaIdRoute =
+  AuthenticatedActasActaIdRouteImport.update({
+    id: '/actas/$actaId',
+    path: '/actas/$actaId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAreasIndexRoute = AuthenticatedAreasIndexRouteImport.update({
   id: '/areas/',
   path: '/areas/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPermissionsIndexRoute =
+  AuthenticatedPermissionsIndexRouteImport.update({
+    id: '/permissions/',
+    path: '/permissions/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedSistemasIndexRoute =
   AuthenticatedSistemasIndexRouteImport.update({
     id: '/sistemas/',
     path: '/sistemas/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedSistemasSistemaIdRoute =
+  AuthenticatedSistemasSistemaIdRouteImport.update({
+    id: '/sistemas/$sistemaId',
+    path: '/sistemas/$sistemaId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedTicketsIndexRoute =
   AuthenticatedTicketsIndexRouteImport.update({
     id: '/tickets/',
     path: '/tickets/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedTicketsTicketIdRoute =
+  AuthenticatedTicketsTicketIdRouteImport.update({
+    id: '/tickets/$ticketId',
+    path: '/tickets/$ticketId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -85,8 +113,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/actas/$actaId': typeof AuthenticatedActasActaIdRoute
+  '/sistemas/$sistemaId': typeof AuthenticatedSistemasSistemaIdRoute
+  '/tickets/$ticketId': typeof AuthenticatedTicketsTicketIdRoute
   '/actas/': typeof AuthenticatedActasIndexRoute
   '/areas/': typeof AuthenticatedAreasIndexRoute
+  '/permissions/': typeof AuthenticatedPermissionsIndexRoute
   '/sistemas/': typeof AuthenticatedSistemasIndexRoute
   '/tickets/': typeof AuthenticatedTicketsIndexRoute
 }
@@ -97,8 +129,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/actas/$actaId': typeof AuthenticatedActasActaIdRoute
+  '/sistemas/$sistemaId': typeof AuthenticatedSistemasSistemaIdRoute
+  '/tickets/$ticketId': typeof AuthenticatedTicketsTicketIdRoute
   '/actas': typeof AuthenticatedActasIndexRoute
   '/areas': typeof AuthenticatedAreasIndexRoute
+  '/permissions': typeof AuthenticatedPermissionsIndexRoute
   '/sistemas': typeof AuthenticatedSistemasIndexRoute
   '/tickets': typeof AuthenticatedTicketsIndexRoute
 }
@@ -111,8 +147,12 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/_authenticated/actas/$actaId': typeof AuthenticatedActasActaIdRoute
+  '/_authenticated/sistemas/$sistemaId': typeof AuthenticatedSistemasSistemaIdRoute
+  '/_authenticated/tickets/$ticketId': typeof AuthenticatedTicketsTicketIdRoute
   '/_authenticated/actas/': typeof AuthenticatedActasIndexRoute
   '/_authenticated/areas/': typeof AuthenticatedAreasIndexRoute
+  '/_authenticated/permissions/': typeof AuthenticatedPermissionsIndexRoute
   '/_authenticated/sistemas/': typeof AuthenticatedSistemasIndexRoute
   '/_authenticated/tickets/': typeof AuthenticatedTicketsIndexRoute
 }
@@ -125,8 +165,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/profile'
     | '/users'
+    | '/actas/$actaId'
+    | '/sistemas/$sistemaId'
+    | '/tickets/$ticketId'
     | '/actas/'
     | '/areas/'
+    | '/permissions/'
     | '/sistemas/'
     | '/tickets/'
   fileRoutesByTo: FileRoutesByTo
@@ -137,8 +181,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/profile'
     | '/users'
+    | '/actas/$actaId'
+    | '/sistemas/$sistemaId'
+    | '/tickets/$ticketId'
     | '/actas'
     | '/areas'
+    | '/permissions'
     | '/sistemas'
     | '/tickets'
   id:
@@ -150,8 +198,12 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/profile'
     | '/_authenticated/users'
+    | '/_authenticated/actas/$actaId'
+    | '/_authenticated/sistemas/$sistemaId'
+    | '/_authenticated/tickets/$ticketId'
     | '/_authenticated/actas/'
     | '/_authenticated/areas/'
+    | '/_authenticated/permissions/'
     | '/_authenticated/sistemas/'
     | '/_authenticated/tickets/'
   fileRoutesById: FileRoutesById
@@ -221,11 +273,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActasIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/actas/$actaId': {
+      id: '/_authenticated/actas/$actaId'
+      path: '/actas/$actaId'
+      fullPath: '/actas/$actaId'
+      preLoaderRoute: typeof AuthenticatedActasActaIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/areas/': {
       id: '/_authenticated/areas/'
       path: '/areas'
       fullPath: '/areas/'
       preLoaderRoute: typeof AuthenticatedAreasIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/permissions/': {
+      id: '/_authenticated/permissions/'
+      path: '/permissions'
+      fullPath: '/permissions/'
+      preLoaderRoute: typeof AuthenticatedPermissionsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/sistemas/': {
@@ -235,11 +301,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSistemasIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/sistemas/$sistemaId': {
+      id: '/_authenticated/sistemas/$sistemaId'
+      path: '/sistemas/$sistemaId'
+      fullPath: '/sistemas/$sistemaId'
+      preLoaderRoute: typeof AuthenticatedSistemasSistemaIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/tickets/': {
       id: '/_authenticated/tickets/'
       path: '/tickets'
       fullPath: '/tickets/'
       preLoaderRoute: typeof AuthenticatedTicketsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tickets/$ticketId': {
+      id: '/_authenticated/tickets/$ticketId'
+      path: '/tickets/$ticketId'
+      fullPath: '/tickets/$ticketId'
+      preLoaderRoute: typeof AuthenticatedTicketsTicketIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
@@ -249,8 +329,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
+  AuthenticatedActasActaIdRoute: typeof AuthenticatedActasActaIdRoute
+  AuthenticatedSistemasSistemaIdRoute: typeof AuthenticatedSistemasSistemaIdRoute
+  AuthenticatedTicketsTicketIdRoute: typeof AuthenticatedTicketsTicketIdRoute
   AuthenticatedActasIndexRoute: typeof AuthenticatedActasIndexRoute
   AuthenticatedAreasIndexRoute: typeof AuthenticatedAreasIndexRoute
+  AuthenticatedPermissionsIndexRoute: typeof AuthenticatedPermissionsIndexRoute
   AuthenticatedSistemasIndexRoute: typeof AuthenticatedSistemasIndexRoute
   AuthenticatedTicketsIndexRoute: typeof AuthenticatedTicketsIndexRoute
 }
@@ -259,8 +343,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
+  AuthenticatedActasActaIdRoute: AuthenticatedActasActaIdRoute,
+  AuthenticatedSistemasSistemaIdRoute: AuthenticatedSistemasSistemaIdRoute,
+  AuthenticatedTicketsTicketIdRoute: AuthenticatedTicketsTicketIdRoute,
   AuthenticatedActasIndexRoute: AuthenticatedActasIndexRoute,
   AuthenticatedAreasIndexRoute: AuthenticatedAreasIndexRoute,
+  AuthenticatedPermissionsIndexRoute: AuthenticatedPermissionsIndexRoute,
   AuthenticatedSistemasIndexRoute: AuthenticatedSistemasIndexRoute,
   AuthenticatedTicketsIndexRoute: AuthenticatedTicketsIndexRoute,
 }

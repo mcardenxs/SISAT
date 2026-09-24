@@ -59,8 +59,9 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 				descripcion: "",
 			});
 		},
-		onError: (err: any) => {
-			const msg = err.response?.data?.error || "Error al crear ticket";
+		onError: (err: Error & { response?: { data?: { error?: string } } }) => {
+			const msg =
+				err.response?.data?.error || err.message || "Error al crear ticket";
 			toast.error(msg);
 		},
 	});
@@ -87,10 +88,14 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 		>
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
-					<label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+					<label
+						htmlFor="ticket-sistema-select"
+						className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+					>
 						Sistema Institucional
 					</label>
 					<select
+						id="ticket-sistema-select"
 						value={formData.sistemaId}
 						onChange={(e) => {
 							const sisId = Number(e.target.value);
@@ -114,10 +119,14 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 				</div>
 
 				<div>
-					<label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+					<label
+						htmlFor="ticket-area-select"
+						className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+					>
 						Área Solicitante
 					</label>
 					<select
+						id="ticket-area-select"
 						value={formData.areaId}
 						onChange={(e) =>
 							setFormData((prev) => ({
@@ -139,10 +148,14 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 
 				<div className="grid grid-cols-2 gap-3">
 					<div>
-						<label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+						<label
+							htmlFor="ticket-prioridad-select"
+							className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+						>
 							Prioridad
 						</label>
 						<select
+							id="ticket-prioridad-select"
 							value={formData.prioridadId}
 							onChange={(e) =>
 								setFormData((prev) => ({
@@ -163,10 +176,14 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 					</div>
 
 					<div>
-						<label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+						<label
+							htmlFor="ticket-solicitud-select"
+							className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+						>
 							Tipo de Solicitud
 						</label>
 						<select
+							id="ticket-solicitud-select"
 							value={formData.solicitudId}
 							onChange={(e) =>
 								setFormData((prev) => ({
@@ -198,10 +215,14 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 				/>
 
 				<div className="space-y-1.5">
-					<label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+					<label
+						htmlFor="ticket-descripcion-textarea"
+						className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+					>
 						Descripción Detallada
 					</label>
 					<textarea
+						id="ticket-descripcion-textarea"
 						rows={3}
 						value={formData.descripcion}
 						onChange={(e) =>

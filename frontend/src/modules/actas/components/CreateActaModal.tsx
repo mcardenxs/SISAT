@@ -41,8 +41,9 @@ export function CreateActaModal({ isOpen, onClose }: CreateActaModalProps) {
 			queryClient.invalidateQueries({ queryKey: ["actas"] });
 			onClose();
 		},
-		onError: (err: any) => {
-			const msg = err.response?.data?.error || "Error al generar acta";
+		onError: (err: Error & { response?: { data?: { error?: string } } }) => {
+			const msg =
+				err.response?.data?.error || err.message || "Error al generar acta";
 			toast.error(msg);
 		},
 	});
@@ -78,10 +79,14 @@ export function CreateActaModal({ isOpen, onClose }: CreateActaModalProps) {
 		>
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
-					<label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+					<label
+						htmlFor="acta-sistema-select"
+						className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+					>
 						Sistema Institucional
 					</label>
 					<select
+						id="acta-sistema-select"
 						value={formData.sistemaId}
 						onChange={(e) =>
 							setFormData((prev) => ({
@@ -132,10 +137,14 @@ export function CreateActaModal({ isOpen, onClose }: CreateActaModalProps) {
 				</div>
 
 				<div className="space-y-1.5">
-					<label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+					<label
+						htmlFor="acta-observacion-textarea"
+						className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+					>
 						Observaciones del Acta
 					</label>
 					<textarea
+						id="acta-observacion-textarea"
 						rows={2}
 						value={formData.observacion}
 						onChange={(e) =>

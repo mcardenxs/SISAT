@@ -56,6 +56,16 @@ export interface CreateActaInput {
 	inicio: string;
 	fin: string;
 	observacion?: string;
+	ticketIds?: number[];
+}
+
+export interface UploadArchivoActaInput {
+	claseId: number;
+	nombre: string;
+	ruta: string;
+	formato: "jpg" | "jpeg" | "png" | "webp" | "pdf";
+	tamano: number;
+	observacion?: string;
 }
 
 export const actaApi = {
@@ -77,6 +87,17 @@ export const actaApi = {
 
 	create: async (data: CreateActaInput): Promise<Acta> => {
 		const response = await apiClient.post<Acta>("/actas", data);
+		return response.data;
+	},
+
+	uploadArchivo: async (
+		actaId: number,
+		data: UploadArchivoActaInput,
+	): Promise<ArchivoActa> => {
+		const response = await apiClient.post<ArchivoActa>(
+			`/actas/${actaId}/archivos`,
+			data,
+		);
 		return response.data;
 	},
 };

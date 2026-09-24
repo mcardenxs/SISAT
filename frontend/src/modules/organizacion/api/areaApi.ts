@@ -15,6 +15,12 @@ export interface CreateAreaInput {
 	estadoId?: number;
 }
 
+export interface UpdateAreaInput {
+	nombre?: string;
+	descripcion?: string;
+	estadoId?: number;
+}
+
 export const areaApi = {
 	getAll: async (): Promise<Area[]> => {
 		const response = await apiClient.get<Area[]>("/areas");
@@ -28,6 +34,11 @@ export const areaApi = {
 
 	create: async (data: CreateAreaInput): Promise<Area> => {
 		const response = await apiClient.post<Area>("/areas", data);
+		return response.data;
+	},
+
+	update: async (id: number, data: UpdateAreaInput): Promise<Area> => {
+		const response = await apiClient.patch<Area>(`/areas/${id}`, data);
 		return response.data;
 	},
 };
