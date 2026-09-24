@@ -10,10 +10,12 @@ import {
 	Building2,
 	Ticket,
 	FileText,
+	Shield,
 } from "lucide-react";
 import { useAuthStore } from "@/core/auth/store";
 import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
+import { Can } from "@/core/permissions/Can";
 import { toast } from "sonner";
 import { authApi } from "@/modules/auth/api/authApi";
 
@@ -72,41 +74,67 @@ export function MainLayout({ children }: MainLayoutProps) {
 									<LayoutDashboard className="h-4 w-4" />
 									Dashboard
 								</Link>
-								<Link
-									to="/tickets"
-									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
-								>
-									<Ticket className="h-4 w-4" />
-									Tickets
-								</Link>
-								<Link
-									to="/actas"
-									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
-								>
-									<FileText className="h-4 w-4" />
-									Actas
-								</Link>
-								<Link
-									to="/sistemas"
-									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
-								>
-									<Monitor className="h-4 w-4" />
-									Sistemas
-								</Link>
-								<Link
-									to="/areas"
-									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
-								>
-									<Building2 className="h-4 w-4" />
-									Áreas
-								</Link>
-								<Link
-									to="/users"
-									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
-								>
-									<Users className="h-4 w-4" />
-									Usuarios
-								</Link>
+
+								<Can resource="tickets" action="read">
+									<Link
+										to="/tickets"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									>
+										<Ticket className="h-4 w-4" />
+										Tickets
+									</Link>
+								</Can>
+
+								<Can resource="actas" action="read">
+									<Link
+										to="/actas"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									>
+										<FileText className="h-4 w-4" />
+										Actas
+									</Link>
+								</Can>
+
+								<Can resource="sistemas" action="read">
+									<Link
+										to="/sistemas"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									>
+										<Monitor className="h-4 w-4" />
+										Sistemas
+									</Link>
+								</Can>
+
+								<Can resource="areas" action="read">
+									<Link
+										to="/areas"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									>
+										<Building2 className="h-4 w-4" />
+										Áreas
+									</Link>
+								</Can>
+
+								<Can resource="users" action="read">
+									<Link
+										to="/users"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									>
+										<Users className="h-4 w-4" />
+										Usuarios
+									</Link>
+								</Can>
+
+								<Can resource="permissions" action="read">
+									<Link
+										to="/permissions"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									>
+										<Shield className="h-4 w-4" />
+										Permisos
+									</Link>
+								</Can>
+
 								<Link
 									to="/profile"
 									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"

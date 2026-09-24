@@ -1,0 +1,4 @@
+PORT=3000
+NODE_ENV=dev
+DATABASE_URL="mysql://sisat:sisat_local_password@localhost:3306/sisat"
+JWT_SECRET="supersecret_local_key_change_in_prod"
