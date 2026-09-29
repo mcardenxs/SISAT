@@ -106,7 +106,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 								areaId: sis?.areaId || prev.areaId,
 							}));
 						}}
-						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 						required
 					>
 						<option value={0}>Seleccione un sistema...</option>
@@ -134,7 +134,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 								areaId: Number(e.target.value),
 							}))
 						}
-						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 						required
 					>
 						<option value={0}>Seleccione un área...</option>
@@ -163,7 +163,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 									prioridadId: Number(e.target.value),
 								}))
 							}
-							className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+							className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 							required
 						>
 							<option value={0}>Prioridad...</option>
@@ -191,7 +191,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 									solicitudId: Number(e.target.value),
 								}))
 							}
-							className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+							className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 							required
 						>
 							<option value={0}>Solicitud...</option>
@@ -229,7 +229,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 							setFormData((prev) => ({ ...prev, descripcion: e.target.value }))
 						}
 						placeholder="Describa el comportamiento observado, pasos para reproducir o solicitud..."
-						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 						required
 					/>
 				</div>

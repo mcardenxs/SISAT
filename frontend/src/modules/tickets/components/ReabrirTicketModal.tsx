@@ -68,7 +68,7 @@ export function ReabrirTicketModal({
 						required
 						minLength={5}
 						placeholder="Describe la inconsistencia o persistencia del problema que justifica la reapertura..."
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					/>
 				</div>
 
@@ -84,7 +84,7 @@ export function ReabrirTicketModal({
 						value={comentario}
 						onChange={(e) => setComentario(e.target.value)}
 						placeholder="Instrucciones para el técnico..."
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					/>
 				</div>
 

@@ -63,10 +63,10 @@ export function SistemaResponsablesTab({
 
 			{/* Tarjeta destacada: Responsable Principal Vigente */}
 			{principal ? (
-				<div className="rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/40 via-slate-900 to-slate-900 p-5 shadow-lg">
+				<div className="rounded-xl border border-blue-500/30 bg-gradient-to-r from-blue-950/40 via-slate-900 to-slate-900 p-5 shadow-lg">
 					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 						<div className="flex items-start gap-3.5">
-							<div className="p-2.5 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+							<div className="p-2.5 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30">
 								<ShieldCheck className="h-6 w-6" />
 							</div>
 							<div>
@@ -75,7 +75,7 @@ export function SistemaResponsablesTab({
 										{principal.usuarioNombre ||
 											`Usuario #${principal.usuarioId}`}
 									</h4>
-									<Badge variant="purple" className="text-xs">
+									<Badge variant="blue" className="text-xs">
 										Responsable Principal
 									</Badge>
 									<Badge variant="success" className="text-xs">

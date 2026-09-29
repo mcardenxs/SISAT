@@ -46,7 +46,7 @@ export function SistemasPage() {
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
 					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+						<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
 							<Monitor className="h-5 w-5" />
 						</div>
 						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
@@ -85,14 +85,14 @@ export function SistemasPage() {
 						params={{ sistemaId: String(sistema.id) }}
 						className="group block"
 					>
-						<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-indigo-500/50 hover:bg-slate-900/80 transition-all duration-200">
+						<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900/80 transition-all duration-200">
 							<CardHeader className="pb-3">
 								<div className="flex items-start justify-between gap-2">
 									<div>
-										<span className="font-mono text-xs text-indigo-400 font-semibold bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-500/20">
+										<span className="font-mono text-xs text-blue-400 font-semibold bg-blue-950/40 px-2 py-0.5 rounded border border-blue-500/20">
 											{sistema.clave}
 										</span>
-										<CardTitle className="text-lg font-semibold text-white mt-1.5 group-hover:text-indigo-300 transition-colors">
+										<CardTitle className="text-lg font-semibold text-white mt-1.5 group-hover:text-blue-300 transition-colors">
 											{sistema.nombre}
 										</CardTitle>
 									</div>
@@ -120,7 +120,7 @@ export function SistemasPage() {
 									{sistema.url && (
 										<div className="flex items-center justify-between text-slate-400">
 											<span>Acceso Web:</span>
-											<span className="text-indigo-400 flex items-center gap-1">
+											<span className="text-blue-400 flex items-center gap-1">
 												Disponible <ExternalLink className="h-3 w-3" />
 											</span>
 										</div>
@@ -142,14 +142,14 @@ export function SistemasPage() {
 										className="flex items-center gap-1.5"
 										title="Desarrolladores asignados"
 									>
-										<Users className="h-3.5 w-3.5 text-indigo-400" />
+										<Users className="h-3.5 w-3.5 text-blue-400" />
 										<span>
 											{sistema.desarrolladores?.filter((d) => !d.fin).length ||
 												0}{" "}
 											dev(s)
 										</span>
 									</div>
-									<span className="text-indigo-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+									<span className="text-blue-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
 										Detalle <ArrowRight className="h-3 w-3" />
 									</span>
 								</div>

@@ -53,7 +53,7 @@ export function RoleInboxWidget() {
 		<div className="space-y-4">
 			<div className="flex items-center justify-between">
 				<h2 className="text-base font-bold text-white flex items-center gap-2">
-					<UserCheck className="h-5 w-5 text-indigo-400" />
+					<UserCheck className="h-5 w-5 text-blue-400" />
 					Bandeja de Entrada Operativa &bull; {user?.role}
 				</h2>
 				<span className="text-xs text-slate-400">
@@ -89,7 +89,7 @@ export function RoleInboxWidget() {
 										className="block p-2.5 rounded-lg bg-slate-950/50 hover:bg-slate-800/40 border border-slate-800/80 transition-colors"
 									>
 										<div className="flex items-center justify-between text-xs">
-											<span className="font-mono text-indigo-400 font-semibold">
+											<span className="font-mono text-blue-400 font-semibold">
 												{t.folio}
 											</span>
 											<span className="text-[10px] text-slate-500 flex items-center gap-1">
@@ -206,12 +206,12 @@ export function RoleInboxWidget() {
 					<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-3">
 						<div className="flex items-center justify-between pb-2 border-b border-slate-800">
 							<div className="flex items-center gap-2">
-								<FileText className="h-4 w-4 text-indigo-400" />
+								<FileText className="h-4 w-4 text-blue-400" />
 								<h3 className="text-xs font-semibold text-slate-200">
 									Actas Listas para Firma
 								</h3>
 							</div>
-							<Badge variant="purple">{actasPendingFirma.length}</Badge>
+							<Badge variant="blue">{actasPendingFirma.length}</Badge>
 						</div>
 
 						{actasPendingFirma.length === 0 ? (
@@ -228,7 +228,7 @@ export function RoleInboxWidget() {
 										className="block p-2.5 rounded-lg bg-slate-950/50 hover:bg-slate-800/40 border border-slate-800/80 transition-colors"
 									>
 										<div className="flex items-center justify-between text-xs">
-											<span className="font-mono text-indigo-400 font-semibold">
+											<span className="font-mono text-blue-400 font-semibold">
 												{a.folio}
 											</span>
 											<Badge variant={getFaseVariant(a.situacionCodigo)}>

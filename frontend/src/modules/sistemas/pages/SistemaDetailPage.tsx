@@ -44,7 +44,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 				<p className="font-semibold">Sistema institucional no encontrado.</p>
 				<Link
 					to="/sistemas"
-					className="text-xs text-indigo-400 underline mt-2 inline-block"
+					className="text-xs text-blue-400 underline mt-2 inline-block"
 				>
 					Regresar a Sistemas
 				</Link>
@@ -73,7 +73,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 				<div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
 					<div className="space-y-1">
 						<div className="flex items-center gap-2.5">
-							<span className="font-mono text-xs font-bold text-indigo-400 bg-indigo-950/50 px-2.5 py-0.5 rounded border border-indigo-500/20 uppercase">
+							<span className="font-mono text-xs font-bold text-blue-400 bg-blue-950/50 px-2.5 py-0.5 rounded border border-blue-500/20 uppercase">
 								{sistema.clave}
 							</span>
 							<Badge variant={sistema.estadoId === 1 ? "success" : "default"}>
@@ -105,7 +105,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 								variant="ghost"
 								size="sm"
 								onClick={() => setIsEditOpen(true)}
-								className="gap-1.5 text-indigo-400 hover:bg-indigo-950/20"
+								className="gap-1.5 text-blue-400 hover:bg-blue-950/20"
 							>
 								<Edit className="h-4 w-4" />
 								Editar Ficha
@@ -145,7 +145,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 							</div>
 						</div>
 						<div className="flex items-center gap-2 text-slate-300">
-							<Monitor className="h-4 w-4 text-indigo-400 shrink-0" />
+							<Monitor className="h-4 w-4 text-blue-400 shrink-0" />
 							<div>
 								<span className="text-[10px] text-slate-500 block uppercase">
 									Clave Única
@@ -167,7 +167,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 						onClick={() => setActiveTab("responsables")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 flex items-center gap-2 ${
 							activeTab === "responsables"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>
@@ -180,7 +180,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 						onClick={() => setActiveTab("desarrolladores")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 flex items-center gap-2 ${
 							activeTab === "desarrolladores"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>
@@ -193,7 +193,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 						onClick={() => setActiveTab("tickets")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 flex items-center gap-2 ${
 							activeTab === "tickets"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>

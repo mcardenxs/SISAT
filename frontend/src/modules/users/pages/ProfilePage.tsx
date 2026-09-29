@@ -5,7 +5,7 @@ export function ProfilePage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-2.5">
-				<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+				<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
 					<UserCheck className="h-5 w-5" />
 				</div>
 				<div>

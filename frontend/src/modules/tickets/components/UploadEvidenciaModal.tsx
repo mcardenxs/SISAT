@@ -91,7 +91,7 @@ export function UploadEvidenciaModal({
 					>
 						Seleccionar Archivo (Captura, Log, Documento)
 					</label>
-					<div className="relative border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-4 text-center cursor-pointer transition-colors bg-slate-900/50">
+					<div className="relative border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-4 text-center cursor-pointer transition-colors bg-slate-900/50">
 						<input
 							type="file"
 							id="evidencia-file-input"
@@ -99,7 +99,7 @@ export function UploadEvidenciaModal({
 							disabled={isUploading}
 							className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
 						/>
-						<UploadCloud className="h-8 w-8 mx-auto text-indigo-400 mb-1.5" />
+						<UploadCloud className="h-8 w-8 mx-auto text-blue-400 mb-1.5" />
 						<p className="text-xs text-slate-300 font-medium">
 							{isUploading
 								? "Cargando archivo..."
@@ -126,7 +126,7 @@ export function UploadEvidenciaModal({
 							value={claseId}
 							onChange={(e) => setClaseId(Number(e.target.value))}
 							required
-							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 						>
 							<option value="">Selecciona clase...</option>
 							{catalogos?.clase.map((c) => (
@@ -183,7 +183,7 @@ export function UploadEvidenciaModal({
 						onChange={(e) => setDescripcion(e.target.value)}
 						rows={2}
 						placeholder="Contexto sobre lo que demuestra este archivo..."
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					/>
 				</div>
 

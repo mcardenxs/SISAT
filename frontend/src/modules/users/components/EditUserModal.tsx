@@ -149,7 +149,7 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
 							id="edit-user-area-select"
 							value={areaId}
 							onChange={(e) => setAreaId(Number(e.target.value))}
-							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 						>
 							<option value="">Sin área específica</option>
 							{areas?.map((a) => (
@@ -171,7 +171,7 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
 							id="edit-user-role-select"
 							value={role}
 							onChange={(e) => setRole(e.target.value)}
-							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 						>
 							{catalogos?.rol ? (
 								catalogos.rol.map((r) => (
@@ -215,7 +215,7 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
 							id="editUserActive"
 							checked={isActive}
 							onChange={(e) => setIsActive(e.target.checked)}
-							className="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500"
+							className="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
 						/>
 						<label htmlFor="editUserActive" className="text-xs text-slate-300">
 							Usuario Activo en el Sistema

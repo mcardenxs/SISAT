@@ -49,7 +49,7 @@ export function SistemaTicketsTab({ sistemaId }: SistemaTicketsTabProps) {
 						<span className="text-xs text-slate-400 font-medium">
 							Total de Tickets
 						</span>
-						<TicketIcon className="h-4 w-4 text-indigo-400" />
+						<TicketIcon className="h-4 w-4 text-blue-400" />
 					</div>
 					<div className="text-2xl font-bold text-white">{total}</div>
 				</div>
@@ -106,7 +106,7 @@ export function SistemaTicketsTab({ sistemaId }: SistemaTicketsTabProps) {
 							>
 								<div className="space-y-1">
 									<div className="flex items-center gap-2">
-										<span className="font-mono text-xs font-semibold text-indigo-400">
+										<span className="font-mono text-xs font-semibold text-blue-400">
 											{t.folio}
 										</span>
 										<Badge variant={getFaseVariant(t.faseCodigo)}>
@@ -126,7 +126,7 @@ export function SistemaTicketsTab({ sistemaId }: SistemaTicketsTabProps) {
 								<Link
 									to="/tickets/$ticketId"
 									params={{ ticketId: String(t.id) }}
-									className="inline-flex items-center gap-1 text-xs font-medium text-indigo-400 hover:text-indigo-300 shrink-0"
+									className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 shrink-0"
 								>
 									Ver ticket
 									<ExternalLink className="h-3.5 w-3.5" />

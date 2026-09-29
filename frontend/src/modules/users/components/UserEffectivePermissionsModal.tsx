@@ -31,17 +31,16 @@ export function UserEffectivePermissionsModal({
 			className="max-w-xl"
 		>
 			<div className="space-y-4">
-				<div className="flex items-center gap-3 rounded-lg border border-indigo-500/20 bg-indigo-500/10 p-3.5 text-xs text-indigo-300">
-					<Shield className="h-5 w-5 shrink-0 text-indigo-400" />
+				<div className="flex items-center gap-3 rounded-lg border border-blue-500/20 bg-blue-500/10 p-3.5 text-xs text-blue-300">
+					<Shield className="h-5 w-5 shrink-0 text-blue-400" />
 					<div>
 						<p className="font-semibold text-white">
 							Matriz Resuelta de Autorización (RBAC)
 						</p>
 						<p className="text-slate-300 mt-0.5">
 							Rol principal:{" "}
-							<strong className="text-indigo-400">{user.role}</strong>. Estos
-							son los privilegios efectivos calculados sobre recursos y
-							acciones.
+							<strong className="text-blue-400">{user.role}</strong>. Estos son
+							los privilegios efectivos calculados sobre recursos y acciones.
 						</p>
 					</div>
 				</div>
@@ -62,11 +61,11 @@ export function UserEffectivePermissionsModal({
 								className="px-4 py-2.5 flex items-center justify-between text-xs hover:bg-slate-800/20 transition-colors"
 							>
 								<div className="flex items-center gap-2">
-									<KeyRound className="h-3.5 w-3.5 text-indigo-400" />
+									<KeyRound className="h-3.5 w-3.5 text-blue-400" />
 									<span className="font-mono text-slate-200">{p.resource}</span>
 								</div>
 								<Badge
-									variant="purple"
+									variant="blue"
 									className="text-[10px] uppercase font-mono"
 								>
 									{p.action}

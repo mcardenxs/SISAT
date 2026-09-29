@@ -94,7 +94,7 @@ export function CreateActaModal({ isOpen, onClose }: CreateActaModalProps) {
 								sistemaId: Number(e.target.value),
 							}))
 						}
-						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 						required
 					>
 						<option value={0}>Seleccione un sistema...</option>
@@ -151,7 +151,7 @@ export function CreateActaModal({ isOpen, onClose }: CreateActaModalProps) {
 							setFormData((prev) => ({ ...prev, observacion: e.target.value }))
 						}
 						placeholder="Notas u observaciones para el acta semanal..."
-						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 					/>
 				</div>
 

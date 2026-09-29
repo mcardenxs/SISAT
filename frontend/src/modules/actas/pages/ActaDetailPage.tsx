@@ -42,7 +42,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 				</p>
 				<Link
 					to="/actas"
-					className="text-xs text-indigo-400 underline mt-2 inline-block"
+					className="text-xs text-blue-400 underline mt-2 inline-block"
 				>
 					Regresar al listado de actas
 				</Link>
@@ -55,7 +55,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 			case "GENERADA":
 				return "warning" as const;
 			case "EN_FIRMA":
-				return "purple" as const;
+				return "blue" as const;
 			case "CARGADA":
 				return "success" as const;
 			default:
@@ -106,7 +106,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 						<div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
 							<div className="space-y-1">
 								<div className="flex items-center gap-2.5">
-									<span className="font-mono text-xs font-bold text-indigo-400 bg-indigo-950/40 px-2.5 py-0.5 rounded border border-indigo-500/20">
+									<span className="font-mono text-xs font-bold text-blue-400 bg-blue-950/40 px-2.5 py-0.5 rounded border border-blue-500/20">
 										{acta.folio}
 									</span>
 									<Badge variant={getSituacionVariant(acta.situacionCodigo)}>
@@ -127,7 +127,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 									<Button
 										size="sm"
 										onClick={() => setIsUploadOpen(true)}
-										className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white"
+										className="gap-2 bg-blue-600 hover:bg-blue-500 text-white"
 									>
 										<Upload className="h-4 w-4" />
 										Subir Acta Firmada (PDF)
@@ -205,7 +205,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 												key={inc.id}
 												className="hover:bg-slate-800/30 transition-colors"
 											>
-												<td className="px-4 py-3 font-mono font-semibold text-indigo-400">
+												<td className="px-4 py-3 font-mono font-semibold text-blue-400">
 													<Link
 														to="/tickets/$ticketId"
 														params={{ ticketId: String(inc.ticketId) }}
@@ -248,7 +248,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 					<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
 						<div className="flex items-center justify-between border-b border-slate-800 pb-3">
 							<h3 className="text-sm font-semibold text-white flex items-center gap-2">
-								<Paperclip className="h-4 w-4 text-indigo-400" />
+								<Paperclip className="h-4 w-4 text-blue-400" />
 								Documentos y Archivos Oficiales ({acta.archivos?.length || 0})
 							</h3>
 						</div>
@@ -266,10 +266,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 									>
 										<div className="space-y-1 min-w-0">
 											<div className="flex items-center gap-1.5">
-												<Badge
-													variant="purple"
-													className="text-[10px] uppercase"
-												>
+												<Badge variant="blue" className="text-[10px] uppercase">
 													{arc.formato}
 												</Badge>
 												{arc.claseCodigo && (
@@ -296,7 +293,7 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 											href={arc.ruta}
 											target="_blank"
 											rel="noreferrer"
-											className="p-1.5 rounded text-slate-400 hover:text-indigo-400 hover:bg-slate-800 transition-colors"
+											className="p-1.5 rounded text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition-colors"
 											title="Descargar o ver archivo"
 										>
 											<ExternalLink className="h-4 w-4" />

@@ -92,7 +92,7 @@ export function EvaluacionAtencionModal({
 						id="confirmacionCheckbox"
 						checked={confirmacion}
 						onChange={(e) => setConfirmacion(e.target.checked)}
-						className="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500"
+						className="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
 					/>
 					<label
 						htmlFor="confirmacionCheckbox"
@@ -116,7 +116,7 @@ export function EvaluacionAtencionModal({
 							onChange={(e) => setConformidad(e.target.value)}
 							rows={2}
 							placeholder="Observaciones de satisfacción sobre la atención..."
-							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 						/>
 					</div>
 				) : (

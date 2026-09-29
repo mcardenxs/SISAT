@@ -37,7 +37,7 @@ export function DashboardPage() {
 
 	const roleVariant =
 		user?.role === "ADMINISTRADOR" || user?.role === "ADMIN"
-			? "purple"
+			? "blue"
 			: user?.role === "RESPONSABLE_DE_SISTEMA" || user?.role === "MOD"
 				? "warning"
 				: user?.role === "DESARROLLADOR"
@@ -58,7 +58,7 @@ export function DashboardPage() {
 	return (
 		<div className="space-y-8">
 			{/* Banner de Bienvenida y Accesos Rápidos */}
-			<div className="relative overflow-hidden rounded-2xl border border-indigo-500/20 bg-gradient-to-r from-indigo-950/60 via-slate-900 to-slate-950 p-6 sm:p-8 shadow-2xl">
+			<div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-gradient-to-r from-blue-950/60 via-slate-900 to-slate-950 p-6 sm:p-8 shadow-2xl">
 				<div className="relative z-10 max-w-3xl space-y-3">
 					<div className="inline-flex items-center gap-2">
 						<Badge variant={roleVariant} className="px-3 py-1 text-xs">
@@ -99,7 +99,7 @@ export function DashboardPage() {
 								onClick={() => setIsCreateActaOpen(true)}
 								className="gap-2 text-white border-slate-700 hover:bg-slate-800"
 							>
-								<FileText className="h-4 w-4 text-indigo-400" />
+								<FileText className="h-4 w-4 text-blue-400" />
 								Emitir Acta Semanal
 							</Button>
 						</Can>
@@ -132,7 +132,7 @@ export function DashboardPage() {
 			<div className="space-y-3">
 				<div className="flex items-center justify-between">
 					<h2 className="text-base font-bold text-white flex items-center gap-2">
-						<Activity className="h-4 w-4 text-indigo-400" />
+						<Activity className="h-4 w-4 text-blue-400" />
 						Resumen Cuantitativo en Vivo
 					</h2>
 					<span className="text-xs text-slate-500">
@@ -167,12 +167,12 @@ export function DashboardPage() {
 							<CardTitle className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
 								En Atención Activa
 							</CardTitle>
-							<div className="p-2 rounded-lg bg-indigo-600/10 text-indigo-400">
+							<div className="p-2 rounded-lg bg-blue-600/10 text-blue-400">
 								<Clock className="h-4 w-4" />
 							</div>
 						</CardHeader>
 						<CardContent>
-							<div className="text-3xl font-extrabold text-indigo-400">
+							<div className="text-3xl font-extrabold text-blue-400">
 								{isLoading ? "..." : ticketsEnAtencion}
 							</div>
 							<p className="text-xs text-slate-500 mt-1">
@@ -227,7 +227,7 @@ export function DashboardPage() {
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
 				<div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 flex items-center justify-between">
 					<div className="flex items-center gap-3">
-						<div className="p-2.5 rounded-lg bg-indigo-600/10 text-indigo-400">
+						<div className="p-2.5 rounded-lg bg-blue-600/10 text-blue-400">
 							<Users className="h-5 w-5" />
 						</div>
 						<div>
@@ -243,7 +243,7 @@ export function DashboardPage() {
 					</div>
 					<Link
 						to="/users"
-						className="text-xs text-indigo-400 hover:text-indigo-300"
+						className="text-xs text-blue-400 hover:text-blue-300"
 					>
 						Ver todos &rarr;
 					</Link>
@@ -251,7 +251,7 @@ export function DashboardPage() {
 
 				<div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 flex items-center justify-between">
 					<div className="flex items-center gap-3">
-						<div className="p-2.5 rounded-lg bg-indigo-600/10 text-indigo-400">
+						<div className="p-2.5 rounded-lg bg-blue-600/10 text-blue-400">
 							<Monitor className="h-5 w-5" />
 						</div>
 						<div>
@@ -267,7 +267,7 @@ export function DashboardPage() {
 					</div>
 					<Link
 						to="/sistemas"
-						className="text-xs text-indigo-400 hover:text-indigo-300"
+						className="text-xs text-blue-400 hover:text-blue-300"
 					>
 						Ver catálogo &rarr;
 					</Link>
@@ -291,7 +291,7 @@ export function DashboardPage() {
 					</div>
 					<Link
 						to="/areas"
-						className="text-xs text-indigo-400 hover:text-indigo-300"
+						className="text-xs text-blue-400 hover:text-blue-300"
 					>
 						Ver áreas &rarr;
 					</Link>
@@ -307,7 +307,7 @@ export function DashboardPage() {
 				<Card className="border-slate-800 bg-slate-900/60">
 					<CardHeader>
 						<div className="flex items-center gap-2">
-							<Layers className="h-5 w-5 text-indigo-400" />
+							<Layers className="h-5 w-5 text-blue-400" />
 							<CardTitle className="text-base">
 								Distribución de Tickets por Fase Operativa
 							</CardTitle>
@@ -326,7 +326,7 @@ export function DashboardPage() {
 								</div>
 								<div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
 									<div
-										className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+										className="h-full bg-blue-500 rounded-full transition-all duration-500"
 										style={{
 											width: `${
 												stats.resumenTickets.total > 0
@@ -345,7 +345,7 @@ export function DashboardPage() {
 				<Card className="border-slate-800 bg-slate-900/60">
 					<CardHeader>
 						<div className="flex items-center gap-2">
-							<Activity className="h-5 w-5 text-indigo-400" />
+							<Activity className="h-5 w-5 text-blue-400" />
 							<CardTitle className="text-base">
 								Distribución por Nivel de Prioridad
 							</CardTitle>

@@ -20,7 +20,7 @@ export function getFaseVariant(codigo?: string) {
 		case "REGISTRADO":
 			return "default" as const;
 		case "ASIGNADO":
-			return "purple" as const;
+			return "blue" as const;
 		case "EN_PROCESO":
 			return "info" as const;
 		case "RESUELTO_POR_DESARROLLO":
@@ -52,7 +52,7 @@ export function TicketTableView({ tickets }: TicketTableViewProps) {
 		columnHelper.accessor("folio", {
 			header: "Folio",
 			cell: (info) => (
-				<span className="font-mono text-xs font-semibold text-indigo-400">
+				<span className="font-mono text-xs font-semibold text-blue-400">
 					{info.getValue()}
 				</span>
 			),
@@ -108,7 +108,7 @@ export function TicketTableView({ tickets }: TicketTableViewProps) {
 				<Link
 					to="/tickets/$ticketId"
 					params={{ ticketId: String(info.row.original.id) }}
-					className="inline-flex items-center gap-1 text-xs font-medium text-indigo-400 hover:text-indigo-300"
+					className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300"
 				>
 					Ver detalle
 					<ExternalLink className="h-3 w-3" />

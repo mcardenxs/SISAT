@@ -78,7 +78,7 @@ export function TicketsPage() {
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
 					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+						<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
 							<TicketIcon className="h-5 w-5" />
 						</div>
 						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
@@ -99,7 +99,7 @@ export function TicketsPage() {
 							onClick={() => setViewMode("grid")}
 							className={`p-1.5 rounded-md transition-colors ${
 								viewMode === "grid"
-									? "bg-indigo-600 text-white shadow"
+									? "bg-blue-600 text-white shadow"
 									: "text-slate-400 hover:text-white"
 							}`}
 							title="Modo Cuadrícula"
@@ -111,7 +111,7 @@ export function TicketsPage() {
 							onClick={() => setViewMode("table")}
 							className={`p-1.5 rounded-md transition-colors ${
 								viewMode === "table"
-									? "bg-indigo-600 text-white shadow"
+									? "bg-blue-600 text-white shadow"
 									: "text-slate-400 hover:text-white"
 							}`}
 							title="Modo Tabla"
@@ -189,12 +189,12 @@ export function TicketsPage() {
 								params={{ ticketId: String(ticket.id) }}
 								className="group block"
 							>
-								<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-indigo-500/50 hover:bg-slate-900/80 transition-all duration-200">
+								<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900/80 transition-all duration-200">
 									<CardHeader className="pb-3">
 										<div className="flex items-start justify-between gap-2">
 											<div>
 												<div className="flex items-center gap-2">
-													<span className="font-mono text-xs text-indigo-400 font-semibold">
+													<span className="font-mono text-xs text-blue-400 font-semibold">
 														{ticket.folio}
 													</span>
 													<span className="text-[11px] text-slate-500 flex items-center gap-1">
@@ -202,7 +202,7 @@ export function TicketsPage() {
 														{formatTimeAgo(ticket.registro)}
 													</span>
 												</div>
-												<CardTitle className="text-base font-semibold text-white mt-1 group-hover:text-indigo-300 transition-colors">
+												<CardTitle className="text-base font-semibold text-white mt-1 group-hover:text-blue-300 transition-colors">
 													{ticket.titulo}
 												</CardTitle>
 											</div>
@@ -218,7 +218,7 @@ export function TicketsPage() {
 
 										<div className="border-t border-slate-800 pt-3 space-y-1.5">
 											<div className="flex items-center gap-1.5 text-slate-400">
-												<Server className="h-3.5 w-3.5 text-indigo-400" />
+												<Server className="h-3.5 w-3.5 text-blue-400" />
 												<span className="font-medium text-slate-200">
 													{ticket.sistemaNombre}
 												</span>
@@ -241,7 +241,7 @@ export function TicketsPage() {
 											<span className="text-slate-400">
 												{ticket.atenciones?.length || 0} ciclo(s)
 											</span>
-											<span className="inline-flex items-center gap-1 text-indigo-400 group-hover:translate-x-0.5 transition-transform">
+											<span className="inline-flex items-center gap-1 text-blue-400 group-hover:translate-x-0.5 transition-transform">
 												Detalle operativo
 												<ExternalLink className="h-3 w-3" />
 											</span>

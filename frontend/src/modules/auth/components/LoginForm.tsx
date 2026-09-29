@@ -115,9 +115,9 @@ export function LoginForm() {
 						variant="outline"
 						size="sm"
 						onClick={() => fillDemo("admin@sisat.local", "Admin123456!")}
-						className="text-xs text-indigo-300 border-indigo-900/50 hover:bg-indigo-950/40 justify-start"
+						className="text-xs text-blue-300 border-blue-900/50 hover:bg-blue-950/40 justify-start"
 					>
-						<Sparkles className="h-3.5 w-3.5 text-indigo-400 mr-1.5 shrink-0" />
+						<Sparkles className="h-3.5 w-3.5 text-blue-400 mr-1.5 shrink-0" />
 						Admin General
 					</Button>
 					<Button

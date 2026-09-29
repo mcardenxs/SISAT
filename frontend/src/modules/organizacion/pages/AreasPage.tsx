@@ -73,7 +73,7 @@ export function AreasPage() {
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
 					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+						<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
 							<Building2 className="h-5 w-5" />
 						</div>
 						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
@@ -129,7 +129,7 @@ export function AreasPage() {
 								<CardHeader className="pb-3">
 									<div className="flex items-start justify-between gap-2">
 										<div className="flex items-center gap-2.5">
-											<div className="p-2 rounded-lg bg-indigo-600/10 text-indigo-400">
+											<div className="p-2 rounded-lg bg-blue-600/10 text-blue-400">
 												<Building2 className="h-4 w-4" />
 											</div>
 											<CardTitle className="text-base font-semibold text-white">
@@ -152,7 +152,7 @@ export function AreasPage() {
 									{/* Contadores requeridos */}
 									<div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
 										<div className="flex items-center gap-2 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80">
-											<Monitor className="h-4 w-4 text-indigo-400" />
+											<Monitor className="h-4 w-4 text-blue-400" />
 											<div>
 												<span className="text-[10px] text-slate-500 uppercase block font-semibold">
 													Sistemas
@@ -191,7 +191,7 @@ export function AreasPage() {
 											variant="ghost"
 											size="sm"
 											onClick={() => setSelectedArea(area)}
-											className="h-7 px-2 text-indigo-400 hover:bg-indigo-950/20 text-xs"
+											className="h-7 px-2 text-blue-400 hover:bg-blue-950/20 text-xs"
 											title="Editar área"
 										>
 											<Edit3 className="h-3.5 w-3.5 mr-1" />

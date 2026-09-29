@@ -74,7 +74,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 				<p className="font-semibold">Ticket no encontrado o error al cargar.</p>
 				<Link
 					to="/tickets"
-					className="text-xs text-indigo-400 underline mt-2 inline-block"
+					className="text-xs text-blue-400 underline mt-2 inline-block"
 				>
 					Regresar al listado de tickets
 				</Link>
@@ -116,13 +116,13 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 				<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 					<div className="space-y-1">
 						<div className="flex flex-wrap items-center gap-2.5">
-							<span className="font-mono text-sm font-bold text-indigo-400 bg-indigo-950/40 px-2.5 py-0.5 rounded border border-indigo-500/20">
+							<span className="font-mono text-sm font-bold text-blue-400 bg-blue-950/40 px-2.5 py-0.5 rounded border border-blue-500/20">
 								{ticket.folio}
 							</span>
 							<Badge variant={getFaseVariant(ticket.faseCodigo)}>
 								{ticket.faseNombre || ticket.faseCodigo}
 							</Badge>
-							<Badge variant="purple">
+							<Badge variant="blue">
 								Prioridad: {ticket.prioridadNombre || "Normal"}
 							</Badge>
 							<Badge variant="info">
@@ -137,7 +137,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 					{/* Ficha rápida de Metadatos */}
 					<div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
 						<div className="flex items-center gap-1.5">
-							<Server className="h-4 w-4 text-indigo-400" />
+							<Server className="h-4 w-4 text-blue-400" />
 							<div>
 								<span className="text-[10px] text-slate-500 block uppercase">
 									Sistema
@@ -209,7 +209,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 							size="sm"
 							onClick={() => startAtencionMutation.mutate({ id: ticket.id })}
 							disabled={startAtencionMutation.isPending}
-							className="gap-1.5 bg-indigo-600 hover:bg-indigo-500"
+							className="gap-1.5 bg-blue-600 hover:bg-blue-500"
 						>
 							<Play className="h-4 w-4" />
 							Iniciar Atención
@@ -358,7 +358,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 						onClick={() => setActiveTab("atencion")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
 							activeTab === "atencion"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>
@@ -369,7 +369,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 						onClick={() => setActiveTab("ciclos")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
 							activeTab === "ciclos"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>
@@ -380,7 +380,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 						onClick={() => setActiveTab("trazabilidad")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
 							activeTab === "trazabilidad"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>

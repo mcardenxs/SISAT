@@ -13,7 +13,7 @@ export function LoginPage() {
 				¿No tienes una cuenta?{" "}
 				<Link
 					to="/register"
-					className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline"
+					className="font-medium text-blue-400 hover:text-blue-300 hover:underline"
 				>
 					Regístrate aquí
 				</Link>

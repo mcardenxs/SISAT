@@ -105,7 +105,7 @@ export function TerminarAtencionModal({
 						onChange={(e) => setDiagnostico(e.target.value)}
 						rows={2}
 						placeholder="Identificación del error, comportamiento anómalo o falla de origen..."
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					/>
 					{errors.diagnostico && (
 						<p className="text-[11px] text-rose-400 mt-1">
@@ -127,7 +127,7 @@ export function TerminarAtencionModal({
 						onChange={(e) => setSolucion(e.target.value)}
 						rows={2}
 						placeholder="Procedimiento técnico, fix de código o parche implementado..."
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					/>
 					{errors.solucion && (
 						<p className="text-[11px] text-rose-400 mt-1">{errors.solucion}</p>
@@ -147,7 +147,7 @@ export function TerminarAtencionModal({
 							value={modulos}
 							onChange={(e) => setModulos(e.target.value)}
 							placeholder="ej. Módulo de Facturación, Auth"
-							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 						/>
 					</div>
 
@@ -163,7 +163,7 @@ export function TerminarAtencionModal({
 							value={datos}
 							onChange={(e) => setDatos(e.target.value)}
 							placeholder="ej. Scripts DDL/DML, corrección de registros"
-							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 						/>
 					</div>
 				</div>
@@ -181,7 +181,7 @@ export function TerminarAtencionModal({
 						onChange={(e) => setCambios(e.target.value)}
 						rows={2}
 						placeholder="Commits, pull requests o librerías actualizadas..."
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					/>
 				</div>
 

@@ -98,7 +98,7 @@ export function AssignTicketModal({
 						value={selectedUserId}
 						onChange={(e) => setSelectedUserId(Number(e.target.value))}
 						required
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					>
 						<option value="">
 							{isLoadingUsers
@@ -124,7 +124,7 @@ export function AssignTicketModal({
 							id="principalCheckbox"
 							checked={isPrincipal}
 							onChange={(e) => setIsPrincipal(e.target.checked)}
-							className="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500"
+							className="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
 						/>
 						<label
 							htmlFor="principalCheckbox"

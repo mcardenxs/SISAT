@@ -24,7 +24,7 @@ export function UserProfileCard() {
 
 	const roleVariant =
 		user.role === "ADMIN"
-			? "purple"
+			? "blue"
 			: user.role === "MOD"
 				? "warning"
 				: "default";
@@ -33,7 +33,7 @@ export function UserProfileCard() {
 		<Card className="max-w-2xl mx-auto">
 			<CardHeader>
 				<div className="flex items-center gap-4">
-					<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-600/10 border border-indigo-500/20 text-xl font-bold text-indigo-400">
+					<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/10 border border-blue-500/20 text-xl font-bold text-blue-400">
 						{user.name.charAt(0).toUpperCase()}
 					</div>
 					<div>

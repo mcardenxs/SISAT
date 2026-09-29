@@ -12,7 +12,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 		<div className="min-h-screen flex items-center justify-center bg-radial from-slate-900 to-slate-950 px-4 py-12">
 			<div className="w-full max-w-md space-y-8">
 				<div className="text-center">
-					<div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 mb-4 shadow-inner">
+					<div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 mb-4 shadow-inner">
 						<Hexagon className="h-8 w-8 stroke-[2.2]" />
 					</div>
 					<h1 className="text-3xl font-extrabold tracking-tight text-white">

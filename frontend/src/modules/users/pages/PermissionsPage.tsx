@@ -6,7 +6,7 @@ import { Shield, Check, Minus, KeyRound, Lock } from "lucide-react";
 interface RoleDef {
 	codigo: string;
 	nombre: string;
-	badge: "purple" | "warning" | "success" | "info" | "default";
+	badge: "blue" | "warning" | "success" | "info" | "default";
 	description: string;
 	permissions: Array<{ resource: string; action: string }>;
 }
@@ -15,7 +15,7 @@ const ROLES_CATALOG: RoleDef[] = [
 	{
 		codigo: "ADMINISTRADOR",
 		nombre: "Administrador General",
-		badge: "purple",
+		badge: "blue",
 		description:
 			"Control y acceso total e irrestricto sobre todos los recursos y acciones (* : *).",
 		permissions: [{ resource: "*", action: "*" }],
@@ -130,7 +130,7 @@ export function PermissionsPage() {
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
 					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+						<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
 							<Shield className="h-5 w-5" />
 						</div>
 						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
@@ -162,7 +162,7 @@ export function PermissionsPage() {
 						<p className="text-xs text-slate-400 leading-relaxed">
 							{role.description}
 						</p>
-						<div className="pt-2 text-[11px] text-indigo-400 flex items-center gap-1 font-mono">
+						<div className="pt-2 text-[11px] text-blue-400 flex items-center gap-1 font-mono">
 							<KeyRound className="h-3 w-3" />
 							{role.permissions.length} privilegio(s) de regla
 						</div>
@@ -174,7 +174,7 @@ export function PermissionsPage() {
 			<div className="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
 				<div className="p-5 border-b border-slate-800 bg-slate-900/90">
 					<h3 className="text-base font-semibold text-white flex items-center gap-2">
-						<Lock className="h-4 w-4 text-indigo-400" />
+						<Lock className="h-4 w-4 text-blue-400" />
 						Matriz de Permisos Heredados por Rol
 					</h3>
 					<p className="text-xs text-slate-400 mt-1">
@@ -214,7 +214,7 @@ export function PermissionsPage() {
 												</span>
 											</td>
 										)}
-										<td className="px-5 py-3 font-mono text-indigo-300">
+										<td className="px-5 py-3 font-mono text-blue-300">
 											{action}
 										</td>
 

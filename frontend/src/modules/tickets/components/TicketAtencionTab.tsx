@@ -40,7 +40,7 @@ export function TicketAtencionTab({
 			{/* Diagnóstico y Solución Técnica */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-2">
-					<div className="flex items-center gap-2 text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+					<div className="flex items-center gap-2 text-xs font-semibold text-blue-400 uppercase tracking-wider">
 						<FileText className="h-4 w-4" />
 						Diagnóstico Técnico (Causa Raíz)
 					</div>
@@ -74,7 +74,7 @@ export function TicketAtencionTab({
 					{atencion.modulos && (
 						<div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
 							<span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mb-1.5">
-								<Layers className="h-3.5 w-3.5 text-indigo-400" />
+								<Layers className="h-3.5 w-3.5 text-blue-400" />
 								Módulos Afectados
 							</span>
 							<p className="text-xs text-slate-200">{atencion.modulos}</p>
@@ -105,12 +105,12 @@ export function TicketAtencionTab({
 			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
 				<div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 					<h3 className="text-sm font-semibold text-white flex items-center gap-2">
-						<Clock className="h-4 w-4 text-indigo-400" />
+						<Clock className="h-4 w-4 text-blue-400" />
 						Bitácora de Intervenciones de Tiempo
 					</h3>
 					<span className="text-xs text-slate-400">
 						Total acumulado:{" "}
-						<strong className="text-indigo-300">
+						<strong className="text-blue-300">
 							{atencion.intervenciones?.reduce(
 								(acc, i) => acc + i.minutos,
 								0,
@@ -148,7 +148,7 @@ export function TicketAtencionTab({
 									</div>
 									<p className="text-slate-300">{intv.descripcion}</p>
 								</div>
-								<Badge variant="purple" className="shrink-0 font-mono">
+								<Badge variant="blue" className="shrink-0 font-mono">
 									{intv.minutos} min
 								</Badge>
 							</div>
@@ -161,7 +161,7 @@ export function TicketAtencionTab({
 			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
 				<div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 					<h3 className="text-sm font-semibold text-white flex items-center gap-2">
-						<Paperclip className="h-4 w-4 text-indigo-400" />
+						<Paperclip className="h-4 w-4 text-blue-400" />
 						Archivos y Evidencias Técnicas
 					</h3>
 					<span className="text-xs text-slate-400">
@@ -186,7 +186,7 @@ export function TicketAtencionTab({
 											{evi.formato || "file"}
 										</Badge>
 										{evi.claseCodigo && (
-											<span className="text-[10px] text-indigo-400 font-medium">
+											<span className="text-[10px] text-blue-400 font-medium">
 												{evi.claseCodigo}
 											</span>
 										)}
@@ -209,7 +209,7 @@ export function TicketAtencionTab({
 									href={evi.ruta}
 									target="_blank"
 									rel="noreferrer"
-									className="p-1.5 rounded-md text-slate-400 hover:text-indigo-400 hover:bg-slate-800 transition-colors shrink-0"
+									className="p-1.5 rounded-md text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition-colors shrink-0"
 									title="Abrir evidencia"
 								>
 									<ExternalLink className="h-4 w-4" />

@@ -63,7 +63,7 @@ export function ActasPage() {
 			case "GENERADA":
 				return "warning" as const;
 			case "EN_FIRMA":
-				return "purple" as const;
+				return "blue" as const;
 			case "CARGADA":
 				return "success" as const;
 			default:
@@ -85,7 +85,7 @@ export function ActasPage() {
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
 					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+						<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
 							<FileText className="h-5 w-5" />
 						</div>
 						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
@@ -118,7 +118,7 @@ export function ActasPage() {
 			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-3">
 				<div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
 					<span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-						<Filter className="h-3.5 w-3.5 text-indigo-400" />
+						<Filter className="h-3.5 w-3.5 text-blue-400" />
 						Filtros de Actas
 					</span>
 					{hasActiveFilters && (
@@ -141,7 +141,7 @@ export function ActasPage() {
 							setSistemaId(e.target.value ? Number(e.target.value) : undefined)
 						}
 						aria-label="Filtrar actas por sistema"
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					>
 						<option value="">Todos los Sistemas</option>
 						{sistemas?.map((s) => (
@@ -157,7 +157,7 @@ export function ActasPage() {
 							setAreaId(e.target.value ? Number(e.target.value) : undefined)
 						}
 						aria-label="Filtrar actas por área"
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					>
 						<option value="">Todas las Áreas</option>
 						{areas?.map((a) => (
@@ -175,7 +175,7 @@ export function ActasPage() {
 							)
 						}
 						aria-label="Filtrar actas por situación o estado de firma"
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					>
 						<option value="">Todas las Situaciones</option>
 						{catalogos?.situacion.map((sit) => (
@@ -208,14 +208,14 @@ export function ActasPage() {
 							params={{ actaId: String(acta.id) }}
 							className="group block"
 						>
-							<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-indigo-500/50 hover:bg-slate-900/80 transition-all duration-200">
+							<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900/80 transition-all duration-200">
 								<CardHeader className="pb-3">
 									<div className="flex items-start justify-between gap-2">
 										<div>
-											<span className="font-mono text-xs text-indigo-400 font-semibold bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-500/20">
+											<span className="font-mono text-xs text-blue-400 font-semibold bg-blue-950/40 px-2 py-0.5 rounded border border-blue-500/20">
 												{acta.folio}
 											</span>
-											<CardTitle className="text-base font-semibold text-white mt-1 group-hover:text-indigo-300 transition-colors">
+											<CardTitle className="text-base font-semibold text-white mt-1 group-hover:text-blue-300 transition-colors">
 												{acta.sistemaNombre}
 											</CardTitle>
 										</div>
@@ -245,7 +245,7 @@ export function ActasPage() {
 
 									<div className="border-t border-slate-800 pt-3 flex items-center justify-between text-[11px] text-slate-400">
 										<div className="flex items-center gap-1">
-											<Calendar className="h-3 w-3 text-indigo-400" />
+											<Calendar className="h-3 w-3 text-blue-400" />
 											<span>
 												{acta.inicio} al {acta.fin}
 											</span>
@@ -256,7 +256,7 @@ export function ActasPage() {
 										</div>
 									</div>
 
-									<div className="pt-1 flex items-center justify-end text-[11px] text-indigo-400 group-hover:translate-x-0.5 transition-transform">
+									<div className="pt-1 flex items-center justify-end text-[11px] text-blue-400 group-hover:translate-x-0.5 transition-transform">
 										Ver acta y firmas <ArrowRight className="h-3 w-3 ml-1" />
 									</div>
 								</CardContent>

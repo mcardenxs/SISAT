@@ -37,7 +37,7 @@ export function TicketCiclosTab({
 				>
 					<div className="flex items-center justify-between border-b border-slate-800 pb-3">
 						<div className="flex items-center gap-2">
-							<Badge variant="purple" className="font-semibold text-xs">
+							<Badge variant="blue" className="font-semibold text-xs">
 								Ciclo #{ciclo.ciclo}
 							</Badge>
 							<span className="text-xs text-slate-400 flex items-center gap-1">

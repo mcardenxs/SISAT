@@ -43,7 +43,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
 	const roleVariant =
 		user?.role === "ADMINISTRADOR" || user?.role === "ADMIN"
-			? "purple"
+			? "blue"
 			: user?.role === "RESPONSABLE_DE_SISTEMA" || user?.role === "MOD"
 				? "warning"
 				: user?.role === "DESARROLLADOR"
@@ -58,10 +58,10 @@ export function MainLayout({ children }: MainLayoutProps) {
 					<div className="flex h-16 items-center justify-between gap-4">
 						<div className="flex items-center gap-8">
 							<Link to="/dashboard" className="flex items-center gap-2.5 group">
-								<div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 group-hover:bg-indigo-600/20 transition-colors">
+								<div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 group-hover:bg-blue-600/20 transition-colors">
 									<Hexagon className="h-5 w-5 stroke-[2.2]" />
 								</div>
-								<span className="text-lg font-bold tracking-tight text-white group-hover:text-indigo-400 transition-colors">
+								<span className="text-lg font-bold tracking-tight text-white group-hover:text-blue-400 transition-colors">
 									SISAT
 								</span>
 							</Link>
@@ -69,7 +69,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 							<nav className="hidden md:flex items-center gap-1">
 								<Link
 									to="/dashboard"
-									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 								>
 									<LayoutDashboard className="h-4 w-4" />
 									Dashboard
@@ -78,7 +78,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 								<Can resource="tickets" action="read">
 									<Link
 										to="/tickets"
-										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 									>
 										<Ticket className="h-4 w-4" />
 										Tickets
@@ -88,7 +88,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 								<Can resource="actas" action="read">
 									<Link
 										to="/actas"
-										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 									>
 										<FileText className="h-4 w-4" />
 										Actas
@@ -98,7 +98,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 								<Can resource="sistemas" action="read">
 									<Link
 										to="/sistemas"
-										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 									>
 										<Monitor className="h-4 w-4" />
 										Sistemas
@@ -108,7 +108,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 								<Can resource="areas" action="read">
 									<Link
 										to="/areas"
-										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 									>
 										<Building2 className="h-4 w-4" />
 										Áreas
@@ -118,7 +118,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 								<Can resource="users" action="read">
 									<Link
 										to="/users"
-										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 									>
 										<Users className="h-4 w-4" />
 										Usuarios
@@ -128,7 +128,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 								<Can resource="permissions" action="read">
 									<Link
 										to="/permissions"
-										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+										className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 									>
 										<Shield className="h-4 w-4" />
 										Permisos
@@ -137,7 +137,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
 								<Link
 									to="/profile"
-									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-indigo-600/10 [&.active]:text-indigo-400 [&.active]:border [&.active]:border-indigo-500/20"
+									className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors [&.active]:bg-blue-600/10 [&.active]:text-blue-400 [&.active]:border [&.active]:border-blue-500/20"
 								>
 									<UserCheck className="h-4 w-4" />
 									Mi Perfil

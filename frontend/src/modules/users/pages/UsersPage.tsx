@@ -24,7 +24,7 @@ export function UsersPage() {
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
 					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+						<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
 							<UsersIcon className="h-5 w-5" />
 						</div>
 						<h1 className="text-2xl font-bold tracking-tight text-white">

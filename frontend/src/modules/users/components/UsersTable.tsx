@@ -55,7 +55,7 @@ export function UsersTable({
 	if (isLoading) {
 		return (
 			<div className="flex flex-col items-center justify-center py-16 space-y-3">
-				<Spinner size="lg" className="text-indigo-500" />
+				<Spinner size="lg" className="text-blue-500" />
 				<p className="text-sm text-slate-400">Cargando lista de usuarios...</p>
 			</div>
 		);
@@ -111,7 +111,7 @@ export function UsersTable({
 							{users.map((u) => {
 								const roleVariant =
 									u.role === "ADMINISTRADOR" || u.role === "ADMIN"
-										? "purple"
+										? "blue"
 										: u.role === "JEFE_DE_AREA"
 											? "info"
 											: u.role === "RESPONSABLE_DE_SISTEMA"
@@ -130,7 +130,7 @@ export function UsersTable({
 										</td>
 										<td className="px-5 py-3.5 font-medium text-slate-200">
 											<div className="flex items-center gap-2.5">
-												<div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 text-xs font-semibold text-indigo-400">
+												<div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 text-xs font-semibold text-blue-400">
 													{u.name.charAt(0).toUpperCase()}
 												</div>
 												<span>
@@ -164,7 +164,7 @@ export function UsersTable({
 													variant="ghost"
 													size="sm"
 													onClick={() => setSelectedPermsUser(u)}
-													className="h-7 w-7 p-0 text-slate-400 hover:text-indigo-400 hover:bg-slate-800"
+													className="h-7 w-7 p-0 text-slate-400 hover:text-blue-400 hover:bg-slate-800"
 													title="Ver permisos efectivos"
 												>
 													<KeyRound className="h-3.5 w-3.5" />
