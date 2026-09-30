@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/core/auth/store";
 import { Modal } from "@/core/components/ui/Modal";
 import { Button } from "@/core/components/ui/Button";
 import { Input } from "@/core/components/ui/Input";
@@ -16,6 +17,7 @@ interface CreateTicketModalProps {
 
 export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 	const queryClient = useQueryClient();
+	const user = useAuthStore((state) => state.user);
 
 	const [formData, setFormData] = useState<CreateTicketInput>({
 		sistemaId: 0,
@@ -31,6 +33,31 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 		queryFn: sistemaApi.getAll,
 		enabled: isOpen,
 	});
+
+	// Filtrar para mostrar únicamente los sistemas donde el usuario actual es Responsable Activo
+	const userSistemas = useMemo(() => {
+		if (!sistemas || !user?.id) return [];
+		return sistemas.filter((s) =>
+			s.responsables?.some(
+				(r) =>
+					r.usuarioId === user.id &&
+					!r.fin &&
+					(r.estadoId === 1 || r.estadoNombre === "Activo"),
+			),
+		);
+	}, [sistemas, user?.id]);
+
+	// Auto-seleccionar si el usuario solo tiene un sistema asignado
+	useEffect(() => {
+		if (isOpen && userSistemas.length === 1 && formData.sistemaId === 0) {
+			const unicoSistema = userSistemas[0];
+			setFormData((prev) => ({
+				...prev,
+				sistemaId: unicoSistema.id,
+				areaId: unicoSistema.areaId || prev.areaId,
+			}));
+		}
+	}, [isOpen, userSistemas, formData.sistemaId]);
 
 	const { data: areas } = useQuery({
 		queryKey: ["areas"],
@@ -87,19 +114,25 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 			title="Crear Nuevo Ticket de Soporte"
 		>
 			<form onSubmit={handleSubmit} className="space-y-4">
+				{userSistemas.length === 0 && (
+					<div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 text-xs leading-relaxed">
+						⚠️ No tienes sistemas institucionales asignados como Responsable vigente. Según las normas de SISAT, solo los responsables asignados pueden registrar tickets.
+					</div>
+				)}
+
 				<div>
 					<label
 						htmlFor="ticket-sistema-select"
 						className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
 					>
-						Sistema Institucional
+						Sistema Institucional (Donde eres Responsable)
 					</label>
 					<select
 						id="ticket-sistema-select"
 						value={formData.sistemaId}
 						onChange={(e) => {
 							const sisId = Number(e.target.value);
-							const sis = sistemas?.find((s) => s.id === sisId);
+							const sis = userSistemas.find((s) => s.id === sisId);
 							setFormData((prev) => ({
 								...prev,
 								sistemaId: sisId,
@@ -108,9 +141,14 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 						}}
 						className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 						required
+						disabled={userSistemas.length === 0}
 					>
-						<option value={0}>Seleccione un sistema...</option>
-						{sistemas?.map((s) => (
+						<option value={0}>
+							{userSistemas.length === 0
+								? "Sin sistemas asignados"
+								: "Seleccione un sistema..."}
+						</option>
+						{userSistemas.map((s) => (
 							<option key={s.id} value={s.id}>
 								{s.clave} - {s.nombre}
 							</option>
@@ -238,7 +276,11 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 					<Button variant="ghost" onClick={onClose}>
 						Cancelar
 					</Button>
-					<Button type="submit" isLoading={mutation.isPending}>
+					<Button
+						type="submit"
+						isLoading={mutation.isPending}
+						disabled={userSistemas.length === 0}
+					>
 						Registrar Ticket
 					</Button>
 				</div>

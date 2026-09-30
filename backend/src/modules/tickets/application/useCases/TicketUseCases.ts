@@ -351,22 +351,22 @@ export class TicketUseCases {
 		actorId: number,
 		actorRole?: string,
 	): Promise<TicketDto> {
-		// Validar que solo Responsables de Sistema vigentes o Administradores puedan registrar tickets
-		if (actorRole && actorRole !== "ADMINISTRADOR" && actorRole !== "ADMIN") {
-			const esResponsable = await prisma.responsable.findFirst({
-				where: {
-					res_fksistema: dto.sistemaId,
-					res_fkusuario: actorId,
-					res_fin: null,
-				},
-			});
+		// Validar que solo Responsables de Sistema vigentes puedan registrar tickets
+		const esResponsable = await prisma.responsable.findFirst({
+			where: {
+				res_fksistema: dto.sistemaId,
+				res_fkusuario: actorId,
+				res_fkestado: 1,
+				res_fin: null,
+				res_inicio: { lte: new Date() },
+			},
+		});
 
-			if (!esResponsable) {
-				throw new BaseError(
-					"Solo los responsables vigentes del sistema o administradores pueden registrar tickets para este sistema",
-					403,
-				);
-			}
+		if (!esResponsable) {
+			throw new BaseError(
+				"Solo un responsable vigente del sistema puede registrar tickets",
+				403,
+			);
 		}
 
 		// Validar fase 'REGISTRADO' y constancia 'NO_APLICA'
