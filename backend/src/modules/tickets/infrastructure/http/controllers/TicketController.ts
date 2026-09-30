@@ -40,11 +40,19 @@ export class TicketController extends BaseController {
 			const usuarioId = c.req.query("usuarioId")
 				? Number(c.req.query("usuarioId"))
 				: undefined;
+			const desarrolladorId = c.req.query("desarrolladorId")
+				? Number(c.req.query("desarrolladorId"))
+				: undefined;
+			const areaId = c.req.query("areaId")
+				? Number(c.req.query("areaId"))
+				: undefined;
 
 			const tickets = await this.ticketUseCases.findAll({
 				sistemaId,
 				faseId,
 				usuarioId,
+				desarrolladorId,
+				areaId,
 			});
 			return this.ok(c, tickets);
 		});
@@ -63,7 +71,7 @@ export class TicketController extends BaseController {
 			const user = c.get("user");
 			const body = await c.req.json();
 			const dto = validate(createTicketSchema, body);
-			const ticket = await this.ticketUseCases.create(dto, user.id);
+			const ticket = await this.ticketUseCases.create(dto, user.id, user.role);
 			return this.created(c, ticket);
 		});
 	};

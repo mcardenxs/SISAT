@@ -207,6 +207,21 @@ export class TicketUseCases {
 				motivo: m.mov_motivo,
 				fecha: m.mov_fecha,
 			})),
+			evidencias: t.evidencia?.map((e: any) => ({
+				id: e.evi_id,
+				ticketId: e.evi_fkticket,
+				atencionId: e.evi_fkatencion,
+				reaperturaId: e.evi_fkreapertura,
+				claseId: e.evi_fkclase,
+				claseCodigo: e.clase?.cla_codigo,
+				usuarioId: e.evi_fkusuario,
+				nombre: e.evi_nombre,
+				ruta: e.evi_ruta,
+				formato: e.evi_formato,
+				tamano: e.evi_tamano,
+				descripcion: e.evi_descripcion,
+				fecha: e.evi_fecha,
+			})),
 		};
 	}
 
@@ -216,12 +231,23 @@ export class TicketUseCases {
 		sistemaId?: number;
 		faseId?: number;
 		usuarioId?: number;
+		desarrolladorId?: number;
+		areaId?: number;
 	}): Promise<TicketDto[]> {
 		const records = await prisma.ticket.findMany({
 			where: {
 				...(filters?.sistemaId && { tic_fksistema: filters.sistemaId }),
 				...(filters?.faseId && { tic_fkfase: filters.faseId }),
 				...(filters?.usuarioId && { tic_fkusuario: filters.usuarioId }),
+				...(filters?.areaId && { tic_fkarea: filters.areaId }),
+				...(filters?.desarrolladorId && {
+					asignacion: {
+						some: {
+							asi_fkusuario: filters.desarrolladorId,
+							asi_fin: null,
+						},
+					},
+				}),
 			},
 			orderBy: { tic_id: "desc" },
 			include: {
@@ -304,6 +330,10 @@ export class TicketUseCases {
 					},
 					orderBy: { mov_id: "asc" },
 				},
+				evidencia: {
+					include: { clase: true },
+					orderBy: { evi_id: "asc" },
+				},
 			},
 		});
 
@@ -316,7 +346,29 @@ export class TicketUseCases {
 
 	// ----------------- CREACIÓN DE TICKET -----------------
 
-	async create(dto: CreateTicketDto, actorId: number): Promise<TicketDto> {
+	async create(
+		dto: CreateTicketDto,
+		actorId: number,
+		actorRole?: string,
+	): Promise<TicketDto> {
+		// Validar que solo Responsables de Sistema vigentes o Administradores puedan registrar tickets
+		if (actorRole && actorRole !== "ADMINISTRADOR" && actorRole !== "ADMIN") {
+			const esResponsable = await prisma.responsable.findFirst({
+				where: {
+					res_fksistema: dto.sistemaId,
+					res_fkusuario: actorId,
+					res_fin: null,
+				},
+			});
+
+			if (!esResponsable) {
+				throw new BaseError(
+					"Solo los responsables vigentes del sistema o administradores pueden registrar tickets para este sistema",
+					403,
+				);
+			}
+		}
+
 		// Validar fase 'REGISTRADO' y constancia 'NO_APLICA'
 		const faseRegistrado = await prisma.fase.findUnique({
 			where: { fas_codigo: "REGISTRADO" },
@@ -361,8 +413,37 @@ export class TicketUseCases {
 				solicitud: true,
 				fase: true,
 				constancia: true,
+				evidencia: {
+					include: { clase: true },
+					orderBy: { evi_id: "asc" },
+				},
 			},
 		});
+
+		// Si se proporcionó evidencia inicial, registrarla de forma transaccional
+		if (dto.evidencia) {
+			const claseInicial = await prisma.clase.findFirst({
+				where: { cla_codigo: "INICIAL" },
+			});
+
+			const evidenciaRecord = await prisma.evidencia.create({
+				data: {
+					evi_fkticket: record.tic_id,
+					evi_fkclase: dto.evidencia.claseId ?? claseInicial?.cla_id ?? 1,
+					evi_fkusuario: actorId,
+					evi_nombre: dto.evidencia.nombre,
+					evi_ruta: dto.evidencia.ruta,
+					evi_formato: dto.evidencia.formato,
+					evi_tamano: dto.evidencia.tamano,
+					evi_descripcion:
+						dto.evidencia.descripcion ??
+						"Evidencia inicial adjunta en el registro",
+				},
+				include: { clase: true },
+			});
+
+			(record as any).evidencia = [evidenciaRecord];
+		}
 
 		return this.mapTicket(record);
 	}

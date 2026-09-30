@@ -14,6 +14,16 @@ export const createTicketSchema = z.object({
 		.string()
 		.min(5, "La descripción debe tener al menos 5 caracteres")
 		.trim(),
+	evidencia: z
+		.object({
+			claseId: z.number().int().positive().optional(),
+			nombre: z.string().min(2, "El nombre del archivo es requerido"),
+			ruta: z.string().min(1, "La ruta del archivo es requerida"),
+			formato: z.string().min(1, "El formato es requerido"),
+			tamano: z.number().int().positive("El tamaño debe ser mayor a 0"),
+			descripcion: z.string().optional(),
+		})
+		.optional(),
 });
 
 export const assignTicketSchema = z.object({
