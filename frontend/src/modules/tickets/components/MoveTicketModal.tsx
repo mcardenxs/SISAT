@@ -12,7 +12,7 @@ interface MoveTicketModalProps {
 	onClose: () => void;
 	ticketId: number;
 	currentSistemaId: number;
-	currentSistemaNombre: string;
+	currentSistemaNombre?: string;
 }
 
 export function MoveTicketModal({
@@ -20,7 +20,7 @@ export function MoveTicketModal({
 	onClose,
 	ticketId,
 	currentSistemaId,
-	currentSistemaNombre,
+	currentSistemaNombre = "Sistema Actual",
 }: MoveTicketModalProps) {
 	const [sistemaDestinoId, setSistemaDestinoId] = useState<number>(0);
 	const [motivo, setMotivo] = useState("");

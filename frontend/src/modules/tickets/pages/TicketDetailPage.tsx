@@ -333,6 +333,8 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 							Reabrir Ticket
 						</Button>
 					)}
+				</Can>
+
 				{/* 8. Cambiar de Sistema (Doc. 3.8) */}
 				<Can resource="tickets" action="update">
 					{!isClosed && !isCancelled && (

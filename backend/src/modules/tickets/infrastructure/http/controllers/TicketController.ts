@@ -31,6 +31,7 @@ export class TicketController extends BaseController {
 
 	getAll = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
+			const user = c.get("user");
 			const sistemaId = c.req.query("sistemaId")
 				? Number(c.req.query("sistemaId"))
 				: undefined;
@@ -47,21 +48,26 @@ export class TicketController extends BaseController {
 				? Number(c.req.query("areaId"))
 				: undefined;
 
-			const tickets = await this.ticketUseCases.findAll({
-				sistemaId,
-				faseId,
-				usuarioId,
-				desarrolladorId,
-				areaId,
-			});
+			const tickets = await this.ticketUseCases.findAll(
+				{
+					sistemaId,
+					faseId,
+					usuarioId,
+					desarrolladorId,
+					areaId,
+				},
+				user?.id,
+				user?.role,
+			);
 			return this.ok(c, tickets);
 		});
 	};
 
 	getById = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
+			const user = c.get("user");
 			const id = Number(c.req.param("id"));
-			const ticket = await this.ticketUseCases.findById(id);
+			const ticket = await this.ticketUseCases.findById(id, user?.id, user?.role);
 			return this.ok(c, ticket);
 		});
 	};

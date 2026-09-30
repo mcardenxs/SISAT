@@ -104,17 +104,66 @@ export class ActaUseCases {
 
 	// ----------------- CONSULTAS -----------------
 
-	async findAll(filters?: {
-		sistemaId?: number;
-		areaId?: number;
-		situacionId?: number;
-	}): Promise<ActaDto[]> {
+	async findAll(
+		filters?: {
+			sistemaId?: number;
+			areaId?: number;
+			situacionId?: number;
+		},
+		actorId?: number,
+		actorRole?: string,
+	): Promise<ActaDto[]> {
+		const andConditions: any[] = [];
+
+		// Scoping institucional según rol del actor
+		if (
+			actorRole &&
+			actorId &&
+			actorRole !== "ADMINISTRADOR" &&
+			actorRole !== "ADMIN"
+		) {
+			if (actorRole === "JEFE_DE_AREA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (user?.usu_fkarea) {
+					andConditions.push({ act_fkarea: user.usu_fkarea });
+				} else {
+					return [];
+				}
+			} else if (actorRole === "RESPONSABLE_DE_SISTEMA") {
+				const sistemas = await prisma.responsable.findMany({
+					where: {
+						res_fkusuario: actorId,
+						res_fkestado: 1,
+						res_fin: null,
+					},
+					select: { res_fksistema: true },
+				});
+				const sistemaIds = sistemas.map((s) => s.res_fksistema);
+				if (sistemaIds.length === 0) {
+					return [];
+				}
+				andConditions.push({ act_fksistema: { in: sistemaIds } });
+			} else {
+				// Desarrolladores, Consulta u otros roles sin permiso de actas
+				return [];
+			}
+		}
+
+		if (filters?.sistemaId) {
+			andConditions.push({ act_fksistema: filters.sistemaId });
+		}
+		if (filters?.areaId) {
+			andConditions.push({ act_fkarea: filters.areaId });
+		}
+		if (filters?.situacionId) {
+			andConditions.push({ act_fksituacion: filters.situacionId });
+		}
+
 		const records = await prisma.acta.findMany({
-			where: {
-				...(filters?.sistemaId && { act_fksistema: filters.sistemaId }),
-				...(filters?.areaId && { act_fkarea: filters.areaId }),
-				...(filters?.situacionId && { act_fksituacion: filters.situacionId }),
-			},
+			where: andConditions.length > 0 ? { AND: andConditions } : undefined,
 			orderBy: { act_id: "desc" },
 			include: {
 				situacion: true,
@@ -130,7 +179,11 @@ export class ActaUseCases {
 		return records.map((r) => this.mapActa(r));
 	}
 
-	async findById(id: number): Promise<ActaDto> {
+	async findById(
+		id: number,
+		actorId?: number,
+		actorRole?: string,
+	): Promise<ActaDto> {
 		const record = await prisma.acta.findUnique({
 			where: { act_id: id },
 			include: {
@@ -148,6 +201,47 @@ export class ActaUseCases {
 
 		if (!record) {
 			throw new BaseError(`Acta con ID ${id} no encontrada`, 404);
+		}
+
+		// Validar permisos de acceso institucional
+		if (
+			actorRole &&
+			actorId &&
+			actorRole !== "ADMINISTRADOR" &&
+			actorRole !== "ADMIN"
+		) {
+			if (actorRole === "JEFE_DE_AREA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (!user?.usu_fkarea || record.act_fkarea !== user.usu_fkarea) {
+					throw new BaseError(
+						"No tienes permisos para ver actas de otra área institucional",
+						403,
+					);
+				}
+			} else if (actorRole === "RESPONSABLE_DE_SISTEMA") {
+				const isResp = await prisma.responsable.findFirst({
+					where: {
+						res_fkusuario: actorId,
+						res_fksistema: record.act_fksistema,
+						res_fkestado: 1,
+						res_fin: null,
+					},
+				});
+				if (!isResp) {
+					throw new BaseError(
+						"No tienes permisos para ver actas de sistemas que no tienes asignados",
+						403,
+					);
+				}
+			} else {
+				throw new BaseError(
+					"No tienes autorización para consultar actas de entrega/recepción",
+					403,
+				);
+			}
 		}
 
 		return this.mapActa(record);

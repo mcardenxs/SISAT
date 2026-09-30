@@ -50,7 +50,7 @@ describe("TicketUseCases - Nuevas Funcionalidades", () => {
 				"DESARROLLADOR",
 			),
 		).rejects.toThrow(
-			"Solo los responsables vigentes del sistema o administradores pueden registrar tickets",
+			"Solo un responsable vigente del sistema puede registrar tickets",
 		);
 	});
 
@@ -64,7 +64,10 @@ describe("TicketUseCases - Nuevas Funcionalidades", () => {
 
 		expect(findManyMock).toHaveBeenCalled();
 		const callArg = findManyMock.mock.calls[0][0];
-		expect(callArg.where.asignacion).toBeDefined();
-		expect(callArg.where.asignacion.some.asi_fkusuario).toBe(7);
+		const asigCondition = callArg.where.AND
+			? callArg.where.AND.find((c: any) => c.asignacion)
+			: callArg.where;
+		expect(asigCondition.asignacion).toBeDefined();
+		expect(asigCondition.asignacion.some.asi_fkusuario).toBe(7);
 	});
 });
