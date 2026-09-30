@@ -43,6 +43,9 @@ export function RoleInboxWidget() {
 	const pendingValidationTickets = tickets.filter(
 		(t) => t.faseCodigo === "RESUELTO_POR_DESARROLLO",
 	);
+	const waitingInfoTickets = tickets.filter(
+		(t) => t.faseCodigo === "EN_ESPERA_DE_INFORMACION",
+	);
 
 	// 3. Jefe de Área: actas listas para firma
 	const actasPendingFirma = actas.filter(
@@ -198,6 +201,47 @@ export function RoleInboxWidget() {
 								))}
 							</div>
 						)}
+					</div>
+				)}
+
+				{/* Widget Responsable / Admin: Tickets en Espera de Información */}
+				{(isResp || isAdmin) && waitingInfoTickets.length > 0 && (
+					<div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-5 space-y-3">
+						<div className="flex items-center justify-between pb-2 border-b border-amber-500/30">
+							<div className="flex items-center gap-2">
+								<AlertCircle className="h-4 w-4 text-amber-400 animate-pulse" />
+								<h3 className="text-xs font-semibold text-amber-200">
+									Requiere tu Respuesta (Espera de Info)
+								</h3>
+							</div>
+							<Badge variant="warning">{waitingInfoTickets.length}</Badge>
+						</div>
+
+						<div className="space-y-2">
+							{waitingInfoTickets.slice(0, 3).map((t) => (
+								<Link
+									key={t.id}
+									to="/tickets/$ticketId"
+									params={{ ticketId: String(t.id) }}
+									className="block p-2.5 rounded-lg bg-slate-950/60 hover:bg-slate-900 border border-amber-500/30 transition-colors"
+								>
+									<div className="flex items-center justify-between text-xs">
+										<span className="font-mono text-amber-400 font-semibold">
+											{t.folio}
+										</span>
+										<Badge variant="warning" className="text-[10px]">
+											Requiere aclaración
+										</Badge>
+									</div>
+									<p className="text-xs font-medium text-slate-200 truncate mt-1">
+										{t.titulo}
+									</p>
+									<span className="text-[11px] text-amber-400 mt-1 flex items-center gap-1">
+										Ver y reanudar atención &rarr;
+									</span>
+								</Link>
+							))}
+						</div>
 					</div>
 				)}
 
