@@ -14,7 +14,17 @@ export class DashboardController extends BaseController {
 
 	run = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
-			const stats = await this.dashboardMetricsUseCase.run();
+			const areaId = c.req.query("areaId")
+				? Number(c.req.query("areaId"))
+				: undefined;
+			const sistemaId = c.req.query("sistemaId")
+				? Number(c.req.query("sistemaId"))
+				: undefined;
+
+			const stats = await this.dashboardMetricsUseCase.run({
+				areaId,
+				sistemaId,
+			});
 			return this.ok(c, stats);
 		});
 	};
