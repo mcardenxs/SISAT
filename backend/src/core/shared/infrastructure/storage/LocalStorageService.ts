@@ -27,7 +27,17 @@ export class LocalStorageService {
 	async saveFile(file: File): Promise<StoredFileInfo> {
 		const originalName = file.name;
 		const rawExt = path.extname(originalName).toLowerCase().replace(".", "");
-		const allowedExtensions = ["jpg", "jpeg", "png", "webp", "pdf"];
+		const allowedExtensions = [
+			"jpg",
+			"jpeg",
+			"png",
+			"webp",
+			"pdf",
+			"mp4",
+			"docx",
+			"xlsx",
+			"zip",
+		];
 
 		if (!allowedExtensions.includes(rawExt)) {
 			throw new BaseError(
@@ -36,10 +46,14 @@ export class LocalStorageService {
 			);
 		}
 
-		// Límite de 15MB
-		const maxSizeBytes = 15 * 1024 * 1024;
+		// Límite diferenciado: videos mp4 hasta 30MB, demás archivos hasta 15MB
+		const isVideo = rawExt === "mp4";
+		const maxSizeBytes = isVideo ? 30 * 1024 * 1024 : 15 * 1024 * 1024;
 		if (file.size > maxSizeBytes) {
-			throw new BaseError("El tamaño del archivo supera el límite de 15MB", 400);
+			throw new BaseError(
+				`El tamaño del archivo supera el límite permitido (${isVideo ? "30MB para videos" : "15MB"})`,
+				400,
+			);
 		}
 
 		const uniqueName = `${Date.now()}-${crypto.randomUUID()}.${rawExt}`;
