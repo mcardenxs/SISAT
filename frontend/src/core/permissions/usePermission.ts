@@ -96,9 +96,13 @@ export function usePermission(resource: string, action: string): boolean {
 		return false;
 	}
 
-	// Superusuario admin
-	if (user.role === "ADMINISTRADOR" || user.role === "ADMIN") {
-		return true;
+	// Regla institucional SISAT: El Administrador no puede registrar tickets (solo reasignar y gestionar)
+	if (
+		resource === "tickets" &&
+		action === "create" &&
+		(user.role === "ADMINISTRADOR" || user.role === "ADMIN")
+	) {
+		return false;
 	}
 
 	// Permisos dinámicos del backend
