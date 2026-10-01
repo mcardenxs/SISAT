@@ -11,3 +11,4 @@ dist
 build
 *.tsbuildinfo
 pnpm-debug.log*
+.DS_Store
