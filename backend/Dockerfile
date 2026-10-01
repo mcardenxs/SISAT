@@ -25,4 +25,4 @@ RUN bunx prisma generate
 EXPOSE 3000
 
 # Comando para arrancar la aplicación
-ENTRYPOINT [ "bun", "run", "dev" ]
+CMD [ "bun", "run", "dev" ]

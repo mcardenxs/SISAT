@@ -14,7 +14,9 @@
 		"test:e2e": "bun test '**/*.e2e.spec.ts'",
 		"test:watch": "bun test --watch",
 		"create:admin": "bun scripts/create-admin.ts",
-		"seed:demo": "bun scripts/seed-demo-data.ts"
+		"seed:demo": "bun scripts/seed-demo-data.ts",
+		"db:push": "bunx --bun prisma db push",
+		"db:migrate": "bunx --bun prisma migrate deploy"
 	},
 	"prisma": {
 		"seed": "bun prisma/seed.ts"
