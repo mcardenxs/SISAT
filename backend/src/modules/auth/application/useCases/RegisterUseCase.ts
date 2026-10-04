@@ -25,19 +25,18 @@ export class RegisterUseCase {
 	async run(
 		dto: RegisterDto,
 	): Promise<{ accessToken: string; refreshToken: string; user: UserDto }> {
-		const existingUsers = await this.userRepository.find({
-			page: 1,
-			limit: 1,
-			email: dto.email,
-		});
+		const existingUser = await this.userRepository.findByEmail(dto.email);
 
-		if (existingUsers?.data?.length > 0) {
-			throw new BaseError("User with this email already exists", 400);
+		if (existingUser) {
+			throw new BaseError(
+				"Ya existe un usuario con este correo electrónico",
+				400,
+			);
 		}
 
 		const passwordHash = await this.passwordHasher.hash(dto.password);
-		// Role comes as 'USER' by default in user create
-		const user = User.create(dto.name, dto.email, passwordHash, "USER");
+		// Rol base de solo consulta por defecto
+		const user = User.create(dto.name, dto.email, passwordHash, "CONSULTA");
 
 		const createdUser = await this.userRepository.create(user);
 

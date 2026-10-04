@@ -5,7 +5,13 @@ import { useAuthStore } from "@/core/auth/store";
 export const Route = createFileRoute("/_authenticated/users")({
 	beforeLoad: () => {
 		const { user } = useAuthStore.getState();
-		if (user?.role !== "ADMINISTRADOR" && user?.role !== "ADMIN") {
+		const isAdmin =
+			user?.roles?.includes("ADMINISTRADOR") ||
+			user?.roles?.includes("ADMIN") ||
+			user?.role === "ADMINISTRADOR" ||
+			user?.role === "ADMIN";
+
+		if (!isAdmin) {
 			throw redirect({ to: "/dashboard" });
 		}
 	},
