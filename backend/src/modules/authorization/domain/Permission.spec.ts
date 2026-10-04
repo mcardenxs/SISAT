@@ -13,7 +13,9 @@ describe("Permission", () => {
 		const adminPerm = Permission.reconstitute(2, "*", "*");
 		expect(adminPerm.matches("tickets", "read")).toBe(true);
 		expect(adminPerm.matches("tickets", "delete")).toBe(true);
-		expect(adminPerm.matches("cualquier_recurso", "cualquier_accion")).toBe(true);
+		expect(adminPerm.matches("cualquier_recurso", "cualquier_accion")).toBe(
+			true,
+		);
 
 		const readAllPerm = Permission.reconstitute(3, "*", "read");
 		expect(readAllPerm.matches("tickets", "read")).toBe(true);

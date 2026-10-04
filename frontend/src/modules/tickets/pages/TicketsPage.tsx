@@ -122,7 +122,9 @@ export function TicketsPage() {
 		link.click();
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
-		toast.success(`Reporte exportado exitosamente (${filteredTickets.length} tickets)`);
+		toast.success(
+			`Reporte exportado exitosamente (${filteredTickets.length} tickets)`,
+		);
 	};
 
 	return (

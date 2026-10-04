@@ -116,7 +116,9 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 			<form onSubmit={handleSubmit} className="space-y-4">
 				{userSistemas.length === 0 && (
 					<div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 text-xs leading-relaxed">
-						⚠️ No tienes sistemas institucionales asignados como Responsable vigente. Según las normas de SISAT, solo los responsables asignados pueden registrar tickets.
+						⚠️ No tienes sistemas institucionales asignados como Responsable
+						vigente. Según las normas de SISAT, solo los responsables asignados
+						pueden registrar tickets.
 					</div>
 				)}
 

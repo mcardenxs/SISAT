@@ -71,7 +71,10 @@ export function MoveTicketModal({
 						<ArrowRightLeft className="h-4 w-4" />
 						Reclasificación de Sistema (Doc. 3.8)
 					</div>
-					Al transferir este ticket a otro sistema institucional, las asignaciones técnicas previas concluirán y el ticket iniciará registrado para que el responsable del nuevo sistema lo asigne a su equipo técnico.
+					Al transferir este ticket a otro sistema institucional, las
+					asignaciones técnicas previas concluirán y el ticket iniciará
+					registrado para que el responsable del nuevo sistema lo asigne a su
+					equipo técnico.
 				</div>
 
 				<div>

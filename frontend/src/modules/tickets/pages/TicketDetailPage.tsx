@@ -194,7 +194,8 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 								Ticket en Espera de Información (Pausado)
 							</h4>
 							<p className="text-xs text-amber-300/80">
-								El equipo técnico ha pausado la atención solicitando datos o aclaraciones adicionales al Responsable del Sistema.
+								El equipo técnico ha pausado la atención solicitando datos o
+								aclaraciones adicionales al Responsable del Sistema.
 							</p>
 						</div>
 					</div>

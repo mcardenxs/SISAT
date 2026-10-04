@@ -33,7 +33,11 @@ export class SistemaController extends BaseController {
 		return this.executeSafely(c, async () => {
 			const user = c.get("user");
 			const id = Number(c.req.param("id"));
-			const sistema = await this.sistemaUseCases.findById(id, user?.id, user?.role);
+			const sistema = await this.sistemaUseCases.findById(
+				id,
+				user?.id,
+				user?.role,
+			);
 			return this.ok(c, sistema);
 		});
 	};

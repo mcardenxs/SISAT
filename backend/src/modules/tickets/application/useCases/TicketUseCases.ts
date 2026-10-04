@@ -305,9 +305,11 @@ export class TicketUseCases {
 			}
 		}
 
-		if (filters?.sistemaId) andConditions.push({ tic_fksistema: filters.sistemaId });
+		if (filters?.sistemaId)
+			andConditions.push({ tic_fksistema: filters.sistemaId });
 		if (filters?.faseId) andConditions.push({ tic_fkfase: filters.faseId });
-		if (filters?.usuarioId) andConditions.push({ tic_fkusuario: filters.usuarioId });
+		if (filters?.usuarioId)
+			andConditions.push({ tic_fkusuario: filters.usuarioId });
 		if (filters?.areaId) andConditions.push({ tic_fkarea: filters.areaId });
 		if (filters?.desarrolladorId) {
 			andConditions.push({

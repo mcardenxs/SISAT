@@ -67,7 +67,11 @@ export class TicketController extends BaseController {
 		return this.executeSafely(c, async () => {
 			const user = c.get("user");
 			const id = Number(c.req.param("id"));
-			const ticket = await this.ticketUseCases.findById(id, user?.id, user?.role);
+			const ticket = await this.ticketUseCases.findById(
+				id,
+				user?.id,
+				user?.role,
+			);
 			return this.ok(c, ticket);
 		});
 	};
