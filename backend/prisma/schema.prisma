@@ -557,9 +557,23 @@ model usuario {
   termino                                             termino[]
   ticket                                              ticket[]
   transicion                                          transicion[]
+  refresh_token                                       refresh_token[]
   area                                                area            @relation(fields: [usu_fkarea], references: [are_id], onUpdate: Restrict, map: "fk_usuario_area")
   estado                                              estado          @relation(fields: [usu_fkestado], references: [est_id], onUpdate: Restrict, map: "fk_usuario_estado")
 
   @@index([usu_fkarea], map: "fk_usuario_area")
   @@index([usu_fkestado], map: "fk_usuario_estado")
 }
+
+model refresh_token {
+  rft_id         Int      @id @default(autoincrement())
+  rft_fkusuario  Int
+  rft_token_hash String   @unique(map: "uk_refresh_token_hash") @db.VarChar(512)
+  rft_expiracion DateTime @db.DateTime(0)
+  rft_revocado   Boolean  @default(false)
+  rft_creacion   DateTime @default(now()) @db.DateTime(0)
+  usuario        usuario  @relation(fields: [rft_fkusuario], references: [usu_id], onDelete: Cascade, onUpdate: Restrict, map: "fk_refresh_token_usuario")
+
+  @@index([rft_fkusuario], map: "fk_refresh_token_usuario")
+}
+

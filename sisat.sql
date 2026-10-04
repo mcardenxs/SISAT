@@ -118,6 +118,19 @@ CREATE TABLE perfil (
     CONSTRAINT fk_perfil_rol FOREIGN KEY (per_fkrol) REFERENCES rol (rol_id)
 ) ENGINE=InnoDB COMMENT='Roles Asignados a Usuarios';
 
+CREATE TABLE refresh_token (
+    rft_id INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador del Refresh Token',
+    rft_fkusuario INT(11) NOT NULL COMMENT 'Usuario Propietario del Token',
+    rft_token_hash VARCHAR(512) NOT NULL COMMENT 'Hash del Refresh Token',
+    rft_expiracion DATETIME NOT NULL COMMENT 'Fecha y Hora de Expiración',
+    rft_revocado TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Indicador de Token Revocado (0=Activo, 1=Revocado)',
+    rft_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de Emisión del Token',
+    PRIMARY KEY (rft_id),
+    UNIQUE KEY uk_refresh_token_hash (rft_token_hash),
+    KEY fk_refresh_token_usuario (rft_fkusuario),
+    CONSTRAINT fk_refresh_token_usuario FOREIGN KEY (rft_fkusuario) REFERENCES usuario (usu_id) ON DELETE CASCADE
+) ENGINE=InnoDB COMMENT='Tokens de Refresco de Sesión (JWT)';
+
 CREATE TABLE sistema (
     sis_id INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador del Sistema',
     sis_fkarea INT(11) NOT NULL COMMENT 'Área Responsable del Sistema',
