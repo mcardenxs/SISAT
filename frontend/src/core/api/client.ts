@@ -35,6 +35,9 @@ apiClient.interceptors.request.use(
 	},
 );
 
+// Promesa compartida para serializar el refresco de token ante múltiples peticiones concurrentes
+let refreshPromise: Promise<string> | null = null;
+
 // Response Interceptor: Manejo de 401 y Refresh Token automático
 apiClient.interceptors.response.use(
 	(response: AxiosResponse) => response,
@@ -55,19 +58,33 @@ apiClient.interceptors.response.use(
 			}
 
 			try {
-				// Llamada directa sin interceptores para evitar bucles
-				const response = await axios.post<{
-					accessToken: string;
-					refreshToken: string;
-				}>("/api/auth/refresh", { refreshToken });
+				if (!refreshPromise) {
+					// Crear una única promesa de refresco para todas las peticiones concurrentes
+					refreshPromise = axios
+						.post<{
+							accessToken: string;
+							refreshToken: string;
+						}>("/api/auth/refresh", { refreshToken })
+						.then((response) => {
+							const {
+								accessToken: newAccessToken,
+								refreshToken: newRefreshToken,
+							} = response.data;
 
-				const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-					response.data;
+							setTokens({
+								accessToken: newAccessToken,
+								refreshToken: newRefreshToken,
+							});
 
-				setTokens({
-					accessToken: newAccessToken,
-					refreshToken: newRefreshToken,
-				});
+							return newAccessToken;
+						})
+						.finally(() => {
+							refreshPromise = null;
+						});
+				}
+
+				// Esperar a que la promesa activa resuelva el nuevo access token
+				const newAccessToken = await refreshPromise;
 
 				if (originalRequest.headers) {
 					originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

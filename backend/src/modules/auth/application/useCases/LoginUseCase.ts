@@ -24,16 +24,17 @@ export class LoginUseCase {
 	async run(
 		dto: LoginDto,
 	): Promise<{ accessToken: string; refreshToken: string; user: UserDto }> {
-		const users = await this.userRepository.find({
-			page: 1,
-			limit: 1,
-			email: dto.email,
-		});
-
-		const [user] = users.data;
+		const user = await this.userRepository.findByEmail(dto.email);
 
 		if (!user) {
-			throw new BaseError("Invalid credentials", 401);
+			throw new BaseError("Credenciales inválidas", 401);
+		}
+
+		if (!user.getIsActive()) {
+			throw new BaseError(
+				"Cuenta de usuario desactivada. Contacte al administrador",
+				403,
+			);
 		}
 
 		const isPasswordValid = await this.passwordHasher.compare(
@@ -42,7 +43,7 @@ export class LoginUseCase {
 		);
 
 		if (!isPasswordValid) {
-			throw new BaseError("Invalid credentials", 401);
+			throw new BaseError("Credenciales inválidas", 401);
 		}
 
 		// Access token de corta duración (15 min)

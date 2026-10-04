@@ -53,10 +53,7 @@ export class User extends Entity {
 	): User {
 		const emailVO = new Email(emailStr);
 		const roleVO = new Role(roleStr);
-		const effectiveRoles =
-			roles.length > 0
-				? roles
-				: [roleVO.value];
+		const effectiveRoles = roles.length > 0 ? roles : [roleVO.value];
 
 		// Aquí el ID es undefined porque es nuevo
 		const user = new User(
@@ -99,7 +96,8 @@ export class User extends Entity {
 		}
 		if (data.roles !== undefined && data.roles.length > 0) {
 			this.roles = data.roles;
-			this.role = new Role(data.roles[0]);
+			const primaryRole = data.roles[0] ?? "CONSULTA";
+			this.role = new Role(primaryRole);
 		}
 		if (data.isActive !== undefined) this.isActive = data.isActive;
 		if (data.passwordHash !== undefined) this.passwordHash = data.passwordHash;

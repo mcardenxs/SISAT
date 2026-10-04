@@ -26,7 +26,7 @@ export class AuthMiddleware {
 	 * @param {Next} next - Función asíncrona para ceder el control al siguiente middleware o controlador.
 	 * @returns {Promise<Response | void>} Retorna una respuesta HTTP 401 si falla, o cede el control con `await next()`.
 	 */
-	handle = async (c: Context, next: Next): Promise<Response | undefined> => {
+	handle = async (c: Context, next: Next): Promise<Response | void> => {
 		// En Hono, los headers se obtienen a través de c.req.header()
 		const authHeader = c.req.header("Authorization");
 
@@ -46,22 +46,19 @@ export class AuthMiddleware {
 			return c.json({ success: false, error: "Token inválido" }, 401);
 		}
 
+		let decoded: unknown;
 		try {
-			const decoded = this.jwtService.verifyToken(token);
-
-			// En lugar de mutar req (ej. req.user), en Hono guardamos datos en el contexto
-			// usando c.set() para que otros middlewares/controladores puedan leerlo con c.get()
-			c.set("user", decoded);
-
-			await next(); // Siempre debe llevar await en Hono
+			decoded = this.jwtService.verifyToken(token);
 		} catch (error) {
-			console.log("Error auth middleware");
-			console.log(error);
-
+			console.error("Error al verificar token JWT en AuthMiddleware:", error);
 			return c.json(
 				{ success: false, error: "Token inválido o expirado" },
 				401,
 			);
 		}
+
+		// Guardar usuario autenticado en el contexto de Hono
+		c.set("user", decoded);
+		await next();
 	};
 }
