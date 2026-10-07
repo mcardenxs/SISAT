@@ -27,11 +27,7 @@ export function StatCard({
 				<span className="text-xs font-medium text-foreground-muted">
 					{label}
 				</span>
-				{icon && (
-					<div className="text-foreground-subtle shrink-0">
-						{icon}
-					</div>
-				)}
+				{icon && <div className="text-foreground-subtle shrink-0">{icon}</div>}
 			</div>
 			<div className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
 				{value}

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Hexagon } from "lucide-react";
+import { ThemeToggle } from "@/core/components/ui/ThemeToggle";
 
 interface AuthLayoutProps {
 	children: ReactNode;
@@ -9,19 +10,23 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-radial from-slate-900 to-slate-950 px-4 py-12">
-			<div className="w-full max-w-md space-y-8">
-				<div className="text-center">
-					<div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 mb-4 shadow-inner">
-						<Hexagon className="h-8 w-8 stroke-[2.2]" />
+		<div className="min-h-screen flex flex-col justify-center bg-canvas px-4 py-12 relative text-foreground">
+			<div className="absolute top-4 right-4">
+				<ThemeToggle showLabel />
+			</div>
+
+			<div className="mx-auto w-full max-w-md space-y-6">
+				<div className="text-center space-y-2">
+					<div className="inline-flex items-center justify-center h-12 w-12 rounded-surface bg-primary-light border border-primary-border text-primary shadow-surface">
+						<Hexagon className="h-7 w-7 stroke-[2]" />
 					</div>
-					<h1 className="text-3xl font-extrabold tracking-tight text-white">
+					<h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
 						{title}
 					</h1>
-					<p className="mt-2 text-sm text-slate-400">{subtitle}</p>
+					<p className="text-sm text-foreground-muted">{subtitle}</p>
 				</div>
 
-				<div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-8 shadow-2xl backdrop-blur-md">
+				<div className="rounded-overlay border border-subtle bg-surface p-8 shadow-surface">
 					{children}
 				</div>
 			</div>

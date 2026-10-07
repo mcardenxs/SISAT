@@ -13,6 +13,9 @@ import {
 } from "@/core/components/ui/Card";
 import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
+import { PageHeader } from "@/core/components/ui/PageHeader";
+import { EmptyState } from "@/core/components/ui/EmptyState";
+import { Alert } from "@/core/components/ui/Alert";
 import { Can } from "@/core/permissions/Can";
 import {
 	FileText,
@@ -63,11 +66,11 @@ export function ActasPage() {
 			case "GENERADA":
 				return "warning" as const;
 			case "EN_FIRMA":
-				return "purple" as const;
+				return "info" as const;
 			case "CARGADA":
 				return "success" as const;
 			default:
-				return "default" as const;
+				return "neutral" as const;
 		}
 	};
 
@@ -81,33 +84,23 @@ export function ActasPage() {
 
 	return (
 		<div className="space-y-6">
-			{/* Encabezado */}
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-				<div>
-					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
-							<FileText className="h-5 w-5" />
-						</div>
-						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-							Actas de Entrega-Recepción
-						</h1>
-					</div>
-					<p className="text-sm text-slate-400 mt-1">
-						Agrupación semanal de atenciones técnicas (periodo de 7 días
-						naturales) para validación y firma.
-					</p>
-				</div>
-
-				<Can resource="actas" action="create">
-					<Button
-						onClick={() => setIsCreateOpen(true)}
-						className="gap-2 self-start sm:self-auto"
-					>
-						<Plus className="h-4 w-4" />
-						Generar Acta Semanal
-					</Button>
-				</Can>
-			</div>
+			{/* Encabezado según la guía ANDROMEDA */}
+			<PageHeader
+				title="Actas de Entrega-Recepción"
+				description="Agrupación semanal de atenciones técnicas (periodo de 7 días naturales) para validación y firma."
+				actions={
+					<Can resource="actas" action="create">
+						<Button
+							onClick={() => setIsCreateOpen(true)}
+							className="gap-2"
+							size="sm"
+						>
+							<Plus className="h-4 w-4" />
+							Generar Acta Semanal
+						</Button>
+					</Can>
+				}
+			/>
 
 			<CreateActaModal
 				isOpen={isCreateOpen}
@@ -115,10 +108,10 @@ export function ActasPage() {
 			/>
 
 			{/* Filtros */}
-			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-3">
-				<div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
-					<span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-						<Filter className="h-3.5 w-3.5 text-indigo-400" />
+			<div className="rounded-surface border border-subtle bg-surface p-4 space-y-3 shadow-surface">
+				<div className="flex items-center justify-between border-b border-subtle pb-2.5">
+					<span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+						<Filter className="h-3.5 w-3.5 text-primary" />
 						Filtros de Actas
 					</span>
 					{hasActiveFilters && (
@@ -126,7 +119,7 @@ export function ActasPage() {
 							variant="ghost"
 							size="sm"
 							onClick={handleResetFilters}
-							className="h-6 text-xs text-slate-400 hover:text-white"
+							className="h-6 text-xs text-foreground-muted hover:text-foreground"
 						>
 							<RotateCcw className="h-3 w-3 mr-1" />
 							Limpiar
@@ -141,7 +134,7 @@ export function ActasPage() {
 							setSistemaId(e.target.value ? Number(e.target.value) : undefined)
 						}
 						aria-label="Filtrar actas por sistema"
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-control border border-border-strong bg-surface px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-surface"
 					>
 						<option value="">Todos los Sistemas</option>
 						{sistemas?.map((s) => (
@@ -157,7 +150,7 @@ export function ActasPage() {
 							setAreaId(e.target.value ? Number(e.target.value) : undefined)
 						}
 						aria-label="Filtrar actas por área"
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-control border border-border-strong bg-surface px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-surface"
 					>
 						<option value="">Todas las Áreas</option>
 						{areas?.map((a) => (
@@ -175,7 +168,7 @@ export function ActasPage() {
 							)
 						}
 						aria-label="Filtrar actas por situación o estado de firma"
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+						className="w-full rounded-control border border-border-strong bg-surface px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-surface"
 					>
 						<option value="">Todas las Situaciones</option>
 						{catalogos?.situacion.map((sit) => (
@@ -188,19 +181,19 @@ export function ActasPage() {
 			</div>
 
 			{isLoading && (
-				<div className="p-12 text-center text-slate-400">
+				<div className="p-12 text-center text-foreground-muted text-sm">
 					Cargando actas de entrega-recepción...
 				</div>
 			)}
 
 			{error && (
-				<div className="p-8 text-center text-rose-400 bg-rose-950/20 border border-rose-900/40 rounded-xl">
-					Error al cargar actas.
-				</div>
+				<Alert variant="danger" title="Error de carga">
+					Error al cargar actas de entrega-recepción.
+				</Alert>
 			)}
 
 			{!isLoading && !error && actas && actas.length > 0 && (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					{actas.map((acta) => (
 						<Link
 							key={acta.id}
@@ -208,14 +201,14 @@ export function ActasPage() {
 							params={{ actaId: String(acta.id) }}
 							className="group block"
 						>
-							<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-indigo-500/50 hover:bg-slate-900/80 transition-all duration-200">
+							<Card className="h-full hover:border-strong transition-colors">
 								<CardHeader className="pb-3">
 									<div className="flex items-start justify-between gap-2">
 										<div>
-											<span className="font-mono text-xs text-indigo-400 font-semibold bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-500/20">
+											<span className="font-mono text-xs text-primary font-semibold bg-primary-light px-2 py-0.5 rounded-control border border-primary-border">
 												{acta.folio}
 											</span>
-											<CardTitle className="text-base font-semibold text-white mt-1 group-hover:text-indigo-300 transition-colors">
+											<CardTitle className="text-base font-semibold text-foreground mt-1 group-hover:text-primary transition-colors">
 												{acta.sistemaNombre}
 											</CardTitle>
 										</div>
@@ -225,38 +218,38 @@ export function ActasPage() {
 									</div>
 								</CardHeader>
 								<CardContent className="space-y-3 text-xs">
-									<div className="flex items-center gap-1.5 text-slate-400">
-										<Building className="h-3.5 w-3.5 text-slate-500" />
+									<div className="flex items-center gap-1.5 text-foreground-muted">
+										<Building className="h-3.5 w-3.5 text-foreground-subtle" />
 										<span>
 											Área:{" "}
-											<span className="text-slate-300">{acta.areaNombre}</span>
+											<span className="text-foreground">{acta.areaNombre}</span>
 										</span>
 									</div>
 
-									<div className="flex items-center gap-1.5 text-slate-400">
-										<User className="h-3.5 w-3.5 text-slate-500" />
+									<div className="flex items-center gap-1.5 text-foreground-muted">
+										<User className="h-3.5 w-3.5 text-foreground-subtle" />
 										<span>
 											Firmante:{" "}
-											<span className="text-slate-300">
+											<span className="text-foreground">
 												{acta.firmanteNombre}
 											</span>
 										</span>
 									</div>
 
-									<div className="border-t border-slate-800 pt-3 flex items-center justify-between text-[11px] text-slate-400">
+									<div className="border-t border-subtle pt-3 flex items-center justify-between text-[11px] text-foreground-muted">
 										<div className="flex items-center gap-1">
-											<Calendar className="h-3 w-3 text-indigo-400" />
+											<Calendar className="h-3 w-3 text-primary" />
 											<span>
 												{acta.inicio} al {acta.fin}
 											</span>
 										</div>
-										<div className="flex items-center gap-1 text-emerald-400 font-medium">
+										<div className="flex items-center gap-1 text-success font-medium">
 											<CheckCircle2 className="h-3 w-3" />
 											<span>{acta.inclusiones?.length || 0} ticket(s)</span>
 										</div>
 									</div>
 
-									<div className="pt-1 flex items-center justify-end text-[11px] text-indigo-400 group-hover:translate-x-0.5 transition-transform">
+									<div className="pt-1 flex items-center justify-end text-[11px] text-primary group-hover:translate-x-0.5 transition-transform font-medium">
 										Ver acta y firmas <ArrowRight className="h-3 w-3 ml-1" />
 									</div>
 								</CardContent>
@@ -267,15 +260,11 @@ export function ActasPage() {
 			)}
 
 			{!isLoading && !error && actas?.length === 0 && (
-				<div className="p-12 text-center border border-dashed border-slate-800 rounded-xl text-slate-400">
-					<FileText className="h-8 w-8 mx-auto text-slate-600 mb-2" />
-					<p className="font-semibold text-slate-300">
-						No hay actas registradas
-					</p>
-					<p className="text-xs text-slate-500 mt-1">
-						Genera una nueva acta semanal agrupando atenciones concluidas.
-					</p>
-				</div>
+				<EmptyState
+					icon={<FileText className="h-8 w-8" />}
+					title="No hay actas registradas"
+					description="Genera una nueva acta semanal agrupando atenciones concluidas."
+				/>
 			)}
 		</div>
 	);

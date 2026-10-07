@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { permissionApi } from "@/core/permissions/permissionApi";
 import { Badge } from "@/core/components/ui/Badge";
-import { Shield, Check, Minus, KeyRound, Lock } from "lucide-react";
+import { PageHeader } from "@/core/components/ui/PageHeader";
+import { Check, Minus, KeyRound, Lock } from "lucide-react";
 
 interface RoleDef {
 	codigo: string;
 	nombre: string;
-	badge: "purple" | "warning" | "success" | "info" | "default";
+	badge: "info" | "warning" | "success" | "neutral";
 	description: string;
 	permissions: Array<{ resource: string; action: string }>;
 }
@@ -15,7 +16,7 @@ const ROLES_CATALOG: RoleDef[] = [
 	{
 		codigo: "ADMINISTRADOR",
 		nombre: "Administrador General",
-		badge: "purple",
+		badge: "info",
 		description:
 			"Control y acceso total e irrestricto sobre todos los recursos y acciones (* : *).",
 		permissions: [{ resource: "*", action: "*" }],
@@ -80,7 +81,7 @@ const ROLES_CATALOG: RoleDef[] = [
 	{
 		codigo: "CONSULTA",
 		nombre: "Usuario de Consulta",
-		badge: "default",
+		badge: "neutral",
 		description:
 			"Acceso de solo lectura y seguimiento informativo sin privilegios de mutación.",
 		permissions: [
@@ -125,44 +126,32 @@ export function PermissionsPage() {
 	};
 
 	return (
-		<div className="space-y-8">
-			{/* Encabezado */}
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-				<div>
-					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
-							<Shield className="h-5 w-5" />
-						</div>
-						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-							Matriz de Roles y Permisos (RBAC)
-						</h1>
-					</div>
-					<p className="text-sm text-slate-400 mt-1">
-						Configuración centralizada de control de acceso basada en roles y
-						acciones sobre recursos.
-					</p>
-				</div>
-			</div>
+		<div className="space-y-6">
+			{/* Encabezado según la guía ANDROMEDA */}
+			<PageHeader
+				title="Matriz de Roles y Permisos (RBAC)"
+				description="Configuración centralizada de control de acceso basada en roles y acciones sobre recursos."
+			/>
 
 			{/* Roles del Sistema */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{ROLES_CATALOG.map((role) => (
 					<div
 						key={role.codigo}
-						className="p-5 rounded-xl border border-slate-800 bg-slate-900/60 space-y-2.5"
+						className="p-5 rounded-surface border border-subtle bg-surface shadow-surface space-y-2.5"
 					>
 						<div className="flex items-center justify-between">
-							<span className="font-semibold text-sm text-white">
+							<span className="font-semibold text-sm text-foreground">
 								{role.nombre}
 							</span>
 							<Badge variant={role.badge} className="text-[10px]">
 								{role.codigo}
 							</Badge>
 						</div>
-						<p className="text-xs text-slate-400 leading-relaxed">
+						<p className="text-xs text-foreground-muted leading-relaxed">
 							{role.description}
 						</p>
-						<div className="pt-2 text-[11px] text-indigo-400 flex items-center gap-1 font-mono">
+						<div className="pt-2 text-[11px] text-primary flex items-center gap-1 font-mono font-medium">
 							<KeyRound className="h-3 w-3" />
 							{role.permissions.length} privilegio(s) de regla
 						</div>
@@ -171,13 +160,13 @@ export function PermissionsPage() {
 			</div>
 
 			{/* Matriz Visual de Permisos por Rol y Recurso */}
-			<div className="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
-				<div className="p-5 border-b border-slate-800 bg-slate-900/90">
-					<h3 className="text-base font-semibold text-white flex items-center gap-2">
-						<Lock className="h-4 w-4 text-indigo-400" />
+			<div className="rounded-surface border border-subtle bg-surface overflow-hidden shadow-surface">
+				<div className="p-5 border-b border-subtle bg-surface-subtle">
+					<h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+						<Lock className="h-4 w-4 text-primary" />
 						Matriz de Permisos Heredados por Rol
 					</h3>
-					<p className="text-xs text-slate-400 mt-1">
+					<p className="text-xs text-foreground-muted mt-1">
 						Cruza los recursos del sistema frente a las 5 operaciones
 						fundamentales.
 					</p>
@@ -185,36 +174,39 @@ export function PermissionsPage() {
 
 				<div className="overflow-x-auto">
 					<table className="w-full text-left text-xs">
-						<thead className="border-b border-slate-800 bg-slate-950/80 uppercase tracking-wider text-slate-400">
+						<thead className="border-b border-subtle bg-surface-subtle uppercase tracking-wider text-foreground-muted">
 							<tr>
-								<th className="px-5 py-3.5">Recurso</th>
-								<th className="px-5 py-3.5">Acción</th>
+								<th className="px-5 py-3.5 font-semibold">Recurso</th>
+								<th className="px-5 py-3.5 font-semibold">Acción</th>
 								{ROLES_CATALOG.map((r) => (
-									<th key={r.codigo} className="px-4 py-3.5 text-center">
+									<th
+										key={r.codigo}
+										className="px-4 py-3.5 text-center font-semibold"
+									>
 										{r.codigo.replace("_", " ")}
 									</th>
 								))}
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-slate-800/60">
+						<tbody className="divide-y divide-subtle">
 							{SYSTEM_RESOURCES.flatMap((res) =>
 								SYSTEM_ACTIONS.map((action, actionIdx) => (
 									<tr
 										key={`${res.key}-${action}`}
-										className="hover:bg-slate-800/30 transition-colors"
+										className="hover:bg-surface-muted/50 transition-colors"
 									>
 										{actionIdx === 0 && (
 											<td
 												rowSpan={SYSTEM_ACTIONS.length}
-												className="px-5 py-3 font-semibold text-slate-200 border-r border-slate-800 bg-slate-900/40 align-top"
+												className="px-5 py-3 font-semibold text-foreground border-r border-subtle bg-surface-subtle/30 align-top"
 											>
 												{res.label}
-												<span className="block font-mono text-[10px] text-slate-500 font-normal">
+												<span className="block font-mono text-[10px] text-foreground-subtle font-normal">
 													{res.key}
 												</span>
 											</td>
 										)}
-										<td className="px-5 py-3 font-mono text-indigo-300">
+										<td className="px-5 py-3 font-mono text-primary font-medium">
 											{action}
 										</td>
 
@@ -223,11 +215,11 @@ export function PermissionsPage() {
 											return (
 												<td key={role.codigo} className="px-4 py-3 text-center">
 													{allowed ? (
-														<span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
+														<span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-success-subtle text-success border border-success-border">
 															<Check className="h-3 w-3 stroke-[2.5]" />
 														</span>
 													) : (
-														<span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-800/40 text-slate-600">
+														<span className="inline-flex h-5 w-5 items-center justify-center rounded-full text-foreground-subtle">
 															<Minus className="h-3 w-3" />
 														</span>
 													)}
@@ -244,15 +236,15 @@ export function PermissionsPage() {
 
 			{/* Catálogo de Permisos Dinámicos Registrados */}
 			{dbPermissions && dbPermissions.length > 0 && (
-				<div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-					<h3 className="text-sm font-semibold text-white mb-3">
+				<div className="rounded-surface border border-subtle bg-surface p-5 shadow-surface">
+					<h3 className="text-sm font-semibold text-foreground mb-3">
 						Permisos de Base de Datos ({dbPermissions.length})
 					</h3>
 					<div className="flex flex-wrap gap-2">
 						{dbPermissions.map((dp) => (
 							<span
 								key={dp.id}
-								className="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 font-mono text-[11px] text-slate-300"
+								className="px-2.5 py-1 rounded-control bg-surface-subtle border border-subtle font-mono text-[11px] text-foreground"
 							>
 								{dp.resource}:{dp.action}
 							</span>

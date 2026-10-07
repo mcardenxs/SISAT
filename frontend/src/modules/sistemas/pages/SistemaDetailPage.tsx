@@ -58,30 +58,30 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 			<div className="flex items-center justify-between">
 				<Link
 					to="/sistemas"
-					className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+					className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-foreground transition-colors"
 				>
 					<ArrowLeft className="h-4 w-4" />
 					Volver a Sistemas
 				</Link>
-				<span className="text-xs text-slate-500">
+				<span className="text-xs text-foreground-subtle">
 					Actualizado: {new Date(sistema.actualizacion).toLocaleDateString()}
 				</span>
 			</div>
 
 			{/* Ficha Técnica Principal */}
-			<div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 space-y-4">
+			<div className="rounded-surface border border-subtle bg-surface p-6 space-y-4 shadow-surface">
 				<div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
 					<div className="space-y-1">
 						<div className="flex items-center gap-2.5">
-							<span className="font-mono text-xs font-bold text-indigo-400 bg-indigo-950/50 px-2.5 py-0.5 rounded border border-indigo-500/20 uppercase">
+							<span className="font-mono text-xs font-bold text-primary bg-primary-light px-2.5 py-0.5 rounded-control border border-primary-border uppercase">
 								{sistema.clave}
 							</span>
-							<Badge variant={sistema.estadoId === 1 ? "success" : "default"}>
+							<Badge variant={sistema.estadoId === 1 ? "success" : "neutral"}>
 								{sistema.estadoNombre ||
 									(sistema.estadoId === 1 ? "Activo" : "Inactivo")}
 							</Badge>
 						</div>
-						<h1 className="text-2xl font-bold tracking-tight text-white pt-1">
+						<h1 className="text-2xl font-bold tracking-tight text-foreground pt-1">
 							{sistema.nombre}
 						</h1>
 					</div>
@@ -94,8 +94,8 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 								rel="noreferrer"
 								className="inline-flex items-center"
 							>
-								<Button variant="outline" size="sm" className="gap-1.5">
-									<ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+								<Button variant="secondary" size="sm" className="gap-1.5">
+									<ExternalLink className="h-3.5 w-3.5 text-foreground-muted" />
 									Ir al Sistema
 								</Button>
 							</a>
@@ -105,7 +105,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 								variant="ghost"
 								size="sm"
 								onClick={() => setIsEditOpen(true)}
-								className="gap-1.5 text-indigo-400 hover:bg-indigo-950/20"
+								className="gap-1.5 text-primary hover:bg-surface-muted"
 							>
 								<Edit className="h-4 w-4" />
 								Editar Ficha
@@ -115,42 +115,44 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-					<div className="md:col-span-2 rounded-xl bg-slate-950/40 p-4 border border-slate-800/80 space-y-2">
-						<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
+					<div className="md:col-span-2 rounded-control bg-surface-subtle p-4 border border-subtle space-y-2">
+						<span className="text-xs font-semibold text-foreground-muted uppercase tracking-wider block">
 							Descripción Operativa
 						</span>
-						<p className="text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
+						<p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">
 							{sistema.descripcion}
 						</p>
 						{sistema.observacion && (
-							<div className="pt-2 border-t border-slate-800/60 mt-2">
-								<span className="text-[11px] font-semibold text-slate-400 block mb-0.5">
+							<div className="pt-2 border-t border-subtle mt-2">
+								<span className="text-[11px] font-semibold text-foreground-muted block mb-0.5">
 									Observaciones Técnicas:
 								</span>
-								<p className="text-xs text-slate-400">{sistema.observacion}</p>
+								<p className="text-xs text-foreground-subtle">
+									{sistema.observacion}
+								</p>
 							</div>
 						)}
 					</div>
 
-					<div className="rounded-xl bg-slate-950/40 p-4 border border-slate-800/80 space-y-3 text-xs">
-						<div className="flex items-center gap-2 text-slate-300">
-							<Building2 className="h-4 w-4 text-emerald-400 shrink-0" />
+					<div className="rounded-control bg-surface-subtle p-4 border border-subtle space-y-3 text-xs">
+						<div className="flex items-center gap-2 text-foreground-muted">
+							<Building2 className="h-4 w-4 text-success shrink-0" />
 							<div>
-								<span className="text-[10px] text-slate-500 block uppercase">
+								<span className="text-[10px] text-foreground-subtle block uppercase">
 									Área Dueña
 								</span>
-								<span className="font-semibold text-slate-200">
+								<span className="font-semibold text-foreground">
 									{sistema.areaNombre}
 								</span>
 							</div>
 						</div>
-						<div className="flex items-center gap-2 text-slate-300">
-							<Monitor className="h-4 w-4 text-indigo-400 shrink-0" />
+						<div className="flex items-center gap-2 text-foreground-muted">
+							<Monitor className="h-4 w-4 text-primary shrink-0" />
 							<div>
-								<span className="text-[10px] text-slate-500 block uppercase">
+								<span className="text-[10px] text-foreground-subtle block uppercase">
 									Clave Única
 								</span>
-								<span className="font-mono text-slate-200">
+								<span className="font-mono text-foreground">
 									{sistema.clave}
 								</span>
 							</div>

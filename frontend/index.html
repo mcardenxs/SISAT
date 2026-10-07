@@ -1,13 +1,35 @@
 <!doctype html>
-<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<html lang="es" class="h-full">
 	<head>
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>SISAT</title>
-
+		<script>
+			(() => {
+				try {
+					const stored = localStorage.getItem("sisat-theme-storage");
+					const parsed = stored ? JSON.parse(stored) : null;
+					let theme = parsed?.state?.theme;
+					if (!theme) {
+						theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+							? "dark"
+							: "light";
+					}
+					if (theme === "dark") {
+						document.documentElement.classList.add("dark");
+						document.documentElement.classList.remove("light");
+					} else {
+						document.documentElement.classList.add("light");
+						document.documentElement.classList.remove("dark");
+					}
+				} catch {
+					document.documentElement.classList.add("dark");
+				}
+			})();
+		</script>
 	</head>
-	<body class="h-full antialiased selection:bg-indigo-500 selection:text-white">
+	<body class="h-full antialiased">
 		<div id="root" class="h-full flex flex-col"></div>
 		<script type="module" src="/src/main.tsx"></script>
 	</body>

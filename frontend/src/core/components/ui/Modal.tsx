@@ -34,21 +34,22 @@ export function Modal({
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 animate-in fade-in duration-150">
 			<div
 				className={cn(
-					"relative w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl transition-all",
+					"relative w-full max-w-lg rounded-overlay border border-subtle bg-surface p-6 shadow-overlay transition-all",
 					className,
 				)}
 			>
-				<div className="flex items-center justify-between pb-4 border-b border-slate-800">
-					<h3 className="text-lg font-semibold text-white tracking-tight">
+				<div className="flex items-center justify-between pb-4 border-b border-subtle">
+					<h3 className="text-lg font-semibold text-foreground tracking-tight">
 						{title}
 					</h3>
 					<button
 						type="button"
 						onClick={onClose}
-						className="rounded-lg p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+						className="rounded-control p-1.5 text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors cursor-pointer"
+						aria-label="Cerrar modal"
 					>
 						<X className="h-4 w-4" />
 					</button>

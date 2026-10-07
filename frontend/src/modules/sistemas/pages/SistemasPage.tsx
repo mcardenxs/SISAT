@@ -9,6 +9,9 @@ import {
 } from "@/core/components/ui/Card";
 import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
+import { PageHeader } from "@/core/components/ui/PageHeader";
+import { EmptyState } from "@/core/components/ui/EmptyState";
+import { Alert } from "@/core/components/ui/Alert";
 import { Can } from "@/core/permissions/Can";
 import {
 	Monitor,
@@ -26,7 +29,7 @@ export function SistemasPage() {
 
 	if (isLoading) {
 		return (
-			<div className="p-12 text-center text-slate-400">
+			<div className="p-12 text-center text-foreground-muted text-sm">
 				Cargando sistemas institucionales...
 			</div>
 		);
@@ -34,41 +37,31 @@ export function SistemasPage() {
 
 	if (error) {
 		return (
-			<div className="p-8 text-center text-rose-400 bg-rose-950/20 border border-rose-900/40 rounded-xl">
+			<Alert variant="danger" title="Error de carga">
 				Error al cargar sistemas institucionales.
-			</div>
+			</Alert>
 		);
 	}
 
 	return (
 		<div className="space-y-6">
-			{/* Encabezado */}
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-				<div>
-					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
-							<Monitor className="h-5 w-5" />
-						</div>
-						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-							Sistemas Institucionales
-						</h1>
-					</div>
-					<p className="text-sm text-slate-400 mt-1">
-						Catálogo de software, vinculación de responsables y equipo técnico
-						de desarrollo.
-					</p>
-				</div>
-
-				<Can resource="sistemas" action="create">
-					<Button
-						onClick={() => setIsCreateOpen(true)}
-						className="gap-2 self-start sm:self-auto"
-					>
-						<Plus className="h-4 w-4" />
-						Registrar Nuevo Sistema
-					</Button>
-				</Can>
-			</div>
+			{/* Encabezado según la guía ANDROMEDA */}
+			<PageHeader
+				title="Sistemas Institucionales"
+				description="Catálogo de software, vinculación de responsables y equipo técnico de desarrollo."
+				actions={
+					<Can resource="sistemas" action="create">
+						<Button
+							onClick={() => setIsCreateOpen(true)}
+							className="gap-2"
+							size="sm"
+						>
+							<Plus className="h-4 w-4" />
+							Registrar Nuevo Sistema
+						</Button>
+					</Can>
+				}
+			/>
 
 			{/* Modal Crear Sistema */}
 			<CreateSistemaModal
@@ -77,7 +70,7 @@ export function SistemasPage() {
 			/>
 
 			{/* Grilla Informativa de Sistemas */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{sistemas?.map((sistema) => (
 					<Link
 						key={sistema.id}
@@ -85,19 +78,19 @@ export function SistemasPage() {
 						params={{ sistemaId: String(sistema.id) }}
 						className="group block"
 					>
-						<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-indigo-500/50 hover:bg-slate-900/80 transition-all duration-200">
+						<Card className="h-full hover:border-strong transition-colors">
 							<CardHeader className="pb-3">
 								<div className="flex items-start justify-between gap-2">
 									<div>
-										<span className="font-mono text-xs text-indigo-400 font-semibold bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-500/20">
+										<span className="font-mono text-xs text-primary font-semibold bg-primary-light px-2 py-0.5 rounded-control border border-primary-border">
 											{sistema.clave}
 										</span>
-										<CardTitle className="text-lg font-semibold text-white mt-1.5 group-hover:text-indigo-300 transition-colors">
+										<CardTitle className="text-base font-semibold text-foreground mt-1.5 group-hover:text-primary transition-colors">
 											{sistema.nombre}
 										</CardTitle>
 									</div>
 									<Badge
-										variant={sistema.estadoId === 1 ? "success" : "default"}
+										variant={sistema.estadoId === 1 ? "success" : "neutral"}
 									>
 										{sistema.estadoNombre ||
 											(sistema.estadoId === 1 ? "Activo" : "Inactivo")}
@@ -105,34 +98,34 @@ export function SistemasPage() {
 								</div>
 							</CardHeader>
 							<CardContent className="space-y-4 text-xs">
-								<p className="text-slate-300 line-clamp-2">
+								<p className="text-foreground-muted line-clamp-2">
 									{sistema.descripcion}
 								</p>
 
-								<div className="border-t border-slate-800 pt-3 space-y-1.5">
-									<div className="flex items-center justify-between text-slate-400">
+								<div className="border-t border-subtle pt-3 space-y-1.5">
+									<div className="flex items-center justify-between text-foreground-muted">
 										<span>Área responsable:</span>
-										<span className="font-medium text-slate-200">
+										<span className="font-medium text-foreground">
 											{sistema.areaNombre || `Área #${sistema.areaId}`}
 										</span>
 									</div>
 
 									{sistema.url && (
-										<div className="flex items-center justify-between text-slate-400">
+										<div className="flex items-center justify-between text-foreground-muted">
 											<span>Acceso Web:</span>
-											<span className="text-indigo-400 flex items-center gap-1">
+											<span className="text-primary flex items-center gap-1 font-medium">
 												Disponible <ExternalLink className="h-3 w-3" />
 											</span>
 										</div>
 									)}
 								</div>
 
-								<div className="border-t border-slate-800 pt-3 flex items-center justify-between text-slate-400">
+								<div className="border-t border-subtle pt-3 flex items-center justify-between text-foreground-muted">
 									<div
 										className="flex items-center gap-1.5"
 										title="Responsables activos"
 									>
-										<Shield className="h-3.5 w-3.5 text-amber-400" />
+										<Shield className="h-3.5 w-3.5 text-warning" />
 										<span>
 											{sistema.responsables?.filter((r) => !r.fin).length || 0}{" "}
 											responsable(s)
@@ -142,14 +135,14 @@ export function SistemasPage() {
 										className="flex items-center gap-1.5"
 										title="Desarrolladores asignados"
 									>
-										<Users className="h-3.5 w-3.5 text-indigo-400" />
+										<Users className="h-3.5 w-3.5 text-primary" />
 										<span>
 											{sistema.desarrolladores?.filter((d) => !d.fin).length ||
 												0}{" "}
 											dev(s)
 										</span>
 									</div>
-									<span className="text-indigo-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+									<span className="text-primary group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 font-medium">
 										Detalle <ArrowRight className="h-3 w-3" />
 									</span>
 								</div>
@@ -159,9 +152,12 @@ export function SistemasPage() {
 				))}
 
 				{sistemas?.length === 0 && (
-					<div className="col-span-full p-12 text-center border border-dashed border-slate-800 rounded-xl text-slate-400">
-						<Monitor className="h-8 w-8 mx-auto text-slate-600 mb-2" />
-						No hay sistemas institucionales registrados.
+					<div className="col-span-full">
+						<EmptyState
+							icon={<Monitor className="h-8 w-8" />}
+							title="No hay sistemas institucionales registrados"
+							description="Comienza registrando un sistema institucional en el catálogo."
+						/>
 					</div>
 				)}
 			</div>

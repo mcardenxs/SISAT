@@ -59,7 +59,9 @@ export function Alert({
 					<div className="text-foreground-muted">{children}</div>
 				</div>
 			</div>
-			{action && <div className="shrink-0 self-start sm:self-auto">{action}</div>}
+			{action && (
+				<div className="shrink-0 self-start sm:self-auto">{action}</div>
+			)}
 		</div>
 	);
 }

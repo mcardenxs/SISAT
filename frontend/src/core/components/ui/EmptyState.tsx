@@ -24,14 +24,10 @@ export function EmptyState({
 			)}
 		>
 			{icon && (
-				<div className="flex justify-center text-foreground-subtle">
-					{icon}
-				</div>
+				<div className="flex justify-center text-foreground-subtle">{icon}</div>
 			)}
 			<div className="space-y-1">
-				<h3 className="text-base font-semibold text-foreground">
-					{title}
-				</h3>
+				<h3 className="text-base font-semibold text-foreground">{title}</h3>
 				{description && (
 					<p className="text-xs text-foreground-muted max-w-sm mx-auto">
 						{description}
