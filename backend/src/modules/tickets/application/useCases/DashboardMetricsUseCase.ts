@@ -38,9 +38,24 @@ export interface DashboardStatsDto {
 	};
 }
 
+export interface DashboardFilterDto {
+	areaId?: number;
+	sistemaId?: number;
+}
+
 @injectable()
 export class DashboardMetricsUseCase {
-	async run(): Promise<DashboardStatsDto> {
+	async run(filters?: DashboardFilterDto): Promise<DashboardStatsDto> {
+		const ticketWhere = {
+			...(filters?.areaId && { tic_fkarea: filters.areaId }),
+			...(filters?.sistemaId && { tic_fksistema: filters.sistemaId }),
+		};
+
+		const actaWhere = {
+			...(filters?.areaId && { act_fkarea: filters.areaId }),
+			...(filters?.sistemaId && { act_fksistema: filters.sistemaId }),
+		};
+
 		const [
 			totalTickets,
 			fases,
@@ -55,29 +70,46 @@ export class DashboardMetricsUseCase {
 			totalSistemas,
 			totalAreas,
 		] = await Promise.all([
-			prisma.ticket.count(),
+			prisma.ticket.count({ where: ticketWhere }),
 			prisma.fase.findMany({ orderBy: { fas_id: "asc" } }),
 			prisma.ticket.groupBy({
 				by: ["tic_fkfase"],
+				where: ticketWhere,
 				_count: { tic_id: true },
 			}),
 			prisma.prioridad.findMany({ orderBy: { pri_id: "asc" } }),
 			prisma.ticket.groupBy({
 				by: ["tic_fkprioridad"],
+				where: ticketWhere,
 				_count: { tic_id: true },
 			}),
-			prisma.sistema.findMany({ select: { sis_id: true, sis_nombre: true } }),
+			prisma.sistema.findMany({
+				where: filters?.areaId ? { sis_fkarea: filters.areaId } : undefined,
+				select: { sis_id: true, sis_nombre: true },
+			}),
 			prisma.ticket.groupBy({
 				by: ["tic_fksistema"],
+				where: ticketWhere,
 				_count: { tic_id: true },
 			}),
-			prisma.acta.count(),
+			prisma.acta.count({ where: actaWhere }),
 			prisma.acta.groupBy({
 				by: ["act_fksituacion"],
+				where: actaWhere,
 				_count: { act_id: true },
 			}),
-			prisma.usuario.count({ where: { usu_fkestado: 1 } }),
-			prisma.sistema.count({ where: { sis_fkestado: 1 } }),
+			prisma.usuario.count({
+				where: {
+					usu_fkestado: 1,
+					...(filters?.areaId && { usu_fkarea: filters.areaId }),
+				},
+			}),
+			prisma.sistema.count({
+				where: {
+					sis_fkestado: 1,
+					...(filters?.areaId && { sis_fkarea: filters.areaId }),
+				},
+			}),
 			prisma.area.count({ where: { are_fkestado: 1 } }),
 		]);
 

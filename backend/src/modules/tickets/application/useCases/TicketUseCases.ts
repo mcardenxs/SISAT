@@ -207,22 +207,123 @@ export class TicketUseCases {
 				motivo: m.mov_motivo,
 				fecha: m.mov_fecha,
 			})),
+			evidencias: t.evidencia?.map((e: any) => ({
+				id: e.evi_id,
+				ticketId: e.evi_fkticket,
+				atencionId: e.evi_fkatencion,
+				reaperturaId: e.evi_fkreapertura,
+				claseId: e.evi_fkclase,
+				claseCodigo: e.clase?.cla_codigo,
+				usuarioId: e.evi_fkusuario,
+				nombre: e.evi_nombre,
+				ruta: e.evi_ruta,
+				formato: e.evi_formato,
+				tamano: e.evi_tamano,
+				descripcion: e.evi_descripcion,
+				fecha: e.evi_fecha,
+			})),
 		};
 	}
 
 	// ----------------- CONSULTAS -----------------
 
-	async findAll(filters?: {
-		sistemaId?: number;
-		faseId?: number;
-		usuarioId?: number;
-	}): Promise<TicketDto[]> {
+	async findAll(
+		filters?: {
+			sistemaId?: number;
+			faseId?: number;
+			usuarioId?: number;
+			desarrolladorId?: number;
+			areaId?: number;
+		},
+		actorId?: number,
+		actorRole?: string,
+	): Promise<TicketDto[]> {
+		const andConditions: any[] = [];
+
+		// Scoping institucional según rol del actor
+		if (
+			actorRole &&
+			actorId &&
+			actorRole !== "ADMINISTRADOR" &&
+			actorRole !== "ADMIN"
+		) {
+			if (actorRole === "JEFE_DE_AREA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (user?.usu_fkarea) {
+					andConditions.push({ tic_fkarea: user.usu_fkarea });
+				} else {
+					return [];
+				}
+			} else if (actorRole === "RESPONSABLE_DE_SISTEMA") {
+				const sistemas = await prisma.responsable.findMany({
+					where: {
+						res_fkusuario: actorId,
+						res_fkestado: 1,
+						res_fin: null,
+					},
+					select: { res_fksistema: true },
+				});
+				const sistemaIds = sistemas.map((s) => s.res_fksistema);
+				if (sistemaIds.length === 0) {
+					return [];
+				}
+				andConditions.push({ tic_fksistema: { in: sistemaIds } });
+			} else if (actorRole === "DESARROLLADOR") {
+				const sistemas = await prisma.desarrollador.findMany({
+					where: {
+						des_fkusuario: actorId,
+						des_fkestado: 1,
+						des_fin: null,
+					},
+					select: { des_fksistema: true },
+				});
+				const devSistemaIds = sistemas.map((s) => s.des_fksistema);
+				andConditions.push({
+					OR: [
+						...(devSistemaIds.length > 0
+							? [{ tic_fksistema: { in: devSistemaIds } }]
+							: []),
+						{
+							asignacion: {
+								some: { asi_fkusuario: actorId, asi_fin: null },
+							},
+						},
+					],
+				});
+			} else {
+				// Consulta: solo tickets de su área
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (user?.usu_fkarea) {
+					andConditions.push({ tic_fkarea: user.usu_fkarea });
+				}
+			}
+		}
+
+		if (filters?.sistemaId)
+			andConditions.push({ tic_fksistema: filters.sistemaId });
+		if (filters?.faseId) andConditions.push({ tic_fkfase: filters.faseId });
+		if (filters?.usuarioId)
+			andConditions.push({ tic_fkusuario: filters.usuarioId });
+		if (filters?.areaId) andConditions.push({ tic_fkarea: filters.areaId });
+		if (filters?.desarrolladorId) {
+			andConditions.push({
+				asignacion: {
+					some: {
+						asi_fkusuario: filters.desarrolladorId,
+						asi_fin: null,
+					},
+				},
+			});
+		}
+
 		const records = await prisma.ticket.findMany({
-			where: {
-				...(filters?.sistemaId && { tic_fksistema: filters.sistemaId }),
-				...(filters?.faseId && { tic_fkfase: filters.faseId }),
-				...(filters?.usuarioId && { tic_fkusuario: filters.usuarioId }),
-			},
+			where: andConditions.length > 0 ? { AND: andConditions } : undefined,
 			orderBy: { tic_id: "desc" },
 			include: {
 				sistema: true,
@@ -256,7 +357,11 @@ export class TicketUseCases {
 		return records.map((r) => this.mapTicket(r));
 	}
 
-	async findById(id: number): Promise<TicketDto> {
+	async findById(
+		id: number,
+		actorId?: number,
+		actorRole?: string,
+	): Promise<TicketDto> {
 		const record = await prisma.ticket.findUnique({
 			where: { tic_id: id },
 			include: {
@@ -304,6 +409,10 @@ export class TicketUseCases {
 					},
 					orderBy: { mov_id: "asc" },
 				},
+				evidencia: {
+					include: { clase: true },
+					orderBy: { evi_id: "asc" },
+				},
 			},
 		});
 
@@ -311,12 +420,88 @@ export class TicketUseCases {
 			throw new BaseError(`Ticket con ID ${id} no encontrado`, 404);
 		}
 
+		// Validar ámbito de acceso si no es Administrador
+		if (
+			actorRole &&
+			actorId &&
+			actorRole !== "ADMINISTRADOR" &&
+			actorRole !== "ADMIN"
+		) {
+			if (actorRole === "JEFE_DE_AREA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (user?.usu_fkarea !== record.tic_fkarea) {
+					throw new BaseError(
+						"No tienes permiso para consultar tickets de otra área",
+						403,
+					);
+				}
+			} else if (actorRole === "RESPONSABLE_DE_SISTEMA") {
+				const esResp = await prisma.responsable.findFirst({
+					where: {
+						res_fksistema: record.tic_fksistema,
+						res_fkusuario: actorId,
+						res_fkestado: 1,
+						res_fin: null,
+					},
+				});
+				if (!esResp) {
+					throw new BaseError(
+						"No tienes permiso para consultar tickets de este sistema",
+						403,
+					);
+				}
+			} else if (actorRole === "DESARROLLADOR") {
+				const esDev = await prisma.desarrollador.findFirst({
+					where: {
+						des_fksistema: record.tic_fksistema,
+						des_fkusuario: actorId,
+						des_fkestado: 1,
+						des_fin: null,
+					},
+				});
+				const tieneAsignacion = record.asignacion.some(
+					(a) => a.asi_fkusuario === actorId && !a.asi_fin,
+				);
+				if (!esDev && !tieneAsignacion) {
+					throw new BaseError(
+						"No tienes permiso para consultar este ticket",
+						403,
+					);
+				}
+			}
+		}
+
 		return this.mapTicket(record);
 	}
 
 	// ----------------- CREACIÓN DE TICKET -----------------
 
-	async create(dto: CreateTicketDto, actorId: number): Promise<TicketDto> {
+	async create(
+		dto: CreateTicketDto,
+		actorId: number,
+		actorRole?: string,
+	): Promise<TicketDto> {
+		// Validar que solo Responsables de Sistema vigentes puedan registrar tickets
+		const esResponsable = await prisma.responsable.findFirst({
+			where: {
+				res_fksistema: dto.sistemaId,
+				res_fkusuario: actorId,
+				res_fkestado: 1,
+				res_fin: null,
+				res_inicio: { lte: new Date() },
+			},
+		});
+
+		if (!esResponsable) {
+			throw new BaseError(
+				"Solo un responsable vigente del sistema puede registrar tickets",
+				403,
+			);
+		}
+
 		// Validar fase 'REGISTRADO' y constancia 'NO_APLICA'
 		const faseRegistrado = await prisma.fase.findUnique({
 			where: { fas_codigo: "REGISTRADO" },
@@ -361,8 +546,37 @@ export class TicketUseCases {
 				solicitud: true,
 				fase: true,
 				constancia: true,
+				evidencia: {
+					include: { clase: true },
+					orderBy: { evi_id: "asc" },
+				},
 			},
 		});
+
+		// Si se proporcionó evidencia inicial, registrarla de forma transaccional
+		if (dto.evidencia) {
+			const claseInicial = await prisma.clase.findFirst({
+				where: { cla_codigo: "INICIAL" },
+			});
+
+			const evidenciaRecord = await prisma.evidencia.create({
+				data: {
+					evi_fkticket: record.tic_id,
+					evi_fkclase: dto.evidencia.claseId ?? claseInicial?.cla_id ?? 1,
+					evi_fkusuario: actorId,
+					evi_nombre: dto.evidencia.nombre,
+					evi_ruta: dto.evidencia.ruta,
+					evi_formato: dto.evidencia.formato,
+					evi_tamano: dto.evidencia.tamano,
+					evi_descripcion:
+						dto.evidencia.descripcion ??
+						"Evidencia inicial adjunta en el registro",
+				},
+				include: { clase: true },
+			});
+
+			(record as any).evidencia = [evidenciaRecord];
+		}
 
 		return this.mapTicket(record);
 	}

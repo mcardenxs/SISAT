@@ -54,7 +54,7 @@ export function TicketStepper({ faseCodigo }: TicketStepperProps) {
 									isCompleted
 										? "border-emerald-500 bg-emerald-500 text-slate-950 shadow-emerald-500/20 shadow-md"
 										: isCurrent
-											? "border-indigo-500 bg-indigo-600 text-white shadow-indigo-500/30 shadow-lg ring-4 ring-indigo-500/20"
+											? "border-blue-500 bg-blue-600 text-white shadow-blue-500/30 shadow-lg ring-4 ring-blue-500/20"
 											: "border-slate-800 bg-slate-900 text-slate-500",
 								)}
 							>
@@ -70,7 +70,7 @@ export function TicketStepper({ faseCodigo }: TicketStepperProps) {
 								className={cn(
 									"mt-2 text-xs font-medium tracking-tight transition-colors text-center hidden sm:block",
 									isCurrent
-										? "text-indigo-400 font-semibold"
+										? "text-blue-400 font-semibold"
 										: isCompleted
 											? "text-slate-300"
 											: "text-slate-500",

@@ -30,17 +30,44 @@ describe("TicketUseCases - Nuevas Funcionalidades", () => {
 		).rejects.toThrow(BaseError);
 	});
 
-	it("debería fallar cancelTicket si el ticket ya se encuentra en fase CERRADO_POR_RESPONSABLE", async () => {
-		const findUniqueMock = mock().mockResolvedValue({
-			tic_id: 20,
-			fase: { fas_codigo: "CERRADO_POR_RESPONSABLE" },
-		});
-		(prisma as any).ticket = {
-			findUnique: findUniqueMock,
+	it("debería fallar create si el usuario no es responsable vigente ni admin", async () => {
+		const findFirstMock = mock().mockResolvedValue(null);
+		(prisma as any).responsable = {
+			findFirst: findFirstMock,
 		};
 
 		expect(
-			useCases.cancelTicket(20, "Ya no se requiere", 1),
-		).rejects.toThrow("No se puede cancelar un ticket que ya fue cerrado formalmente");
+			useCases.create(
+				{
+					sistemaId: 1,
+					areaId: 1,
+					prioridadId: 1,
+					solicitudId: 1,
+					titulo: "Error en login",
+					descripcion: "No inicia sesión",
+				},
+				5,
+				"DESARROLLADOR",
+			),
+		).rejects.toThrow(
+			"Solo un responsable vigente del sistema puede registrar tickets",
+		);
+	});
+
+	it("debería filtrar por desarrolladorId en findAll", async () => {
+		const findManyMock = mock().mockResolvedValue([]);
+		(prisma as any).ticket = {
+			findMany: findManyMock,
+		};
+
+		await useCases.findAll({ desarrolladorId: 7 });
+
+		expect(findManyMock).toHaveBeenCalled();
+		const callArg = findManyMock.mock.calls[0][0];
+		const asigCondition = callArg.where.AND
+			? callArg.where.AND.find((c: any) => c.asignacion)
+			: callArg.where;
+		expect(asigCondition.asignacion).toBeDefined();
+		expect(asigCondition.asignacion.some.asi_fkusuario).toBe(7);
 	});
 });

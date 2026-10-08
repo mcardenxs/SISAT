@@ -31,6 +31,7 @@ export class TicketController extends BaseController {
 
 	getAll = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
+			const user = c.get("user");
 			const sistemaId = c.req.query("sistemaId")
 				? Number(c.req.query("sistemaId"))
 				: undefined;
@@ -40,20 +41,37 @@ export class TicketController extends BaseController {
 			const usuarioId = c.req.query("usuarioId")
 				? Number(c.req.query("usuarioId"))
 				: undefined;
+			const desarrolladorId = c.req.query("desarrolladorId")
+				? Number(c.req.query("desarrolladorId"))
+				: undefined;
+			const areaId = c.req.query("areaId")
+				? Number(c.req.query("areaId"))
+				: undefined;
 
-			const tickets = await this.ticketUseCases.findAll({
-				sistemaId,
-				faseId,
-				usuarioId,
-			});
+			const tickets = await this.ticketUseCases.findAll(
+				{
+					sistemaId,
+					faseId,
+					usuarioId,
+					desarrolladorId,
+					areaId,
+				},
+				user?.id,
+				user?.role,
+			);
 			return this.ok(c, tickets);
 		});
 	};
 
 	getById = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
+			const user = c.get("user");
 			const id = Number(c.req.param("id"));
-			const ticket = await this.ticketUseCases.findById(id);
+			const ticket = await this.ticketUseCases.findById(
+				id,
+				user?.id,
+				user?.role,
+			);
 			return this.ok(c, ticket);
 		});
 	};
@@ -63,7 +81,7 @@ export class TicketController extends BaseController {
 			const user = c.get("user");
 			const body = await c.req.json();
 			const dto = validate(createTicketSchema, body);
-			const ticket = await this.ticketUseCases.create(dto, user.id);
+			const ticket = await this.ticketUseCases.create(dto, user.id, user.role);
 			return this.created(c, ticket);
 		});
 	};

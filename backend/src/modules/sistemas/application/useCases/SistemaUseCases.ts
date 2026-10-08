@@ -73,8 +73,68 @@ export class SistemaUseCases {
 
 	// ----------------- CRUD SISTEMAS -----------------
 
-	async findAll(): Promise<SistemaDto[]> {
+	async findAll(actorId?: number, actorRole?: string): Promise<SistemaDto[]> {
+		const andConditions: any[] = [];
+
+		if (
+			actorRole &&
+			actorId &&
+			actorRole !== "ADMINISTRADOR" &&
+			actorRole !== "ADMIN"
+		) {
+			if (actorRole === "JEFE_DE_AREA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (user?.usu_fkarea) {
+					andConditions.push({ sis_fkarea: user.usu_fkarea });
+				} else {
+					return [];
+				}
+			} else if (actorRole === "RESPONSABLE_DE_SISTEMA") {
+				const sistemas = await prisma.responsable.findMany({
+					where: {
+						res_fkusuario: actorId,
+						res_fkestado: 1,
+						res_fin: null,
+					},
+					select: { res_fksistema: true },
+				});
+				const sistemaIds = sistemas.map((s) => s.res_fksistema);
+				if (sistemaIds.length === 0) {
+					return [];
+				}
+				andConditions.push({ sis_id: { in: sistemaIds } });
+			} else if (actorRole === "DESARROLLADOR") {
+				const sistemas = await prisma.desarrollador.findMany({
+					where: {
+						des_fkusuario: actorId,
+						des_fkestado: 1,
+						des_fin: null,
+					},
+					select: { des_fksistema: true },
+				});
+				const devSistemaIds = sistemas.map((s) => s.des_fksistema);
+				if (devSistemaIds.length === 0) {
+					return [];
+				}
+				andConditions.push({ sis_id: { in: devSistemaIds } });
+			} else if (actorRole === "CONSULTA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (user?.usu_fkarea) {
+					andConditions.push({ sis_fkarea: user.usu_fkarea });
+				} else {
+					return [];
+				}
+			}
+		}
+
 		const records = await prisma.sistema.findMany({
+			where: andConditions.length > 0 ? { AND: andConditions } : undefined,
 			orderBy: { sis_id: "asc" },
 			include: {
 				area: true,
@@ -92,7 +152,11 @@ export class SistemaUseCases {
 		return records.map((r) => this.mapSistema(r));
 	}
 
-	async findById(id: number): Promise<SistemaDto> {
+	async findById(
+		id: number,
+		actorId?: number,
+		actorRole?: string,
+	): Promise<SistemaDto> {
 		const record = await prisma.sistema.findUnique({
 			where: { sis_id: id },
 			include: {
@@ -111,6 +175,54 @@ export class SistemaUseCases {
 		if (!record) {
 			throw new BaseError(`Sistema con ID ${id} no encontrado`, 404);
 		}
+
+		// Validar alcance institucional
+		if (
+			actorRole &&
+			actorId &&
+			actorRole !== "ADMINISTRADOR" &&
+			actorRole !== "ADMIN"
+		) {
+			if (actorRole === "JEFE_DE_AREA" || actorRole === "CONSULTA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (!user?.usu_fkarea || record.sis_fkarea !== user.usu_fkarea) {
+					throw new BaseError(
+						"No tienes permisos para ver información de sistemas de otra área",
+						403,
+					);
+				}
+			} else if (actorRole === "RESPONSABLE_DE_SISTEMA") {
+				const isResp = record.responsable.some(
+					(r) =>
+						r.res_fkusuario === actorId &&
+						r.res_fin === null &&
+						r.res_fkestado === 1,
+				);
+				if (!isResp) {
+					throw new BaseError(
+						"No tienes permisos para consultar un sistema que no tienes asignado como responsable",
+						403,
+					);
+				}
+			} else if (actorRole === "DESARROLLADOR") {
+				const isDev = record.desarrollador.some(
+					(d) =>
+						d.des_fkusuario === actorId &&
+						d.des_fin === null &&
+						d.des_fkestado === 1,
+				);
+				if (!isDev) {
+					throw new BaseError(
+						"No tienes permisos para consultar un sistema donde no estás asignado",
+						403,
+					);
+				}
+			}
+		}
+
 		return this.mapSistema(record);
 	}
 

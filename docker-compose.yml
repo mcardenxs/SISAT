@@ -1,29 +1,15 @@
 services:
-  database:
-    image: mariadb:11.8.9
-    container_name: sisat_mariadb
-    restart: unless-stopped
-    ports:
-      - "${MARIADB_PORT:-3306}:3306"
+  migration:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sisat_migration
+    restart: "no"
+    command: ["bunx", "--bun", "prisma", "db", "push"]
     environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-sisat}
-      MARIADB_USER: ${MARIADB_USER:-sisat}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-sisat_local_password}
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-sisat_local_root_password}
-      TZ: ${TZ:-America/Mexico_City}
-    volumes:
-      - sisat_database:/var/lib/mysql
-      - ./sisat.sql:/docker-entrypoint-initdb.d/001-sisat.sql:ro
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mariadb-admin ping --host=127.0.0.1 --user=root --password=$$MARIADB_ROOT_PASSWORD --silent",
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-      start_period: 20s
+      DATABASE_URL: ${DATABASE_URL:-mysql://sisat:sisat_local_password@host.docker.internal:3306/sisat}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   backend:
     build:
@@ -32,15 +18,18 @@ services:
     container_name: sisat_backend
     restart: always
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     environment:
-      DATABASE_URL: "mysql://${MARIADB_USER:-sisat}:${MARIADB_PASSWORD:-sisat_local_password}@database:3306/${MARIADB_DATABASE:-sisat}"
-      JWT_SECRET: "development_secret_key_123"
+      HOST: "0.0.0.0"
+      DATABASE_URL: ${DATABASE_URL:-mysql://sisat:sisat_local_password@host.docker.internal:3306/sisat}
+      JWT_SECRET: ${JWT_SECRET:-development_secret_key_123}
       PORT: 3000
-      NODE_ENV: dev
+      NODE_ENV: ${NODE_ENV:-dev}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
-      database:
-        condition: service_healthy
+      migration:
+        condition: service_completed_successfully
 
   frontend:
     build:
@@ -49,10 +38,8 @@ services:
     container_name: sisat_frontend
     restart: always
     ports:
-      - "5173:5173"
-
-
-volumes:
-  sisat_database:
-    name: sisat_database
-
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://backend:3000}
+    depends_on:
+      - backend

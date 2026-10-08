@@ -18,7 +18,7 @@ export function TicketTimeline({
 			{/* Transiciones de Fase */}
 			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
 				<h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-4">
-					<History className="h-4 w-4 text-indigo-400" />
+					<History className="h-4 w-4 text-blue-400" />
 					Bitácora de Transiciones de Fase
 				</h3>
 
@@ -30,7 +30,7 @@ export function TicketTimeline({
 					<div className="relative pl-6 space-y-5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-800">
 						{transiciones.map((tr) => (
 							<div key={tr.id} className="relative">
-								<div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 border-indigo-500 bg-slate-950" />
+								<div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 border-blue-500 bg-slate-950" />
 								<div className="space-y-1">
 									<div className="flex flex-wrap items-center gap-2 text-xs">
 										{tr.faseOrigenNombre ? (
@@ -70,7 +70,7 @@ export function TicketTimeline({
 			{/* Historial de Asignaciones */}
 			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
 				<h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-4">
-					<User className="h-4 w-4 text-indigo-400" />
+					<User className="h-4 w-4 text-blue-400" />
 					Historial de Desarrolladores Asignados
 				</h3>
 
@@ -91,7 +91,7 @@ export function TicketTimeline({
 											{asig.usuarioNombre || `Usuario #${asig.usuarioId}`}
 										</span>
 										{asig.principal && (
-											<Badge variant="purple" className="text-[10px]">
+											<Badge variant="blue" className="text-[10px]">
 												Principal
 											</Badge>
 										)}
@@ -126,7 +126,7 @@ export function TicketTimeline({
 			{movimientos.length > 0 && (
 				<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
 					<h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-4">
-						<ArrowLeftRight className="h-4 w-4 text-indigo-400" />
+						<ArrowLeftRight className="h-4 w-4 text-blue-400" />
 						Reclasificaciones de Sistema
 					</h3>
 					<div className="space-y-3">
@@ -138,7 +138,7 @@ export function TicketTimeline({
 								<div className="flex items-center gap-2 font-medium text-slate-300">
 									<span>{m.sistemaOrigenNombre}</span>
 									<ArrowRight className="h-3 w-3 text-slate-500" />
-									<span className="text-indigo-400">
+									<span className="text-blue-400">
 										{m.sistemaDestinoNombre}
 									</span>
 								</div>

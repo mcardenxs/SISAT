@@ -15,8 +15,32 @@ const ROLE_PERMISSIONS: Record<
 	string,
 	Array<{ resource: string; action: string }>
 > = {
-	ADMINISTRADOR: [{ resource: "*", action: "*" }],
-	ADMIN: [{ resource: "*", action: "*" }],
+	ADMINISTRADOR: [
+		{ resource: "users", action: "*" },
+		{ resource: "areas", action: "*" },
+		{ resource: "catalogos", action: "*" },
+		{ resource: "sistemas", action: "*" },
+		{ resource: "tickets", action: "read" },
+		{ resource: "tickets", action: "update" },
+		{ resource: "actas", action: "*" },
+		{ resource: "asignaciones", action: "*" },
+		{ resource: "reasignaciones", action: "*" },
+		{ resource: "permissions", action: "*" },
+		{ resource: "dashboard", action: "*" },
+	],
+	ADMIN: [
+		{ resource: "users", action: "*" },
+		{ resource: "areas", action: "*" },
+		{ resource: "catalogos", action: "*" },
+		{ resource: "sistemas", action: "*" },
+		{ resource: "tickets", action: "read" },
+		{ resource: "tickets", action: "update" },
+		{ resource: "actas", action: "*" },
+		{ resource: "asignaciones", action: "*" },
+		{ resource: "reasignaciones", action: "*" },
+		{ resource: "permissions", action: "*" },
+		{ resource: "dashboard", action: "*" },
+	],
 	RESPONSABLE_DE_SISTEMA: [
 		{ resource: "sistemas", action: "read" },
 		{ resource: "sistemas", action: "update" },
@@ -29,6 +53,7 @@ const ROLE_PERMISSIONS: Record<
 		{ resource: "cierre", action: "create" },
 		{ resource: "reapertura", action: "create" },
 		{ resource: "evaluacion", action: "create" },
+		{ resource: "dashboard", action: "read" },
 	],
 	DESARROLLADOR: [
 		{ resource: "tickets", action: "read" },
@@ -37,13 +62,14 @@ const ROLE_PERMISSIONS: Record<
 		{ resource: "intervenciones", action: "create" },
 		{ resource: "evidencias", action: "create" },
 		{ resource: "resolucion", action: "create" },
+		{ resource: "dashboard", action: "read" },
 	],
 	JEFE_DE_AREA: [
 		{ resource: "tickets", action: "read" },
-		{ resource: "tickets", action: "create" },
 		{ resource: "actas", action: "read" },
 		{ resource: "actas", action: "create" },
 		{ resource: "actas", action: "firmar" },
+		{ resource: "dashboard", action: "read" },
 	],
 	CONSULTA: [
 		{ resource: "tickets", action: "read" },

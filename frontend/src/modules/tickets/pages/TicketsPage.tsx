@@ -22,7 +22,9 @@ import {
 	LayoutGrid,
 	Table as TableIcon,
 	ExternalLink,
+	Download,
 } from "lucide-react";
+import { toast } from "sonner";
 import { CreateTicketModal } from "../components/CreateTicketModal";
 import { TicketFilters } from "../components/TicketFilters";
 import {
@@ -73,6 +75,59 @@ export function TicketsPage() {
 		setPrioridadId(undefined);
 		setSolicitudId(undefined);
 		setSearchTerm("");
+	};
+
+	const handleExportCSV = () => {
+		if (filteredTickets.length === 0) {
+			toast.info("No hay tickets para exportar con los filtros actuales");
+			return;
+		}
+
+		const headers = [
+			"Folio",
+			"Título",
+			"Sistema",
+			"Área",
+			"Solicitante",
+			"Prioridad",
+			"Tipo de Solicitud",
+			"Fase Operativa",
+			"Estado Documental",
+			"Fecha de Registro",
+		];
+
+		const rows = filteredTickets.map((t) => [
+			`"${t.folio.replace(/"/g, '""')}"`,
+			`"${t.titulo.replace(/"/g, '""')}"`,
+			`"${(t.sistemaNombre || "").replace(/"/g, '""')}"`,
+			`"${(t.areaNombre || "").replace(/"/g, '""')}"`,
+			`"${(t.usuarioNombre || "").replace(/"/g, '""')}"`,
+			`"${(t.prioridadNombre || "").replace(/"/g, '""')}"`,
+			`"${(t.solicitudNombre || "").replace(/"/g, '""')}"`,
+			`"${(t.faseNombre || "").replace(/"/g, '""')}"`,
+			`"${(t.constanciaNombre || "").replace(/"/g, '""')}"`,
+			`"${new Date(t.registro).toLocaleString("es-MX")}"`,
+		]);
+
+		const csvContent =
+			"\uFEFF" +
+			[headers.join(";"), ...rows.map((row) => row.join(";"))].join("\r\n");
+
+		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.setAttribute(
+			"download",
+			`SISAT_Tickets_${new Date().toISOString().slice(0, 10)}.csv`,
+		);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
+		toast.success(
+			`Reporte exportado exitosamente (${filteredTickets.length} tickets)`,
+		);
 	};
 
 	return (

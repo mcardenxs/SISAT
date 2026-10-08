@@ -64,7 +64,7 @@ export function SistemaDesarrolladoresTab({
 			{/* Grilla de Desarrolladores Vigentes */}
 			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
 				<h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
-					<Code2 className="h-4 w-4 text-indigo-400" />
+					<Code2 className="h-4 w-4 text-blue-400" />
 					Técnicos y Programadores en Activo ({vigentes.length})
 				</h4>
 

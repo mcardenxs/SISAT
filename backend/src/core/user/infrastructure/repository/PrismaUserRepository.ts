@@ -50,7 +50,9 @@ export class PrismaUserRepository implements UserRepository {
 
 		const where = {
 			...(email && {
-				usu_correo: { contains: email },
+				usu_correo: email.includes("@")
+					? { equals: email.trim() }
+					: { contains: email },
 			}),
 		};
 
@@ -82,6 +84,23 @@ export class PrismaUserRepository implements UserRepository {
 	async findById(id: number): Promise<User | null> {
 		const record = await prisma.usuario.findUnique({
 			where: { usu_id: id },
+			include: {
+				perfil: {
+					include: {
+						rol: true,
+					},
+				},
+			},
+		});
+
+		if (!record) return null;
+
+		return this.toDomain(record);
+	}
+
+	async findByEmail(email: string): Promise<User | null> {
+		const record = await prisma.usuario.findFirst({
+			where: { usu_correo: email.trim() },
 			include: {
 				perfil: {
 					include: {

@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { injectable, inject } from "tsyringe";
 import { AreaController } from "../controllers/AreaController";
 import { AuthMiddleware } from "@/modules/auth/infrastructure/http/middlewares/authMiddleware";
+import type { RequirePermissionMiddleware } from "@/modules/authorization/infrastructure/http/middlewares/RequirePermissionMiddleware";
 
 @injectable()
 export class AreaRouter {
@@ -12,6 +13,8 @@ export class AreaRouter {
 		private readonly areaController: AreaController,
 		@inject("AuthMiddleware")
 		private readonly authMiddleware: AuthMiddleware,
+		@inject("RequirePermissionMiddleware")
+		private readonly requirePermissionMiddleware: RequirePermissionMiddleware,
 	) {
 		this.router = new Hono();
 		this.initRoutes();
@@ -32,7 +35,11 @@ export class AreaRouter {
 		 *       200:
 		 *         description: Lista de áreas
 		 */
-		this.router.get("/", this.areaController.getAll);
+		this.router.get(
+			"/",
+			this.requirePermissionMiddleware.handle("areas", "read"),
+			this.areaController.getAll,
+		);
 
 		/**
 		 * @openapi
@@ -52,7 +59,11 @@ export class AreaRouter {
 		 *       200:
 		 *         description: Área encontrada
 		 */
-		this.router.get("/:id", this.areaController.getById);
+		this.router.get(
+			"/:id",
+			this.requirePermissionMiddleware.handle("areas", "read"),
+			this.areaController.getById,
+		);
 
 		/**
 		 * @openapi
@@ -66,7 +77,11 @@ export class AreaRouter {
 		 *       201:
 		 *         description: Área creada
 		 */
-		this.router.post("/", this.areaController.create);
+		this.router.post(
+			"/",
+			this.requirePermissionMiddleware.handle("areas", "create"),
+			this.areaController.create,
+		);
 
 		/**
 		 * @openapi
@@ -80,6 +95,10 @@ export class AreaRouter {
 		 *       200:
 		 *         description: Área actualizada
 		 */
-		this.router.patch("/:id", this.areaController.update);
+		this.router.patch(
+			"/:id",
+			this.requirePermissionMiddleware.handle("areas", "update"),
+			this.areaController.update,
+		);
 	}
 }

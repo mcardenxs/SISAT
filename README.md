@@ -66,7 +66,7 @@ Para acceder al sistema en el entorno de desarrollo local:
 
 ```text
 ├── package.json / pnpm-workspace.yaml / biome.json
-├── docker-compose.yml              # Contenedores para MariaDB 11.8, Backend y Frontend
+├── docker-compose.yml              # Contenedores para Migraciones automáticas, Backend y Frontend
 ├── sisat.sql                       # Esquema canónico DDL con triggers y stored procedures
 ├── backend/
 │   ├── prisma/
@@ -117,20 +117,18 @@ pnpm install
 
 > **Importante:** Usar exclusivamente `pnpm install`. No ejecutar `bun install` ni `npm install`.
 
-### 2. Iniciar la Base de Datos con Docker
+### 2. Configurar Base de Datos Externa
 
-```bash
-docker compose up -d database
-```
-
-Esto levantará el contenedor `sisat_mariadb` en el puerto `3306` ejecutando automáticamente el script `sisat.sql`.
+Asegúrate de contar con una instancia de MariaDB 11.8 ejecutándose externamente (en tu equipo host o servidor de base de datos) con el esquema `sisat` cargado a partir de `sisat.sql`.
 
 ### 3. Variables de Entorno
 
-Crear el archivo `.env` en la raíz de `backend/`:
+Crear el archivo `.env` en la raíz de `backend/` (y opcionalmente en la raíz para Docker Compose):
 
 ```bash
 cp backend/.env.example backend/.env
+# Para Docker Compose (opcional si usas variables personalizadas):
+cp .env.example .env
 ```
 
 Configurar los parámetros de conexión:

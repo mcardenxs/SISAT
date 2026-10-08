@@ -23,15 +23,21 @@ export class SistemaController extends BaseController {
 
 	getAll = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
-			const sistemas = await this.sistemaUseCases.findAll();
+			const user = c.get("user");
+			const sistemas = await this.sistemaUseCases.findAll(user?.id, user?.role);
 			return this.ok(c, sistemas);
 		});
 	};
 
 	getById = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
+			const user = c.get("user");
 			const id = Number(c.req.param("id"));
-			const sistema = await this.sistemaUseCases.findById(id);
+			const sistema = await this.sistemaUseCases.findById(
+				id,
+				user?.id,
+				user?.role,
+			);
 			return this.ok(c, sistema);
 		});
 	};

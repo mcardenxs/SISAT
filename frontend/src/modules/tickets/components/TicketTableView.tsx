@@ -77,10 +77,25 @@ export function TicketTableView({ tickets }: TicketTableViewProps) {
 			header: "Fase",
 			cell: (info) => {
 				const ticket = info.row.original;
+				const isWaiting = ticket.faseCodigo === "EN_ESPERA_DE_INFORMACION";
 				return (
-					<Badge variant={getFaseVariant(ticket.faseCodigo)}>
-						{ticket.faseNombre || ticket.faseCodigo}
-					</Badge>
+					<div className="flex flex-col gap-0.5 items-start">
+						<Badge
+							variant={getFaseVariant(ticket.faseCodigo)}
+							className={
+								isWaiting
+									? "border border-amber-400/50 bg-amber-500/20 text-amber-300 font-semibold"
+									: undefined
+							}
+						>
+							{ticket.faseNombre || ticket.faseCodigo}
+						</Badge>
+						{isWaiting && (
+							<span className="text-[10px] text-amber-400 font-medium">
+								⚠️ Requiere info
+							</span>
+						)}
+					</div>
 				);
 			},
 		}),

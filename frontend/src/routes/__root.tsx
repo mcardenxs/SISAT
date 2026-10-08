@@ -5,6 +5,7 @@ import { useThemeStore } from "@/core/theme/store";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	component: RootComponent,
+	notFoundComponent: NotFoundPage,
 });
 
 function RootComponent() {

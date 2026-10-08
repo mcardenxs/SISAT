@@ -19,6 +19,7 @@ import {
 	UserPlus,
 	Pause,
 	AlertOctagon,
+	ArrowRightLeft,
 } from "lucide-react";
 import { TicketStepper } from "../components/TicketStepper";
 import { TicketAtencionTab } from "../components/TicketAtencionTab";
@@ -31,6 +32,7 @@ import { TerminarAtencionModal } from "../components/TerminarAtencionModal";
 import { EvaluacionAtencionModal } from "../components/EvaluacionAtencionModal";
 import { CierreTicketModal } from "../components/CierreTicketModal";
 import { ReabrirTicketModal } from "../components/ReabrirTicketModal";
+import { MoveTicketModal } from "../components/MoveTicketModal";
 import { getFaseVariant } from "../components/TicketTableView";
 
 interface TicketDetailPageProps {
@@ -59,6 +61,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 	const [isEvaluacionOpen, setIsEvaluacionOpen] = useState(false);
 	const [isCierreOpen, setIsCierreOpen] = useState(false);
 	const [isReabrirOpen, setIsReabrirOpen] = useState(false);
+	const [isMoveOpen, setIsMoveOpen] = useState(false);
 
 	if (isLoading) {
 		return (
@@ -74,7 +77,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 				<p className="font-semibold">Ticket no encontrado o error al cargar.</p>
 				<Link
 					to="/tickets"
-					className="text-xs text-indigo-400 underline mt-2 inline-block"
+					className="text-xs text-blue-400 underline mt-2 inline-block"
 				>
 					Regresar al listado de tickets
 				</Link>
@@ -179,6 +182,36 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 				</p>
 			</div>
 
+			{/* Alerta de Ticket en Espera de Información (Doc. 3.6) */}
+			{isPaused && (
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-200">
+					<div className="flex items-start sm:items-center gap-3">
+						<div className="p-2 rounded-lg bg-amber-500/20 text-amber-300">
+							<Pause className="h-5 w-5 animate-pulse" />
+						</div>
+						<div>
+							<h4 className="text-sm font-bold text-amber-200">
+								Ticket en Espera de Información (Pausado)
+							</h4>
+							<p className="text-xs text-amber-300/80">
+								El equipo técnico ha pausado la atención solicitando datos o
+								aclaraciones adicionales al Responsable del Sistema.
+							</p>
+						</div>
+					</div>
+					<Button
+						size="sm"
+						variant="outline"
+						onClick={() => resumeTicketMutation.mutate(ticket.id)}
+						disabled={resumeTicketMutation.isPending}
+						className="gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/40 text-amber-200 self-start sm:self-auto"
+					>
+						<Play className="h-3.5 w-3.5" />
+						Reanudar Atención
+					</Button>
+				</div>
+			)}
+
 			{/* Stepper de Progreso Operativo */}
 			<TicketStepper faseCodigo={ticket.faseCodigo} />
 
@@ -209,7 +242,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 							size="sm"
 							onClick={() => startAtencionMutation.mutate({ id: ticket.id })}
 							disabled={startAtencionMutation.isPending}
-							className="gap-1.5 bg-indigo-600 hover:bg-indigo-500"
+							className="gap-1.5 bg-blue-600 hover:bg-blue-500"
 						>
 							<Play className="h-4 w-4" />
 							Iniciar Atención
@@ -299,6 +332,21 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 						>
 							<RotateCcw className="h-4 w-4" />
 							Reabrir Ticket
+						</Button>
+					)}
+				</Can>
+
+				{/* 8. Cambiar de Sistema (Doc. 3.8) */}
+				<Can resource="tickets" action="update">
+					{!isClosed && !isCancelled && (
+						<Button
+							size="sm"
+							variant="outline"
+							onClick={() => setIsMoveOpen(true)}
+							className="gap-1.5 text-blue-400 border-blue-500/30 hover:bg-blue-500/10"
+						>
+							<ArrowRightLeft className="h-4 w-4" />
+							Cambiar Sistema
 						</Button>
 					)}
 				</Can>
@@ -459,6 +507,14 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 				onClose={() => setIsEvidenciaOpen(false)}
 				ticketId={ticket.id}
 				atencionId={currentAtencion?.id}
+			/>
+
+			<MoveTicketModal
+				isOpen={isMoveOpen}
+				onClose={() => setIsMoveOpen(false)}
+				ticketId={ticket.id}
+				currentSistemaId={ticket.sistemaId}
+				currentSistemaNombre={ticket.sistemaNombre}
 			/>
 		</div>
 	);

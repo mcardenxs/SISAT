@@ -19,6 +19,7 @@ export class ActaController extends BaseController {
 
 	getAll = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
+			const user = c.get("user");
 			const sistemaId = c.req.query("sistemaId")
 				? Number(c.req.query("sistemaId"))
 				: undefined;
@@ -29,19 +30,24 @@ export class ActaController extends BaseController {
 				? Number(c.req.query("situacionId"))
 				: undefined;
 
-			const actas = await this.actaUseCases.findAll({
-				sistemaId,
-				areaId,
-				situacionId,
-			});
+			const actas = await this.actaUseCases.findAll(
+				{
+					sistemaId,
+					areaId,
+					situacionId,
+				},
+				user?.id,
+				user?.role,
+			);
 			return this.ok(c, actas);
 		});
 	};
 
 	getById = async (c: Context): Promise<Response> => {
 		return this.executeSafely(c, async () => {
+			const user = c.get("user");
 			const id = Number(c.req.param("id"));
-			const acta = await this.actaUseCases.findById(id);
+			const acta = await this.actaUseCases.findById(id, user?.id, user?.role);
 			return this.ok(c, acta);
 		});
 	};

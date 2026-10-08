@@ -44,7 +44,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 				<p className="font-semibold">Sistema institucional no encontrado.</p>
 				<Link
 					to="/sistemas"
-					className="text-xs text-indigo-400 underline mt-2 inline-block"
+					className="text-xs text-blue-400 underline mt-2 inline-block"
 				>
 					Regresar a Sistemas
 				</Link>
@@ -169,7 +169,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 						onClick={() => setActiveTab("responsables")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 flex items-center gap-2 ${
 							activeTab === "responsables"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>
@@ -182,7 +182,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 						onClick={() => setActiveTab("desarrolladores")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 flex items-center gap-2 ${
 							activeTab === "desarrolladores"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>
@@ -195,7 +195,7 @@ export function SistemaDetailPage({ sistemaId }: SistemaDetailPageProps) {
 						onClick={() => setActiveTab("tickets")}
 						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 flex items-center gap-2 ${
 							activeTab === "tickets"
-								? "border-indigo-500 text-indigo-400"
+								? "border-blue-500 text-blue-400"
 								: "border-transparent text-slate-400 hover:text-slate-200"
 						}`}
 					>

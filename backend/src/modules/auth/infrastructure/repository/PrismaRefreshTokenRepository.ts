@@ -2,17 +2,6 @@ import { injectable } from "tsyringe";
 import { prisma } from "@/core/config/prisma";
 import type { RefreshTokenRepository } from "../../domain/repository/RefreshTokenRepository";
 
-interface StoredToken {
-	id: number;
-	tokenHash: string;
-	userId: number;
-	expiresAt: Date;
-	revoked: boolean;
-}
-
-const memoryTokens: StoredToken[] = [];
-let nextId = 1;
-
 @injectable()
 export class PrismaRefreshTokenRepository implements RefreshTokenRepository {
 	async create(data: {
@@ -20,55 +9,58 @@ export class PrismaRefreshTokenRepository implements RefreshTokenRepository {
 		userId: number;
 		expiresAt: Date;
 	}): Promise<void> {
-		memoryTokens.push({
-			id: nextId++,
-			tokenHash: data.tokenHash,
-			userId: data.userId,
-			expiresAt: data.expiresAt,
-			revoked: false,
+		await prisma.refresh_token.create({
+			data: {
+				rft_token_hash: data.tokenHash,
+				rft_fkusuario: data.userId,
+				rft_expiracion: data.expiresAt,
+				rft_revocado: false,
+			},
 		});
 	}
 
 	async findValidByHash(
 		tokenHash: string,
 	): Promise<{ id: number; userId: number; expiresAt: Date } | null> {
-		const token = memoryTokens.find(
-			(t) =>
-				t.tokenHash === tokenHash &&
-				!t.revoked &&
-				t.expiresAt.getTime() > Date.now(),
-		);
+		const record = await prisma.refresh_token.findFirst({
+			where: {
+				rft_token_hash: tokenHash,
+				rft_revocado: false,
+				rft_expiracion: { gt: new Date() },
+			},
+		});
 
-		if (!token) return null;
+		if (!record) return null;
 
 		return {
-			id: token.id,
-			userId: token.userId,
-			expiresAt: token.expiresAt,
+			id: record.rft_id,
+			userId: record.rft_fkusuario,
+			expiresAt: record.rft_expiracion,
 		};
 	}
 
 	async revokeById(id: number): Promise<void> {
-		const token = memoryTokens.find((t) => t.id === id);
-		if (token) {
-			token.revoked = true;
-		}
+		await prisma.refresh_token.update({
+			where: { rft_id: id },
+			data: { rft_revocado: true },
+		});
 	}
 
 	async revokeAllByUserId(userId: number): Promise<void> {
-		for (const token of memoryTokens) {
-			if (token.userId === userId && !token.revoked) {
-				token.revoked = true;
-			}
-		}
+		await prisma.refresh_token.updateMany({
+			where: {
+				rft_fkusuario: userId,
+				rft_revocado: false,
+			},
+			data: { rft_revocado: true },
+		});
 	}
 
 	async deleteExpired(): Promise<void> {
-		const now = Date.now();
-		const valid = memoryTokens.filter(
-			(t) => !t.revoked && t.expiresAt.getTime() > now,
-		);
-		memoryTokens.length = 0;
-		memoryTokens.push(...valid);
+		await prisma.refresh_token.deleteMany({
+			where: {
+				OR: [{ rft_expiracion: { lt: new Date() } }, { rft_revocado: true }],
+			},
+		});
 	}
 }

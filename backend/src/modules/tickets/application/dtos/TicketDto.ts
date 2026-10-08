@@ -27,6 +27,7 @@ export interface TicketDto {
 	atenciones?: AtencionDto[];
 	transiciones?: TransicionDto[];
 	movimientos?: MovimientoDto[];
+	evidencias?: EvidenciaDto[];
 }
 
 export interface MovimientoDto {
@@ -71,6 +72,14 @@ export interface CreateTicketDto {
 	solicitudId: number;
 	titulo: string;
 	descripcion: string;
+	evidencia?: {
+		claseId?: number;
+		nombre: string;
+		ruta: string;
+		formato: string;
+		tamano: number;
+		descripcion?: string;
+	};
 }
 
 export interface AsignacionDto {
