@@ -3,35 +3,35 @@ import { cn } from "@/core/utils/cn";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 	variant?:
+		| "neutral"
 		| "default"
+		| "info"
 		| "success"
 		| "warning"
 		| "danger"
-		| "blue"
-		| "purple"
-		| "info";
+		| "purple";
 }
 
 export function Badge({
 	className,
-	variant = "default",
+	variant = "neutral",
 	children,
 	...props
 }: BadgeProps) {
 	const variants = {
-		default: "bg-slate-800 text-slate-300 border-slate-700",
-		success: "bg-emerald-950/80 text-emerald-400 border-emerald-800/60",
-		warning: "bg-amber-950/80 text-amber-400 border-amber-800/60",
-		danger: "bg-rose-950/80 text-rose-400 border-rose-800/60",
-		blue: "bg-blue-950/80 text-blue-300 border-blue-800/60",
-		purple: "bg-blue-950/80 text-blue-300 border-blue-800/60",
-		info: "bg-cyan-950/80 text-cyan-400 border-cyan-800/60",
+		neutral: "bg-surface-muted text-foreground border-border-subtle",
+		default: "bg-surface-muted text-foreground border-border-subtle",
+		info: "bg-info-subtle text-info border-info-border",
+		purple: "bg-info-subtle text-info border-info-border",
+		success: "bg-success-subtle text-success border-success-border",
+		warning: "bg-warning-subtle text-warning border-warning-border",
+		danger: "bg-danger-subtle text-danger border-danger-border",
 	};
 
 	return (
 		<span
 			className={cn(
-				"inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold tracking-wide transition-colors",
+				"inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium tracking-normal transition-colors",
 				variants[variant],
 				className,
 			)}

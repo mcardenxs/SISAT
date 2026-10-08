@@ -15,7 +15,7 @@ export function UserProfileCard() {
 	if (!user) {
 		return (
 			<Card>
-				<p className="text-sm text-slate-400">
+				<p className="text-sm text-foreground-muted">
 					No hay información de sesión activa.
 				</p>
 			</Card>
@@ -23,17 +23,19 @@ export function UserProfileCard() {
 	}
 
 	const roleVariant =
-		user.role === "ADMIN"
-			? "blue"
-			: user.role === "MOD"
+		user.role === "ADMIN" || user.role === "ADMINISTRADOR"
+			? "info"
+			: user.role === "MOD" || user.role === "RESPONSABLE_DE_SISTEMA"
 				? "warning"
-				: "default";
+				: user.role === "DESARROLLADOR"
+					? "success"
+					: "neutral";
 
 	return (
-		<Card className="max-w-2xl mx-auto">
+		<Card className="max-w-2xl mx-auto shadow-surface">
 			<CardHeader>
 				<div className="flex items-center gap-4">
-					<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/10 border border-blue-500/20 text-xl font-bold text-blue-400">
+					<div className="flex h-14 w-14 items-center justify-center rounded-control bg-primary-light border border-primary-border text-xl font-bold text-primary">
 						{user.name.charAt(0).toUpperCase()}
 					</div>
 					<div>
@@ -47,44 +49,44 @@ export function UserProfileCard() {
 					</div>
 				</div>
 			</CardHeader>
-			<CardContent className="space-y-4 pt-4 border-t border-slate-800/80">
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-					<div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3.5">
-						<div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+			<CardContent className="space-y-4 pt-4 border-t border-subtle">
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+					<div className="rounded-control border border-subtle bg-surface-subtle p-3.5">
+						<div className="flex items-center gap-2 text-xs font-medium text-foreground-muted">
 							<Hash className="h-3.5 w-3.5" />
 							ID de Usuario
 						</div>
-						<p className="mt-1 text-sm font-semibold text-slate-100 font-mono">
+						<p className="mt-1 text-sm font-semibold text-foreground font-mono">
 							#{user.id}
 						</p>
 					</div>
 
-					<div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3.5">
-						<div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+					<div className="rounded-control border border-subtle bg-surface-subtle p-3.5">
+						<div className="flex items-center gap-2 text-xs font-medium text-foreground-muted">
 							<Mail className="h-3.5 w-3.5" />
 							Correo Electrónico
 						</div>
-						<p className="mt-1 text-sm font-semibold text-slate-100 truncate">
+						<p className="mt-1 text-sm font-semibold text-foreground truncate">
 							{user.email}
 						</p>
 					</div>
 
-					<div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3.5">
-						<div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+					<div className="rounded-control border border-subtle bg-surface-subtle p-3.5">
+						<div className="flex items-center gap-2 text-xs font-medium text-foreground-muted">
 							<Shield className="h-3.5 w-3.5" />
 							Nivel de Autorización
 						</div>
-						<p className="mt-1 text-sm font-semibold text-slate-100">
+						<p className="mt-1 text-sm font-semibold text-foreground">
 							{user.role} (Control Basado en Permisos)
 						</p>
 					</div>
 
-					<div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3.5">
-						<div className="flex items-center gap-2 text-xs font-medium text-slate-400">
-							<CheckCircle className="h-3.5 w-3.5" />
+					<div className="rounded-control border border-subtle bg-surface-subtle p-3.5">
+						<div className="flex items-center gap-2 text-xs font-medium text-foreground-muted">
+							<CheckCircle className="h-3.5 w-3.5 text-success" />
 							Estado de Verificación
 						</div>
-						<p className="mt-1 text-sm font-semibold text-emerald-400">
+						<p className="mt-1 text-sm font-semibold text-success">
 							Autenticado vía JWT
 						</p>
 					</div>

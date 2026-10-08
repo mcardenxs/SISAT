@@ -50,10 +50,10 @@ export function TicketFilters({
 		searchTerm.trim().length > 0;
 
 	return (
-		<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-3">
-			<div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
-				<div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-					<Filter className="h-4 w-4 text-blue-400" />
+		<div className="rounded-surface border border-subtle bg-surface p-4 space-y-3 shadow-surface">
+			<div className="flex items-center justify-between gap-2 border-b border-subtle pb-3">
+				<div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+					<Filter className="h-4 w-4 text-primary" />
 					Filtros de Búsqueda
 				</div>
 				{hasActiveFilters && (
@@ -61,7 +61,7 @@ export function TicketFilters({
 						variant="ghost"
 						size="sm"
 						onClick={onReset}
-						className="h-7 text-xs text-slate-400 hover:text-white"
+						className="h-7 text-xs text-foreground-muted hover:text-foreground"
 					>
 						<RotateCcw className="h-3 w-3 mr-1" />
 						Limpiar Filtros
@@ -78,7 +78,7 @@ export function TicketFilters({
 						placeholder="Buscar por folio o título..."
 						className="pl-8 text-xs"
 					/>
-					<Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-500" />
+					<Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-foreground-subtle" />
 				</div>
 
 				{/* Selector de Sistema */}
@@ -88,7 +88,7 @@ export function TicketFilters({
 						onSistemaChange(e.target.value ? Number(e.target.value) : undefined)
 					}
 					aria-label="Filtrar por sistema institucional"
-					className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+					className="w-full rounded-control border border-border-strong bg-surface px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-surface"
 				>
 					<option value="">Todos los Sistemas</option>
 					{sistemas?.map((s) => (
@@ -105,7 +105,7 @@ export function TicketFilters({
 						onFaseChange(e.target.value ? Number(e.target.value) : undefined)
 					}
 					aria-label="Filtrar por fase del ticket"
-					className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+					className="w-full rounded-control border border-border-strong bg-surface px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-surface"
 				>
 					<option value="">Todas las Fases</option>
 					{catalogos?.fase.map((f) => (
@@ -124,7 +124,7 @@ export function TicketFilters({
 						)
 					}
 					aria-label="Filtrar por prioridad"
-					className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+					className="w-full rounded-control border border-border-strong bg-surface px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-surface"
 				>
 					<option value="">Todas las Prioridades</option>
 					{catalogos?.prioridad.map((p) => (
@@ -143,7 +143,7 @@ export function TicketFilters({
 						)
 					}
 					aria-label="Filtrar por tipo de solicitud"
-					className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+					className="w-full rounded-control border border-border-strong bg-surface px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-surface"
 				>
 					<option value="">Tipos de Solicitud</option>
 					{catalogos?.solicitud.map((sol) => (

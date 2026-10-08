@@ -55,23 +55,23 @@ export function RoleInboxWidget() {
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center justify-between">
-				<h2 className="text-base font-bold text-white flex items-center gap-2">
-					<UserCheck className="h-5 w-5 text-blue-400" />
-					Bandeja de Entrada Operativa &bull; {user?.role}
+				<h2 className="text-base font-semibold text-foreground flex items-center gap-2">
+					<UserCheck className="h-5 w-5 text-primary" />
+					<span>Bandeja de Entrada Operativa &bull; {user?.role}</span>
 				</h2>
-				<span className="text-xs text-slate-400">
+				<span className="text-xs text-foreground-muted">
 					Tareas y flujos priorizados para tu perfil
 				</span>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{/* Widget Desarrollador */}
 				{(isDev || isAdmin) && (
-					<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-3">
-						<div className="flex items-center justify-between pb-2 border-b border-slate-800">
+					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
-								<Code2 className="h-4 w-4 text-emerald-400" />
-								<h3 className="text-xs font-semibold text-slate-200">
+								<Code2 className="h-4 w-4 text-success" />
+								<h3 className="text-xs font-semibold text-foreground">
 									Mis Atenciones Activas
 								</h3>
 							</div>
@@ -79,7 +79,7 @@ export function RoleInboxWidget() {
 						</div>
 
 						{devActiveTickets.length === 0 ? (
-							<p className="text-xs text-slate-500 italic py-4 text-center">
+							<p className="text-xs text-foreground-muted italic py-4 text-center">
 								No tienes atenciones técnicas activas asignadas.
 							</p>
 						) : (
@@ -89,21 +89,21 @@ export function RoleInboxWidget() {
 										key={t.id}
 										to="/tickets/$ticketId"
 										params={{ ticketId: String(t.id) }}
-										className="block p-2.5 rounded-lg bg-slate-950/50 hover:bg-slate-800/40 border border-slate-800/80 transition-colors"
+										className="block p-2.5 rounded-control bg-surface-subtle hover:bg-surface-muted border border-subtle transition-colors"
 									>
 										<div className="flex items-center justify-between text-xs">
-											<span className="font-mono text-blue-400 font-semibold">
+											<span className="font-mono text-primary font-semibold">
 												{t.folio}
 											</span>
-											<span className="text-[10px] text-slate-500 flex items-center gap-1">
+											<span className="text-[10px] text-foreground-subtle flex items-center gap-1">
 												<Clock className="h-3 w-3" />
 												{formatTimeAgo(t.registro)}
 											</span>
 										</div>
-										<p className="text-xs font-medium text-slate-200 truncate mt-1">
+										<p className="text-xs font-medium text-foreground truncate mt-1">
 											{t.titulo}
 										</p>
-										<span className="text-[11px] text-emerald-400 mt-1 flex items-center gap-1">
+										<span className="text-[11px] text-success mt-1 flex items-center gap-1 font-medium">
 											Registrar tiempo / solución &rarr;
 										</span>
 									</Link>
@@ -115,11 +115,11 @@ export function RoleInboxWidget() {
 
 				{/* Widget Responsable: Tickets por Asignar */}
 				{(isResp || isAdmin) && (
-					<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-3">
-						<div className="flex items-center justify-between pb-2 border-b border-slate-800">
+					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
-								<AlertCircle className="h-4 w-4 text-amber-400" />
-								<h3 className="text-xs font-semibold text-slate-200">
+								<AlertCircle className="h-4 w-4 text-warning" />
+								<h3 className="text-xs font-semibold text-foreground">
 									Pendientes de Asignar Técnico
 								</h3>
 							</div>
@@ -127,7 +127,7 @@ export function RoleInboxWidget() {
 						</div>
 
 						{unassignedTickets.length === 0 ? (
-							<p className="text-xs text-slate-500 italic py-4 text-center">
+							<p className="text-xs text-foreground-muted italic py-4 text-center">
 								Todos los tickets registrados cuentan con técnico.
 							</p>
 						) : (
@@ -137,17 +137,17 @@ export function RoleInboxWidget() {
 										key={t.id}
 										to="/tickets/$ticketId"
 										params={{ ticketId: String(t.id) }}
-										className="block p-2.5 rounded-lg bg-slate-950/50 hover:bg-slate-800/40 border border-slate-800/80 transition-colors"
+										className="block p-2.5 rounded-control bg-surface-subtle hover:bg-surface-muted border border-subtle transition-colors"
 									>
 										<div className="flex items-center justify-between text-xs">
-											<span className="font-mono text-amber-400 font-semibold">
+											<span className="font-mono text-warning font-semibold">
 												{t.folio}
 											</span>
-											<Badge variant="default" className="text-[10px]">
+											<Badge variant="neutral" className="text-[10px]">
 												{t.sistemaNombre}
 											</Badge>
 										</div>
-										<p className="text-xs font-medium text-slate-200 truncate mt-1">
+										<p className="text-xs font-medium text-foreground truncate mt-1">
 											{t.titulo}
 										</p>
 									</Link>
@@ -159,11 +159,11 @@ export function RoleInboxWidget() {
 
 				{/* Widget Responsable: Soluciones por Validar */}
 				{(isResp || isAdmin) && (
-					<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-3">
-						<div className="flex items-center justify-between pb-2 border-b border-slate-800">
+					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
-								<CheckCircle2 className="h-4 w-4 text-cyan-400" />
-								<h3 className="text-xs font-semibold text-slate-200">
+								<CheckCircle2 className="h-4 w-4 text-primary" />
+								<h3 className="text-xs font-semibold text-foreground">
 									Soluciones por Validar
 								</h3>
 							</div>
@@ -171,7 +171,7 @@ export function RoleInboxWidget() {
 						</div>
 
 						{pendingValidationTickets.length === 0 ? (
-							<p className="text-xs text-slate-500 italic py-4 text-center">
+							<p className="text-xs text-foreground-muted italic py-4 text-center">
 								No hay soluciones pendientes de evaluación y cierre.
 							</p>
 						) : (
@@ -181,20 +181,20 @@ export function RoleInboxWidget() {
 										key={t.id}
 										to="/tickets/$ticketId"
 										params={{ ticketId: String(t.id) }}
-										className="block p-2.5 rounded-lg bg-slate-950/50 hover:bg-slate-800/40 border border-slate-800/80 transition-colors"
+										className="block p-2.5 rounded-control bg-surface-subtle hover:bg-surface-muted border border-subtle transition-colors"
 									>
 										<div className="flex items-center justify-between text-xs">
-											<span className="font-mono text-cyan-400 font-semibold">
+											<span className="font-mono text-primary font-semibold">
 												{t.folio}
 											</span>
-											<span className="text-[10px] text-slate-400">
+											<span className="text-[10px] text-foreground-subtle">
 												{t.sistemaNombre}
 											</span>
 										</div>
-										<p className="text-xs font-medium text-slate-200 truncate mt-1">
+										<p className="text-xs font-medium text-foreground truncate mt-1">
 											{t.titulo}
 										</p>
-										<span className="text-[11px] text-cyan-400 mt-1 flex items-center gap-1">
+										<span className="text-[11px] text-primary mt-1 flex items-center gap-1 font-medium">
 											Evaluar y cerrar ticket &rarr;
 										</span>
 									</Link>
@@ -247,19 +247,19 @@ export function RoleInboxWidget() {
 
 				{/* Widget Jefe de Área: Actas Pendientes de Firma */}
 				{(isJefe || isAdmin) && (
-					<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-3">
-						<div className="flex items-center justify-between pb-2 border-b border-slate-800">
+					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
-								<FileText className="h-4 w-4 text-blue-400" />
-								<h3 className="text-xs font-semibold text-slate-200">
+								<FileText className="h-4 w-4 text-primary" />
+								<h3 className="text-xs font-semibold text-foreground">
 									Actas Listas para Firma
 								</h3>
 							</div>
-							<Badge variant="blue">{actasPendingFirma.length}</Badge>
+							<Badge variant="info">{actasPendingFirma.length}</Badge>
 						</div>
 
 						{actasPendingFirma.length === 0 ? (
-							<p className="text-xs text-slate-500 italic py-4 text-center">
+							<p className="text-xs text-foreground-muted italic py-4 text-center">
 								No hay actas semanales pendientes de tu firma.
 							</p>
 						) : (
@@ -269,20 +269,20 @@ export function RoleInboxWidget() {
 										key={a.id}
 										to="/actas/$actaId"
 										params={{ actaId: String(a.id) }}
-										className="block p-2.5 rounded-lg bg-slate-950/50 hover:bg-slate-800/40 border border-slate-800/80 transition-colors"
+										className="block p-2.5 rounded-control bg-surface-subtle hover:bg-surface-muted border border-subtle transition-colors"
 									>
 										<div className="flex items-center justify-between text-xs">
-											<span className="font-mono text-blue-400 font-semibold">
+											<span className="font-mono text-primary font-semibold">
 												{a.folio}
 											</span>
 											<Badge variant={getFaseVariant(a.situacionCodigo)}>
 												{a.situacionNombre || a.situacionCodigo}
 											</Badge>
 										</div>
-										<p className="text-xs font-medium text-slate-200 truncate mt-1">
+										<p className="text-xs font-medium text-foreground truncate mt-1">
 											{a.sistemaNombre} ({a.areaNombre})
 										</p>
-										<span className="text-[10px] text-slate-400 mt-0.5 block">
+										<span className="text-[10px] text-foreground-subtle mt-0.5 block">
 											Periodo: {a.inicio} al {a.fin}
 										</span>
 									</Link>

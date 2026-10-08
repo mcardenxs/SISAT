@@ -9,6 +9,9 @@ import {
 } from "@/core/components/ui/Card";
 import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
+import { PageHeader } from "@/core/components/ui/PageHeader";
+import { EmptyState } from "@/core/components/ui/EmptyState";
+import { Alert } from "@/core/components/ui/Alert";
 import { Can } from "@/core/permissions/Can";
 import {
 	Ticket as TicketIcon,
@@ -129,72 +132,54 @@ export function TicketsPage() {
 
 	return (
 		<div className="space-y-6">
-			{/* Encabezado */}
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-				<div>
+			{/* Encabezado con PageHeader según el sistema de diseño */}
+			<PageHeader
+				title="Tickets de Soporte"
+				description="Ciclo operativo de 5 fases, asignaciones técnicas, bitácora y entrega-recepción."
+				actions={
 					<div className="flex items-center gap-2.5">
-						<div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400">
-							<TicketIcon className="h-5 w-5" />
+						<div className="flex items-center rounded-control border border-subtle bg-surface p-0.5 shadow-surface">
+							<button
+								type="button"
+								onClick={() => setViewMode("grid")}
+								className={`p-1.5 rounded-control transition-colors cursor-pointer ${
+									viewMode === "grid"
+										? "bg-primary text-white"
+										: "text-foreground-muted hover:text-foreground"
+								}`}
+								title="Modo Cuadrícula"
+								aria-label="Modo Cuadrícula"
+							>
+								<LayoutGrid className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								onClick={() => setViewMode("table")}
+								className={`p-1.5 rounded-control transition-colors cursor-pointer ${
+									viewMode === "table"
+										? "bg-primary text-white"
+										: "text-foreground-muted hover:text-foreground"
+								}`}
+								title="Modo Tabla"
+								aria-label="Modo Tabla"
+							>
+								<TableIcon className="h-4 w-4" />
+							</button>
 						</div>
-						<h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-							Tickets de Soporte
-						</h1>
+
+						<Can resource="tickets" action="create">
+							<Button
+								onClick={() => setIsCreateOpen(true)}
+								className="gap-2"
+								size="sm"
+							>
+								<Plus className="h-4 w-4" />
+								Nuevo Ticket
+							</Button>
+						</Can>
 					</div>
-					<p className="text-sm text-slate-400 mt-1">
-						Ciclo operativo de 5 fases, asignaciones técnicas, bitácora y
-						entrega-recepción.
-					</p>
-				</div>
-
-				<div className="flex items-center gap-2.5 self-start sm:self-auto">
-					{/* Botón Exportar Reporte Excel / CSV (Doc. 4.1) */}
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={handleExportCSV}
-						className="gap-1.5 text-xs text-slate-300 border-slate-700 hover:text-white hover:bg-slate-800"
-						title="Exportar listado actual a Excel / CSV"
-					>
-						<Download className="h-3.5 w-3.5 text-emerald-400" />
-						Exportar Excel
-					</Button>
-
-					{/* Selector de modo Cuadrícula / Tabla */}
-					<div className="flex items-center rounded-lg border border-slate-800 bg-slate-900 p-0.5">
-						<button
-							type="button"
-							onClick={() => setViewMode("grid")}
-							className={`p-1.5 rounded-md transition-colors ${
-								viewMode === "grid"
-									? "bg-blue-600 text-white shadow"
-									: "text-slate-400 hover:text-white"
-							}`}
-							title="Modo Cuadrícula"
-						>
-							<LayoutGrid className="h-4 w-4" />
-						</button>
-						<button
-							type="button"
-							onClick={() => setViewMode("table")}
-							className={`p-1.5 rounded-md transition-colors ${
-								viewMode === "table"
-									? "bg-blue-600 text-white shadow"
-									: "text-slate-400 hover:text-white"
-							}`}
-							title="Modo Tabla"
-						>
-							<TableIcon className="h-4 w-4" />
-						</button>
-					</div>
-
-					<Can resource="tickets" action="create">
-						<Button onClick={() => setIsCreateOpen(true)} className="gap-2">
-							<Plus className="h-4 w-4" />
-							Nuevo Ticket
-						</Button>
-					</Can>
-				</div>
-			</div>
+				}
+			/>
 
 			{/* Modal Crear Ticket */}
 			<CreateTicketModal
@@ -219,27 +204,36 @@ export function TicketsPage() {
 
 			{/* Contenido / Estados de carga */}
 			{isLoading && (
-				<div className="p-12 text-center text-slate-400">
+				<div className="p-12 text-center text-foreground-muted text-sm">
 					Cargando tickets de soporte...
 				</div>
 			)}
 
 			{error && (
-				<div className="p-8 text-center text-rose-400 bg-rose-950/20 border border-rose-900/40 rounded-xl">
-					Error al cargar los tickets de soporte.
-				</div>
+				<Alert variant="danger" title="Error de carga">
+					No se pudieron cargar los tickets de soporte. Por favor intenta
+					nuevamente.
+				</Alert>
 			)}
 
 			{!isLoading && !error && filteredTickets.length === 0 && (
-				<div className="p-12 text-center border border-dashed border-slate-800 rounded-xl text-slate-400">
-					<TicketIcon className="h-10 w-10 mx-auto text-slate-600 mb-2" />
-					<p className="font-semibold text-slate-300">
-						No se encontraron tickets
-					</p>
-					<p className="text-xs text-slate-500 mt-1">
-						Prueba modificando los filtros o registra un nuevo ticket.
-					</p>
-				</div>
+				<EmptyState
+					icon={<TicketIcon className="h-10 w-10" />}
+					title="No se encontraron tickets"
+					description="Prueba modificando los filtros o registra un nuevo ticket de incidencia."
+					action={
+						<Can resource="tickets" action="create">
+							<Button
+								size="sm"
+								onClick={() => setIsCreateOpen(true)}
+								className="gap-2"
+							>
+								<Plus className="h-4 w-4" />
+								Registrar Ticket
+							</Button>
+						</Can>
+					}
+				/>
 			)}
 
 			{!isLoading &&
@@ -248,7 +242,7 @@ export function TicketsPage() {
 				(viewMode === "table" ? (
 					<TicketTableView tickets={filteredTickets} />
 				) : (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						{filteredTickets.map((ticket) => (
 							<Link
 								key={ticket.id}
@@ -256,20 +250,20 @@ export function TicketsPage() {
 								params={{ ticketId: String(ticket.id) }}
 								className="group block"
 							>
-								<Card className="h-full border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900/80 transition-all duration-200">
+								<Card className="h-full hover:border-strong transition-colors">
 									<CardHeader className="pb-3">
 										<div className="flex items-start justify-between gap-2">
 											<div>
 												<div className="flex items-center gap-2">
-													<span className="font-mono text-xs text-blue-400 font-semibold">
+													<span className="font-mono text-xs text-primary font-semibold">
 														{ticket.folio}
 													</span>
-													<span className="text-[11px] text-slate-500 flex items-center gap-1">
+													<span className="text-[11px] text-foreground-subtle flex items-center gap-1">
 														<Clock className="h-3 w-3" />
 														{formatTimeAgo(ticket.registro)}
 													</span>
 												</div>
-												<CardTitle className="text-base font-semibold text-white mt-1 group-hover:text-blue-300 transition-colors">
+												<CardTitle className="text-base font-semibold text-foreground mt-1 group-hover:text-primary transition-colors">
 													{ticket.titulo}
 												</CardTitle>
 											</div>
@@ -279,36 +273,34 @@ export function TicketsPage() {
 										</div>
 									</CardHeader>
 									<CardContent className="space-y-3 text-xs">
-										<p className="text-slate-300 line-clamp-2">
+										<p className="text-foreground-muted line-clamp-2">
 											{ticket.descripcion}
 										</p>
 
-										<div className="border-t border-slate-800 pt-3 space-y-1.5">
-											<div className="flex items-center gap-1.5 text-slate-400">
-												<Server className="h-3.5 w-3.5 text-blue-400" />
-												<span className="font-medium text-slate-200">
+										<div className="border-t border-subtle pt-3 space-y-1.5">
+											<div className="flex items-center gap-1.5 text-foreground-muted">
+												<Server className="h-3.5 w-3.5 text-primary" />
+												<span className="font-medium text-foreground">
 													{ticket.sistemaNombre}
 												</span>
-												<span className="text-slate-500">
+												<span className="text-foreground-subtle">
 													({ticket.areaNombre})
 												</span>
 											</div>
-											<div className="flex items-center gap-1.5 text-slate-400">
-												<User className="h-3.5 w-3.5 text-slate-500" />
+											<div className="flex items-center gap-1.5 text-foreground-muted">
+												<User className="h-3.5 w-3.5 text-foreground-subtle" />
 												<span>
 													Solicitante:{" "}
-													<span className="text-slate-300">
+													<span className="text-foreground">
 														{ticket.usuarioNombre || "Usuario institucional"}
 													</span>
 												</span>
 											</div>
 										</div>
 
-										<div className="border-t border-slate-800 pt-3 flex items-center justify-between text-[11px] text-slate-500">
-											<span className="text-slate-400">
-												{ticket.atenciones?.length || 0} ciclo(s)
-											</span>
-											<span className="inline-flex items-center gap-1 text-blue-400 group-hover:translate-x-0.5 transition-transform">
+										<div className="border-t border-subtle pt-3 flex items-center justify-between text-[11px] text-foreground-subtle">
+											<span>{ticket.atenciones?.length || 0} ciclo(s)</span>
+											<span className="inline-flex items-center gap-1 text-primary group-hover:translate-x-0.5 transition-transform font-medium">
 												Detalle operativo
 												<ExternalLink className="h-3 w-3" />
 											</span>

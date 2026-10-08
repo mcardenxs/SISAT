@@ -104,72 +104,72 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 			<div className="flex items-center justify-between">
 				<Link
 					to="/tickets"
-					className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+					className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-foreground transition-colors"
 				>
 					<ArrowLeft className="h-4 w-4" />
 					Volver a Tickets
 				</Link>
-				<span className="text-xs text-slate-500">
+				<span className="text-xs text-foreground-subtle">
 					Registro: {new Date(ticket.registro).toLocaleString()}
 				</span>
 			</div>
 
 			{/* Encabezado Principal */}
-			<div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 space-y-4">
+			<div className="rounded-surface border border-subtle bg-surface p-6 space-y-4 shadow-surface">
 				<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 					<div className="space-y-1">
 						<div className="flex flex-wrap items-center gap-2.5">
-							<span className="font-mono text-sm font-bold text-blue-400 bg-blue-950/40 px-2.5 py-0.5 rounded border border-blue-500/20">
+							<span className="font-mono text-sm font-bold text-primary bg-primary-light px-2.5 py-0.5 rounded-control border border-primary-border">
 								{ticket.folio}
 							</span>
 							<Badge variant={getFaseVariant(ticket.faseCodigo)}>
 								{ticket.faseNombre || ticket.faseCodigo}
 							</Badge>
-							<Badge variant="blue">
+							<Badge variant="neutral">
 								Prioridad: {ticket.prioridadNombre || "Normal"}
 							</Badge>
 							<Badge variant="info">
 								Solicitud: {ticket.solicitudNombre || "Incidencia"}
 							</Badge>
 						</div>
-						<h1 className="text-2xl font-bold tracking-tight text-white pt-1">
+						<h1 className="text-2xl font-bold tracking-tight text-foreground pt-1">
 							{ticket.titulo}
 						</h1>
 					</div>
 
 					{/* Ficha rápida de Metadatos */}
-					<div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+					<div className="flex flex-wrap items-center gap-4 text-xs text-foreground-muted bg-surface-subtle p-3 rounded-control border border-subtle">
 						<div className="flex items-center gap-1.5">
-							<Server className="h-4 w-4 text-blue-400" />
+							<Server className="h-4 w-4 text-primary" />
 							<div>
-								<span className="text-[10px] text-slate-500 block uppercase">
+								<span className="text-[10px] text-foreground-subtle block uppercase">
 									Sistema
 								</span>
-								<span className="font-medium text-slate-200">
+								<span className="font-medium text-foreground">
 									{ticket.sistemaNombre}
 								</span>
 							</div>
 						</div>
-						<div className="h-6 w-px bg-slate-800" />
+						<div className="h-6 w-px bg-border-subtle" />
 						<div className="flex items-center gap-1.5">
-							<Building2 className="h-4 w-4 text-emerald-400" />
+							<Building2 className="h-4 w-4 text-success" />
 							<div>
-								<span className="text-[10px] text-slate-500 block uppercase">
+								<span className="text-[10px] text-foreground-subtle block uppercase">
 									Área
 								</span>
-								<span className="font-medium text-slate-200">
+								<span className="font-medium text-foreground">
 									{ticket.areaNombre}
 								</span>
 							</div>
 						</div>
-						<div className="h-6 w-px bg-slate-800" />
+						<div className="h-6 w-px bg-border-subtle" />
 						<div className="flex items-center gap-1.5">
-							<User className="h-4 w-4 text-amber-400" />
+							<User className="h-4 w-4 text-warning" />
 							<div>
-								<span className="text-[10px] text-slate-500 block uppercase">
+								<span className="text-[10px] text-foreground-subtle block uppercase">
 									Solicitante
 								</span>
-								<span className="font-medium text-slate-200">
+								<span className="font-medium text-foreground">
 									{ticket.usuarioNombre}
 								</span>
 							</div>
@@ -177,7 +177,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 					</div>
 				</div>
 
-				<p className="text-sm text-slate-300 leading-relaxed bg-slate-950/30 p-3.5 rounded-xl border border-slate-800/80">
+				<p className="text-sm text-foreground-muted leading-relaxed bg-surface-subtle p-3.5 rounded-control border border-subtle">
 					{ticket.descripcion}
 				</p>
 			</div>
@@ -216,7 +216,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 			<TicketStepper faseCodigo={ticket.faseCodigo} />
 
 			{/* Bloque de Acciones según Rol / Estado */}
-			<div className="flex flex-wrap items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+			<div className="flex flex-wrap items-center gap-2.5 rounded-surface border border-subtle bg-surface p-4 shadow-surface">
 				{/* 1. Asignar / Reasignar (Responsable / Admin) */}
 				<Can resource="asignaciones" action="create">
 					{!isClosed && !isCancelled && (
@@ -400,14 +400,14 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 
 			{/* Pestañas de Detalle */}
 			<div className="space-y-4">
-				<div className="flex border-b border-slate-800">
+				<div className="flex border-b border-subtle">
 					<button
 						type="button"
 						onClick={() => setActiveTab("atencion")}
-						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
+						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 cursor-pointer ${
 							activeTab === "atencion"
-								? "border-blue-500 text-blue-400"
-								: "border-transparent text-slate-400 hover:text-slate-200"
+								? "border-primary text-primary"
+								: "border-transparent text-foreground-muted hover:text-foreground"
 						}`}
 					>
 						Ciclo de Atención Actual
@@ -415,10 +415,10 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 					<button
 						type="button"
 						onClick={() => setActiveTab("ciclos")}
-						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
+						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 cursor-pointer ${
 							activeTab === "ciclos"
-								? "border-blue-500 text-blue-400"
-								: "border-transparent text-slate-400 hover:text-slate-200"
+								? "border-primary text-primary"
+								: "border-transparent text-foreground-muted hover:text-foreground"
 						}`}
 					>
 						Historial de Ciclos ({ticket.atenciones?.length || 0})
@@ -426,10 +426,10 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 					<button
 						type="button"
 						onClick={() => setActiveTab("trazabilidad")}
-						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
+						className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 cursor-pointer ${
 							activeTab === "trazabilidad"
-								? "border-blue-500 text-blue-400"
-								: "border-transparent text-slate-400 hover:text-slate-200"
+								? "border-primary text-primary"
+								: "border-transparent text-foreground-muted hover:text-foreground"
 						}`}
 					>
 						Trazabilidad y Asignaciones
