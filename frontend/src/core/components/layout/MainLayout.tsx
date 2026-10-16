@@ -65,11 +65,11 @@ export function MainLayout({ children }: MainLayoutProps) {
 					: "neutral";
 
 	const navItems = (
-		<nav className="space-y-1">
+		<nav className="space-y-1.5">
 			<Link
 				to="/dashboard"
 				onClick={() => setMobileOpen(false)}
-				className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+				className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 			>
 				<LayoutDashboard className="h-4 w-4 shrink-0" />
 				<span>Dashboard</span>
@@ -79,7 +79,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 				<Link
 					to="/tickets"
 					onClick={() => setMobileOpen(false)}
-					className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+					className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 				>
 					<Ticket className="h-4 w-4 shrink-0" />
 					<span>Tickets</span>
@@ -90,7 +90,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 				<Link
 					to="/actas"
 					onClick={() => setMobileOpen(false)}
-					className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+					className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 				>
 					<FileText className="h-4 w-4 shrink-0" />
 					<span>Actas</span>
@@ -101,7 +101,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 				<Link
 					to="/sistemas"
 					onClick={() => setMobileOpen(false)}
-					className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+					className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 				>
 					<Monitor className="h-4 w-4 shrink-0" />
 					<span>Sistemas</span>
@@ -112,7 +112,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 				<Link
 					to="/areas"
 					onClick={() => setMobileOpen(false)}
-					className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+					className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 				>
 					<Building2 className="h-4 w-4 shrink-0" />
 					<span>Áreas</span>
@@ -123,7 +123,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 				<Link
 					to="/users"
 					onClick={() => setMobileOpen(false)}
-					className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+					className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 				>
 					<Users className="h-4 w-4 shrink-0" />
 					<span>Usuarios</span>
@@ -134,7 +134,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 				<Link
 					to="/permissions"
 					onClick={() => setMobileOpen(false)}
-					className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+					className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 				>
 					<Shield className="h-4 w-4 shrink-0" />
 					<span>Permisos</span>
@@ -144,7 +144,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 			<Link
 				to="/profile"
 				onClick={() => setMobileOpen(false)}
-				className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
+				className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-control text-foreground-muted hover:text-foreground hover:bg-surface-muted transition-colors [&.active]:bg-primary-light [&.active]:text-primary [&.active]:font-semibold [&.active]:border [&.active]:border-primary-border"
 			>
 				<UserCheck className="h-4 w-4 shrink-0" />
 				<span>Mi Perfil</span>
@@ -153,7 +153,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 	);
 
 	const sidebarFooter = (
-		<div className="pt-3 border-t border-subtle space-y-3">
+		<div className="space-y-3">
 			<div className="flex items-center justify-between px-1">
 				<span className="text-xs font-medium text-foreground-muted">Tema</span>
 				<ThemeToggle showLabel />
@@ -165,7 +165,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 						<p className="text-xs font-semibold text-foreground truncate">
 							{user.name}
 						</p>
-						<p className="text-[11px] text-foreground-muted truncate">
+						<p className="text-xs text-foreground-muted truncate">
 							{user.email}
 						</p>
 					</div>
@@ -189,8 +189,8 @@ export function MainLayout({ children }: MainLayoutProps) {
 	return (
 		<div className="min-h-screen flex bg-canvas text-foreground">
 			{/* Sidebar de Escritorio */}
-			<aside className="hidden md:flex md:w-64 md:flex-col md:shrink-0 sticky top-0 h-screen bg-surface border-r border-subtle">
-				<div className="flex h-16 items-center px-6 border-b border-subtle gap-3">
+			<aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 md:left-0 z-30 h-screen bg-surface border-r border-subtle">
+				<div className="flex h-16 items-center px-6 border-b border-subtle gap-3 shrink-0">
 					<Link to="/dashboard" className="flex items-center gap-2.5 group">
 						<div className="flex h-8 w-8 items-center justify-center rounded-control bg-primary-light border border-primary-border text-primary group-hover:bg-primary group-hover:text-white transition-colors">
 							<Hexagon className="h-5 w-5 stroke-[2]" />
@@ -199,23 +199,25 @@ export function MainLayout({ children }: MainLayoutProps) {
 							<span className="text-base font-bold tracking-tight text-foreground block leading-tight">
 								SISAT
 							</span>
-							<span className="text-[10px] text-foreground-subtle block leading-tight">
+							<span className="text-xs text-foreground-subtle block leading-tight">
 								Atención Técnica
 							</span>
 						</div>
 					</Link>
 				</div>
 
-				<div className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
+				<div className="flex-1 overflow-y-auto px-3 py-4 space-y-3">
 					<div className="px-3">
-						<p className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
+						<p className="text-xs font-semibold uppercase tracking-wider text-foreground-subtle">
 							Opciones
 						</p>
 					</div>
 					{navItems}
 				</div>
 
-				<div className="p-3">{sidebarFooter}</div>
+				<div className="p-3 border-t border-subtle shrink-0 bg-surface">
+					{sidebarFooter}
+				</div>
 			</aside>
 
 			{/* Barra móvil */}
@@ -272,22 +274,24 @@ export function MainLayout({ children }: MainLayoutProps) {
 							</button>
 						</div>
 
-						<div className="flex-1 overflow-y-auto py-4 space-y-4">
+						<div className="flex-1 overflow-y-auto py-4 space-y-3">
 							<div className="px-3">
-								<p className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
+								<p className="text-xs font-semibold uppercase tracking-wider text-foreground-subtle">
 									Opciones
 								</p>
 							</div>
 							{navItems}
 						</div>
 
-						{sidebarFooter}
+						<div className="p-3 border-t border-subtle shrink-0">
+							{sidebarFooter}
+						</div>
 					</aside>
 				</div>
 			)}
 
 			{/* Área de contenido principal */}
-			<div className="flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0">
+			<div className="flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0 md:pl-64">
 				<main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 					{children}
 				</main>
