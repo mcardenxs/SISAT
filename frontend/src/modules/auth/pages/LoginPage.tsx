@@ -8,7 +8,7 @@ export function LoginPage() {
 			subtitle="Ingresa tus credenciales para acceder a SISAT"
 		>
 			<LoginForm />
-			<div className="mt-6 text-center text-xs text-slate-400">
+			<div className="mt-6 text-center text-xs text-foreground-muted">
 				Acceso restringido a personal institucional. Si requieres una cuenta o
 				restablecer tu contraseña, contacta a la Dirección de TI.
 			</div>

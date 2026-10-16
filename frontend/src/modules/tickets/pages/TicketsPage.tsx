@@ -167,6 +167,17 @@ export function TicketsPage() {
 							</button>
 						</div>
 
+						<Button
+							variant="secondary"
+							onClick={handleExportCSV}
+							className="gap-2"
+							size="sm"
+							title="Exportar listado a CSV"
+						>
+							<Download className="h-4 w-4" />
+							Exportar
+						</Button>
+
 						<Can resource="tickets" action="create">
 							<Button
 								onClick={() => setIsCreateOpen(true)}

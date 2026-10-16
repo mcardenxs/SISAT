@@ -105,8 +105,8 @@ export function LoginForm() {
 				Iniciar Sesión
 			</Button>
 
-			<div className="pt-4 border-t border-slate-800">
-				<p className="text-xs text-slate-400 mb-2 font-medium">
+			<div className="pt-4 border-t border-subtle">
+				<p className="text-xs text-foreground-muted mb-2 font-medium">
 					Credenciales de prueba del sistema:
 				</p>
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -115,9 +115,9 @@ export function LoginForm() {
 						variant="outline"
 						size="sm"
 						onClick={() => fillDemo("admin@sisat.local", "Admin123456!")}
-						className="text-xs text-blue-300 border-blue-900/50 hover:bg-blue-950/40 justify-start"
+						className="text-xs text-primary border-primary-border bg-primary-light hover:opacity-90 justify-start"
 					>
-						<Sparkles className="h-3.5 w-3.5 text-blue-400 mr-1.5 shrink-0" />
+						<Sparkles className="h-3.5 w-3.5 text-primary mr-1.5 shrink-0" />
 						Admin General
 					</Button>
 					<Button
@@ -127,9 +127,9 @@ export function LoginForm() {
 						onClick={() =>
 							fillDemo("carlos.mendoza@sisat.local", "Password123!")
 						}
-						className="text-xs text-emerald-300 border-emerald-900/50 hover:bg-emerald-950/40 justify-start"
+						className="text-xs text-warning border-warning-border bg-warning-subtle hover:opacity-90 justify-start"
 					>
-						<Sparkles className="h-3.5 w-3.5 text-emerald-400 mr-1.5 shrink-0" />
+						<Sparkles className="h-3.5 w-3.5 text-warning mr-1.5 shrink-0" />
 						Responsable (SIA)
 					</Button>
 					<Button
@@ -139,9 +139,9 @@ export function LoginForm() {
 						onClick={() =>
 							fillDemo("alejandro.torres@sisat.local", "Password123!")
 						}
-						className="text-xs text-amber-300 border-amber-900/50 hover:bg-amber-950/40 justify-start"
+						className="text-xs text-success border-success-border bg-success-subtle hover:opacity-90 justify-start"
 					>
-						<Sparkles className="h-3.5 w-3.5 text-amber-400 mr-1.5 shrink-0" />
+						<Sparkles className="h-3.5 w-3.5 text-success mr-1.5 shrink-0" />
 						Desarrollador
 					</Button>
 					<Button
@@ -151,9 +151,9 @@ export function LoginForm() {
 						onClick={() =>
 							fillDemo("patricia.solis@sisat.local", "Password123!")
 						}
-						className="text-xs text-cyan-300 border-cyan-900/50 hover:bg-cyan-950/40 justify-start"
+						className="text-xs text-info border-info-border bg-info-subtle hover:opacity-90 justify-start"
 					>
-						<Sparkles className="h-3.5 w-3.5 text-cyan-400 mr-1.5 shrink-0" />
+						<Sparkles className="h-3.5 w-3.5 text-info mr-1.5 shrink-0" />
 						Jefa de Área
 					</Button>
 				</div>

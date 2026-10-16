@@ -6,6 +6,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 		| "neutral"
 		| "default"
 		| "info"
+		| "blue"
 		| "success"
 		| "warning"
 		| "danger"
@@ -22,6 +23,7 @@ export function Badge({
 		neutral: "bg-surface-muted text-foreground border-border-subtle",
 		default: "bg-surface-muted text-foreground border-border-subtle",
 		info: "bg-info-subtle text-info border-info-border",
+		blue: "bg-info-subtle text-info border-info-border",
 		purple: "bg-info-subtle text-info border-info-border",
 		success: "bg-success-subtle text-success border-success-border",
 		warning: "bg-warning-subtle text-warning border-warning-border",
