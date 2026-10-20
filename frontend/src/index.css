@@ -43,49 +43,59 @@
 	--chart-4: #dc2626;
 	--chart-5: #8b5cf6;
 	--chart-6: #06b6d4;
+
+	--shadow-surface:
+		0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+	--shadow-overlay:
+		0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
 }
 
 .dark {
-	--canvas: #090d16;
-	--surface: #111827;
-	--surface-subtle: #172033;
-	--surface-muted: #1f293d;
-	--surface-hover: #2d3b55;
-	--foreground: #f8fafc;
-	--foreground-muted: #94a3b8;
-	--foreground-subtle: #64748b;
-	--border-subtle: #1e293b;
-	--border-strong: #334155;
+	--canvas: #0c0d10;
+	--surface: #14171d;
+	--surface-subtle: #1a1e26;
+	--surface-muted: #222733;
+	--surface-hover: #2b3140;
+	--foreground: #f1f3f7;
+	--foreground-muted: #9da6b7;
+	--foreground-subtle: #667085;
+	--border-subtle: #202532;
+	--border-strong: #2f3647;
 
-	--primary: #3b82f6;
-	--primary-hover: #2563eb;
-	--primary-light: rgba(59, 130, 246, 0.12);
-	--primary-border: rgba(59, 130, 246, 0.3);
+	--primary: #3b76e1;
+	--primary-hover: #2e64c8;
+	--primary-light: rgba(59, 118, 225, 0.14);
+	--primary-border: rgba(59, 118, 225, 0.28);
 
-	--focus: #3b82f6;
+	--focus: #3b76e1;
 
 	--info: #38bdf8;
-	--info-subtle: rgba(14, 165, 233, 0.12);
-	--info-border: rgba(56, 189, 248, 0.25);
+	--info-subtle: rgba(56, 189, 248, 0.12);
+	--info-border: rgba(56, 189, 248, 0.24);
 
-	--success: #4ade80;
-	--success-subtle: rgba(34, 197, 94, 0.12);
-	--success-border: rgba(74, 222, 128, 0.25);
+	--success: #34d399;
+	--success-subtle: rgba(52, 211, 153, 0.12);
+	--success-border: rgba(52, 211, 153, 0.24);
 
 	--warning: #fbbf24;
-	--warning-subtle: rgba(245, 158, 11, 0.12);
-	--warning-border: rgba(251, 191, 36, 0.25);
+	--warning-subtle: rgba(251, 191, 36, 0.12);
+	--warning-border: rgba(251, 191, 36, 0.24);
 
 	--danger: #f87171;
-	--danger-subtle: rgba(239, 68, 68, 0.12);
-	--danger-border: rgba(248, 113, 113, 0.25);
+	--danger-subtle: rgba(248, 113, 113, 0.12);
+	--danger-border: rgba(248, 113, 113, 0.24);
 
-	--chart-1: #3b82f6;
-	--chart-2: #4ade80;
+	--chart-1: #3b76e1;
+	--chart-2: #34d399;
 	--chart-3: #fbbf24;
 	--chart-4: #f87171;
 	--chart-5: #a78bfa;
-	--chart-6: #22d3ee;
+	--chart-6: #38bdf8;
+
+	--shadow-surface:
+		0 1px 3px 0 rgba(0, 0, 0, 0.45), 0 1px 2px -1px rgba(0, 0, 0, 0.35);
+	--shadow-overlay:
+		0 16px 36px -4px rgba(0, 0, 0, 0.7), 0 6px 14px -2px rgba(0, 0, 0, 0.5);
 }
 
 @theme {
@@ -134,9 +144,8 @@
 	--radius-surface: 0.625rem;
 	--radius-overlay: 0.75rem;
 
-	--shadow-surface: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-	--shadow-overlay:
-		0 10px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+	--shadow-surface: var(--shadow-surface);
+	--shadow-overlay: var(--shadow-overlay);
 }
 
 @utility border-subtle {
@@ -241,5 +250,56 @@ html:not(.dark) .text-slate-400 {
 }
 
 html:not(.dark) .text-slate-500 {
+	color: var(--foreground-subtle);
+}
+
+/* Compatibilidad contextual para componentes en modo oscuro con clases slate */
+html.dark .bg-slate-950,
+html.dark .bg-slate-950\/20,
+html.dark .bg-slate-950\/30,
+html.dark .bg-slate-950\/40,
+html.dark .bg-slate-950\/50,
+html.dark .bg-slate-950\/60,
+html.dark .bg-slate-950\/80 {
+	background-color: var(--canvas);
+}
+
+html.dark .bg-slate-900,
+html.dark .bg-slate-900\/40,
+html.dark .bg-slate-900\/50,
+html.dark .bg-slate-900\/60,
+html.dark .bg-slate-900\/70,
+html.dark .bg-slate-900\/80,
+html.dark .bg-slate-900\/90 {
+	background-color: var(--surface);
+}
+
+html.dark .bg-slate-800,
+html.dark .bg-slate-800\/40,
+html.dark .bg-slate-800\/50,
+html.dark .bg-slate-800\/60,
+html.dark .bg-slate-800\/70,
+html.dark .bg-slate-800\/80 {
+	background-color: var(--surface-subtle);
+}
+
+html.dark .border-slate-800,
+html.dark .border-slate-800\/60,
+html.dark .border-slate-800\/80,
+html.dark .border-slate-700 {
+	border-color: var(--border-subtle);
+}
+
+html.dark .text-slate-100,
+html.dark .text-slate-200 {
+	color: var(--foreground);
+}
+
+html.dark .text-slate-300,
+html.dark .text-slate-400 {
+	color: var(--foreground-muted);
+}
+
+html.dark .text-slate-500 {
 	color: var(--foreground-subtle);
 }
