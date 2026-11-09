@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Modal } from "@/core/components/ui/Modal";
 import { Button } from "@/core/components/ui/Button";
 import { Input } from "@/core/components/ui/Input";
+import { useQuery } from "@tanstack/react-query";
+import { catalogoApi } from "@/core/api/catalogoApi";
 import { useAreaMutations } from "../hooks/useAreaMutations";
 import type { Area } from "../api/areaApi";
 import { Edit3 } from "lucide-react";
@@ -26,6 +28,12 @@ export function EditAreaModal({ isOpen, onClose, area }: EditAreaModalProps) {
 	}, [area]);
 
 	const { updateAreaMutation } = useAreaMutations();
+
+	const { data: catalogos } = useQuery({
+		queryKey: ["catalogos"],
+		queryFn: catalogoApi.getAll,
+		enabled: isOpen,
+	});
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -74,8 +82,16 @@ export function EditAreaModal({ isOpen, onClose, area }: EditAreaModalProps) {
 						onChange={(e) => setEstadoId(Number(e.target.value))}
 						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					>
-						<option value={1}>Activo</option>
-						<option value={2}>Inactivo</option>
+						{catalogos?.estado?.map((est) => (
+							<option key={est.id} value={est.id}>
+								{est.nombre}
+							</option>
+						)) || (
+							<>
+								<option value={1}>Activo</option>
+								<option value={2}>Inactivo</option>
+							</>
+						)}
 					</select>
 				</div>
 

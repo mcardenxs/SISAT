@@ -4,6 +4,7 @@ import { Button } from "@/core/components/ui/Button";
 import { Input } from "@/core/components/ui/Input";
 import { useQuery } from "@tanstack/react-query";
 import { areaApi } from "@/modules/organizacion/api/areaApi";
+import { catalogoApi } from "@/core/api/catalogoApi";
 import { useSistemaMutations } from "../hooks/useSistemaMutations";
 import type { Sistema } from "../api/sistemaApi";
 import { Edit3 } from "lucide-react";
@@ -44,6 +45,12 @@ export function EditSistemaModal({
 	const { data: areas } = useQuery({
 		queryKey: ["areas"],
 		queryFn: areaApi.getAll,
+		enabled: isOpen,
+	});
+
+	const { data: catalogos } = useQuery({
+		queryKey: ["catalogos"],
+		queryFn: catalogoApi.getAll,
 		enabled: isOpen,
 	});
 
@@ -135,8 +142,17 @@ export function EditSistemaModal({
 							onChange={(e) => setEstadoId(Number(e.target.value))}
 							className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 						>
-							<option value={1}>Activo</option>
-							<option value={2}>Inactivo / En Mantenimiento</option>
+							{catalogos?.estado?.map((est) => (
+								<option key={est.id} value={est.id}>
+									{est.nombre}
+								</option>
+							)) || (
+								<>
+									<option value={1}>Activo</option>
+									<option value={2}>Inactivo</option>
+									<option value={3}>Mantenimiento</option>
+								</>
+							)}
 						</select>
 					</div>
 				</div>
