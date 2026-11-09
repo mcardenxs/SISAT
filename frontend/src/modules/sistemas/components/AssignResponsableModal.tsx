@@ -25,8 +25,9 @@ export function AssignResponsableModal({
 	const { assignResponsableMutation } = useSistemaMutations(sistemaId);
 
 	const { data: usersData, isLoading: isLoadingUsers } = useQuery({
-		queryKey: ["usersListForSistema"],
-		queryFn: () => usersApi.getUsers({ limit: 100 }),
+		queryKey: ["usersListResponsables"],
+		queryFn: () =>
+			usersApi.getUsers({ limit: 100, role: "RESPONSABLE_DE_SISTEMA" }),
 		enabled: isOpen,
 	});
 

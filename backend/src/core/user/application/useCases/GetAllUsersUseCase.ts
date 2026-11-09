@@ -16,6 +16,7 @@ export class GetAllUsersUseCase {
 			page: dto.page,
 			limit: dto.limit,
 			email: dto.email,
+			role: dto.role,
 		};
 
 		const paginatedResult = await this.userRepository.find(filters);

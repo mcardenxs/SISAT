@@ -42,4 +42,5 @@ export const getAllUsersSchema = z.object({
 	page: z.string().regex(/^\d+$/).transform(Number).optional().default(1),
 	limit: z.string().regex(/^\d+$/).transform(Number).optional().default(10),
 	email: z.string().optional(),
+	role: z.string().optional(),
 });

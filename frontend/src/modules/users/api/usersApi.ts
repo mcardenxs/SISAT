@@ -6,6 +6,7 @@ export interface GetUsersParams {
 	page?: number;
 	limit?: number;
 	email?: string;
+	role?: string;
 }
 
 export interface CreateUserInput {

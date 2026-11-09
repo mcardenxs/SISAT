@@ -24,8 +24,8 @@ export function AssignDesarrolladorModal({
 	const { assignDesarrolladorMutation } = useSistemaMutations(sistemaId);
 
 	const { data: usersData, isLoading: isLoadingUsers } = useQuery({
-		queryKey: ["usersListForSistemaDev"],
-		queryFn: () => usersApi.getUsers({ limit: 100 }),
+		queryKey: ["usersListDesarrolladores"],
+		queryFn: () => usersApi.getUsers({ limit: 100, role: "DESARROLLADOR" }),
 		enabled: isOpen,
 	});
 

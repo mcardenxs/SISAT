@@ -45,14 +45,23 @@ export class PrismaUserRepository implements UserRepository {
 	}
 
 	async find(filters: UserFilters): Promise<Pagination<User>> {
-		const { page, limit, email } = filters;
+		const { page, limit, email, role } = filters;
 		const skip = (page - 1) * limit;
 
-		const where = {
+		const where: any = {
 			...(email && {
 				usu_correo: email.includes("@")
 					? { equals: email.trim() }
 					: { contains: email },
+			}),
+			...(role && {
+				perfil: {
+					some: {
+						rol: {
+							rol_codigo: role,
+						},
+					},
+				},
 			}),
 		};
 
