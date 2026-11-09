@@ -143,40 +143,57 @@ export function DashboardPage() {
 						value={isLoading ? "..." : ticketsSinAsignar}
 						description="Tickets registrados esperando asignación técnica"
 						icon={<Ticket className="h-4 w-4" />}
+						to={`/tickets?faseId=${
+							stats?.ticketsPorFase.find((f) => f.faseCodigo === "REGISTRADO")
+								?.faseId ?? 1
+						}`}
 					/>
 					<StatCard
 						label="En Atención Activa"
 						value={isLoading ? "..." : ticketsEnAtencion}
 						description="Ciclos de diagnóstico e intervención en curso"
 						icon={<Clock className="h-4 w-4" />}
+						to={`/tickets?faseId=${
+							stats?.ticketsPorFase.find((f) => f.faseCodigo === "EN_PROCESO")
+								?.faseId ?? 3
+						}`}
 					/>
 					<StatCard
 						label="Soluciones por Validar"
 						value={isLoading ? "..." : ticketsResueltosPendientes}
 						description="Resueltos por desarrollo, en espera de evaluación"
 						icon={<CheckCircle2 className="h-4 w-4" />}
+						to={`/tickets?faseId=${
+							stats?.ticketsPorFase.find(
+								(f) => f.faseCodigo === "RESUELTO_POR_DESARROLLO",
+							)?.faseId ?? 5
+						}`}
 					/>
 					<StatCard
 						label="Actas Pendientes Firma"
 						value={isLoading ? "..." : actasPendientes}
 						description="Documentos semanales listos para recolección de firmas"
 						icon={<FileText className="h-4 w-4" />}
+						to="/actas?situacionId=1"
 					/>
 				</div>
 			</div>
 
 			{/* Totales Generales Institucionales */}
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-				<div className="rounded-surface border border-subtle bg-surface p-4 shadow-surface flex items-center justify-between">
+				<Link
+					to="/users"
+					className="rounded-surface border border-subtle bg-surface p-4 shadow-surface flex items-center justify-between hover:border-primary/50 hover:bg-surface-subtle/70 transition-all cursor-pointer group"
+				>
 					<div className="flex items-center gap-3">
-						<div className="p-2 rounded-control bg-primary-light text-primary">
+						<div className="p-2 rounded-control bg-primary-light text-primary group-hover:scale-110 transition-transform">
 							<Users className="h-5 w-5" />
 						</div>
 						<div>
 							<span className="text-xs text-foreground-muted font-medium">
 								Usuarios Activos
 							</span>
-							<p className="text-xl font-semibold text-foreground">
+							<p className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
 								{isLoading
 									? "..."
 									: (stats?.totalesGenerales.usuariosActivos ?? 0)}
@@ -184,25 +201,25 @@ export function DashboardPage() {
 						</div>
 					</div>
 					<Can resource="users" action="read">
-						<Link
-							to="/users"
-							className="text-xs text-primary hover:text-primary-hover font-medium"
-						>
+						<span className="text-xs text-primary font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center">
 							Ver todos &rarr;
-						</Link>
+						</span>
 					</Can>
-				</div>
+				</Link>
 
-				<div className="rounded-surface border border-subtle bg-surface p-4 shadow-surface flex items-center justify-between">
+				<Link
+					to="/sistemas"
+					className="rounded-surface border border-subtle bg-surface p-4 shadow-surface flex items-center justify-between hover:border-primary/50 hover:bg-surface-subtle/70 transition-all cursor-pointer group"
+				>
 					<div className="flex items-center gap-3">
-						<div className="p-2 rounded-control bg-primary-light text-primary">
+						<div className="p-2 rounded-control bg-primary-light text-primary group-hover:scale-110 transition-transform">
 							<Monitor className="h-5 w-5" />
 						</div>
 						<div>
 							<span className="text-xs text-foreground-muted font-medium">
 								Sistemas en Operación
 							</span>
-							<p className="text-xl font-semibold text-foreground">
+							<p className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
 								{isLoading
 									? "..."
 									: (stats?.totalesGenerales.sistemasActivos ?? 0)}
@@ -210,25 +227,25 @@ export function DashboardPage() {
 						</div>
 					</div>
 					<Can resource="sistemas" action="read">
-						<Link
-							to="/sistemas"
-							className="text-xs text-primary hover:text-primary-hover font-medium"
-						>
+						<span className="text-xs text-primary font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center">
 							Ver catálogo &rarr;
-						</Link>
+						</span>
 					</Can>
-				</div>
+				</Link>
 
-				<div className="rounded-surface border border-subtle bg-surface p-4 shadow-surface flex items-center justify-between">
+				<Link
+					to="/areas"
+					className="rounded-surface border border-subtle bg-surface p-4 shadow-surface flex items-center justify-between hover:border-primary/50 hover:bg-surface-subtle/70 transition-all cursor-pointer group"
+				>
 					<div className="flex items-center gap-3">
-						<div className="p-2 rounded-control bg-primary-light text-primary">
+						<div className="p-2 rounded-control bg-primary-light text-primary group-hover:scale-110 transition-transform">
 							<Building2 className="h-5 w-5" />
 						</div>
 						<div>
 							<span className="text-xs text-foreground-muted font-medium">
 								Áreas Organizacionales
 							</span>
-							<p className="text-xl font-semibold text-foreground">
+							<p className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
 								{isLoading
 									? "..."
 									: (stats?.totalesGenerales.areasActivas ?? 0)}
@@ -236,14 +253,11 @@ export function DashboardPage() {
 						</div>
 					</div>
 					<Can resource="areas" action="read">
-						<Link
-							to="/areas"
-							className="text-xs text-primary hover:text-primary-hover font-medium"
-						>
+						<span className="text-xs text-primary font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center">
 							Ver áreas &rarr;
-						</Link>
+						</span>
 					</Can>
-				</div>
+				</Link>
 			</div>
 
 			{/* Bandeja de Entrada Personalizada por Rol */}

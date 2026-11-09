@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "@tanstack/react-router";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { useTicketsQuery } from "../hooks/useTicketsQuery";
 import {
 	Card,
@@ -34,15 +34,49 @@ import {
 } from "../components/TicketTableView";
 
 export function TicketsPage() {
+	const navigate = useNavigate();
+	const routeSearch = useSearch({ strict: false }) as {
+		sistemaId?: number;
+		faseId?: number;
+		prioridadId?: number;
+		solicitudId?: number;
+		search?: string;
+	};
+
 	const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-	// Filtros
-	const [sistemaId, setSistemaId] = useState<number | undefined>();
-	const [faseId, setFaseId] = useState<number | undefined>();
-	const [prioridadId, setPrioridadId] = useState<number | undefined>();
-	const [solicitudId, setSolicitudId] = useState<number | undefined>();
-	const [searchTerm, setSearchTerm] = useState("");
+	// Filtros reactivos sincronizados con la URL
+	const [sistemaId, setSistemaId] = useState<number | undefined>(
+		routeSearch?.sistemaId,
+	);
+	const [faseId, setFaseId] = useState<number | undefined>(routeSearch?.faseId);
+	const [prioridadId, setPrioridadId] = useState<number | undefined>(
+		routeSearch?.prioridadId,
+	);
+	const [solicitudId, setSolicitudId] = useState<number | undefined>(
+		routeSearch?.solicitudId,
+	);
+	const [searchTerm, setSearchTerm] = useState(routeSearch?.search || "");
+
+	useEffect(() => {
+		if (routeSearch) {
+			if (routeSearch.faseId !== undefined) setFaseId(routeSearch.faseId);
+			if (routeSearch.sistemaId !== undefined)
+				setSistemaId(routeSearch.sistemaId);
+			if (routeSearch.prioridadId !== undefined)
+				setPrioridadId(routeSearch.prioridadId);
+			if (routeSearch.solicitudId !== undefined)
+				setSolicitudId(routeSearch.solicitudId);
+			if (routeSearch.search !== undefined) setSearchTerm(routeSearch.search);
+		}
+	}, [
+		routeSearch?.faseId,
+		routeSearch?.sistemaId,
+		routeSearch?.prioridadId,
+		routeSearch?.solicitudId,
+		routeSearch?.search,
+	]);
 
 	const {
 		data: tickets,
@@ -51,23 +85,13 @@ export function TicketsPage() {
 	} = useTicketsQuery({
 		sistemaId,
 		faseId,
+		prioridadId,
+		solicitudId,
+		search: searchTerm.trim() || undefined,
 	});
 
-	// Filtrado en memoria para campos no cubiertos directamente por backend params
-	const filteredTickets = useMemo(() => {
-		if (!tickets) return [];
-		return tickets.filter((t) => {
-			if (prioridadId && t.prioridadId !== prioridadId) return false;
-			if (solicitudId && t.solicitudId !== solicitudId) return false;
-			if (searchTerm.trim()) {
-				const term = searchTerm.toLowerCase().trim();
-				const matchFolio = t.folio.toLowerCase().includes(term);
-				const matchTitulo = t.titulo.toLowerCase().includes(term);
-				if (!matchFolio && !matchTitulo) return false;
-			}
-			return true;
-		});
-	}, [tickets, prioridadId, solicitudId, searchTerm]);
+	// Los filtros ahora son procesados directamente por la API y la base de datos
+	const filteredTickets = useMemo(() => tickets ?? [], [tickets]);
 
 	const handleResetFilters = () => {
 		setSistemaId(undefined);
@@ -75,6 +99,7 @@ export function TicketsPage() {
 		setPrioridadId(undefined);
 		setSolicitudId(undefined);
 		setSearchTerm("");
+		navigate({ to: "/tickets", search: {} as any, replace: true });
 	};
 
 	const handleExportCSV = () => {

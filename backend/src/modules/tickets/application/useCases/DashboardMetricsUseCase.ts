@@ -45,16 +45,88 @@ export interface DashboardFilterDto {
 
 @injectable()
 export class DashboardMetricsUseCase {
-	async run(filters?: DashboardFilterDto): Promise<DashboardStatsDto> {
-		const ticketWhere = {
+	async run(
+		filters?: DashboardFilterDto,
+		actorId?: number,
+		actorRole?: string,
+	): Promise<DashboardStatsDto> {
+		const ticketWhere: any = {
 			...(filters?.areaId && { tic_fkarea: filters.areaId }),
 			...(filters?.sistemaId && { tic_fksistema: filters.sistemaId }),
 		};
 
-		const actaWhere = {
+		const actaWhere: any = {
 			...(filters?.areaId && { act_fkarea: filters.areaId }),
 			...(filters?.sistemaId && { act_fksistema: filters.sistemaId }),
 		};
+
+		const sistemaWhere: any = {
+			sis_fkestado: 1,
+			...(filters?.areaId && { sis_fkarea: filters.areaId }),
+			...(filters?.sistemaId && { sis_id: filters.sistemaId }),
+		};
+
+		const usuarioWhere: any = {
+			usu_fkestado: 1,
+			...(filters?.areaId && { usu_fkarea: filters.areaId }),
+		};
+
+		// Scoping institucional idéntico a TicketUseCases y SistemaUseCases
+		if (
+			actorRole &&
+			actorId &&
+			actorRole !== "ADMINISTRADOR" &&
+			actorRole !== "ADMIN"
+		) {
+			if (actorRole === "JEFE_DE_AREA") {
+				const user = await prisma.usuario.findUnique({
+					where: { usu_id: actorId },
+					select: { usu_fkarea: true },
+				});
+				if (user?.usu_fkarea) {
+					ticketWhere.tic_fkarea = user.usu_fkarea;
+					actaWhere.act_fkarea = user.usu_fkarea;
+					sistemaWhere.sis_fkarea = user.usu_fkarea;
+					usuarioWhere.usu_fkarea = user.usu_fkarea;
+				}
+			} else if (actorRole === "RESPONSABLE_DE_SISTEMA") {
+				const sistemas = await prisma.responsable.findMany({
+					where: {
+						res_fkusuario: actorId,
+						res_fkestado: 1,
+						res_fin: null,
+					},
+					select: { res_fksistema: true },
+				});
+				const sistemaIds = sistemas.map((s) => s.res_fksistema);
+				ticketWhere.tic_fksistema = { in: sistemaIds };
+				actaWhere.act_fksistema = { in: sistemaIds };
+				sistemaWhere.sis_id = { in: sistemaIds };
+			} else if (actorRole === "DESARROLLADOR") {
+				const sistemas = await prisma.desarrollador.findMany({
+					where: {
+						des_fkusuario: actorId,
+						des_fkestado: 1,
+						des_fin: null,
+					},
+					select: { des_fksistema: true },
+				});
+				const devSistemaIds = sistemas.map((s) => s.des_fksistema);
+				ticketWhere.OR = [
+					...(devSistemaIds.length > 0
+						? [{ tic_fksistema: { in: devSistemaIds } }]
+						: []),
+					{
+						asignacion: {
+							some: { asi_fkusuario: actorId, asi_fin: null },
+						},
+					},
+				];
+				if (devSistemaIds.length > 0) {
+					sistemaWhere.sis_id = { in: devSistemaIds };
+				}
+			}
+		}
 
 		const [
 			totalTickets,
@@ -84,7 +156,7 @@ export class DashboardMetricsUseCase {
 				_count: { tic_id: true },
 			}),
 			prisma.sistema.findMany({
-				where: filters?.areaId ? { sis_fkarea: filters.areaId } : undefined,
+				where: sistemaWhere,
 				select: { sis_id: true, sis_nombre: true },
 			}),
 			prisma.ticket.groupBy({
@@ -99,16 +171,10 @@ export class DashboardMetricsUseCase {
 				_count: { act_id: true },
 			}),
 			prisma.usuario.count({
-				where: {
-					usu_fkestado: 1,
-					...(filters?.areaId && { usu_fkarea: filters.areaId }),
-				},
+				where: usuarioWhere,
 			}),
 			prisma.sistema.count({
-				where: {
-					sis_fkestado: 1,
-					...(filters?.areaId && { sis_fkarea: filters.areaId }),
-				},
+				where: sistemaWhere,
 			}),
 			prisma.area.count({ where: { are_fkestado: 1 } }),
 		]);

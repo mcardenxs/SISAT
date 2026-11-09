@@ -9,7 +9,18 @@ const ALLOWED_ROLES = [
 	"RESPONSABLE_DE_SISTEMA",
 ];
 
+export interface ActaSearch {
+	sistemaId?: number;
+	areaId?: number;
+	situacionId?: number;
+}
+
 export const Route = createFileRoute("/_authenticated/actas/")({
+	validateSearch: (search: Record<string, unknown>): ActaSearch => ({
+		sistemaId: search.sistemaId ? Number(search.sistemaId) : undefined,
+		areaId: search.areaId ? Number(search.areaId) : undefined,
+		situacionId: search.situacionId ? Number(search.situacionId) : undefined,
+	}),
 	beforeLoad: () => {
 		const { user } = useAuthStore.getState();
 		if (!user?.role || !ALLOWED_ROLES.includes(user.role)) {

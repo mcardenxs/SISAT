@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { Link, useSearch } from "@tanstack/react-router";
 import { useActasQuery } from "../hooks/useActasQuery";
 import { useQuery } from "@tanstack/react-query";
 import { catalogoApi } from "@/core/api/catalogoApi";
@@ -31,10 +31,30 @@ import {
 import { CreateActaModal } from "../components/CreateActaModal";
 
 export function ActasPage() {
+	const routeSearch = useSearch({ strict: false }) as {
+		sistemaId?: number;
+		areaId?: number;
+		situacionId?: number;
+	};
+
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
-	const [sistemaId, setSistemaId] = useState<number | undefined>();
-	const [areaId, setAreaId] = useState<number | undefined>();
-	const [situacionId, setSituacionId] = useState<number | undefined>();
+	const [sistemaId, setSistemaId] = useState<number | undefined>(
+		routeSearch?.sistemaId,
+	);
+	const [areaId, setAreaId] = useState<number | undefined>(routeSearch?.areaId);
+	const [situacionId, setSituacionId] = useState<number | undefined>(
+		routeSearch?.situacionId,
+	);
+
+	useEffect(() => {
+		if (routeSearch) {
+			if (routeSearch.sistemaId !== undefined)
+				setSistemaId(routeSearch.sistemaId);
+			if (routeSearch.areaId !== undefined) setAreaId(routeSearch.areaId);
+			if (routeSearch.situacionId !== undefined)
+				setSituacionId(routeSearch.situacionId);
+		}
+	}, [routeSearch?.sistemaId, routeSearch?.areaId, routeSearch?.situacionId]);
 
 	const {
 		data: actas,
