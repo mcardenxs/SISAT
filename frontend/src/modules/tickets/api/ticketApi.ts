@@ -28,6 +28,9 @@ export const ticketApi = {
 		sistemaId?: number;
 		faseId?: number;
 		usuarioId?: number;
+		prioridadId?: number;
+		solicitudId?: number;
+		search?: string;
 	}): Promise<Ticket[]> => {
 		const response = await apiClient.get<Ticket[]>("/tickets", {
 			params: filters,

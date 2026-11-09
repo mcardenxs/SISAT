@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Modal } from "@/core/components/ui/Modal";
 import { Button } from "@/core/components/ui/Button";
 import { Input } from "@/core/components/ui/Input";
 import { useQuery } from "@tanstack/react-query";
 import { usersApi } from "@/modules/users/api/usersApi";
+import { sistemaApi } from "@/modules/sistemas/api/sistemaApi";
 import { useTicketMutations } from "../hooks/useTicketMutations";
 import type { Asignacion } from "../api/types";
 import { UserCheck, RefreshCw } from "lucide-react";
@@ -13,6 +14,7 @@ interface AssignTicketModalProps {
 	onClose: () => void;
 	ticketId: number;
 	currentAsignacion?: Asignacion;
+	sistemaId?: number;
 }
 
 export function AssignTicketModal({
@@ -20,6 +22,7 @@ export function AssignTicketModal({
 	onClose,
 	ticketId,
 	currentAsignacion,
+	sistemaId,
 }: AssignTicketModalProps) {
 	const isReassign = Boolean(currentAsignacion);
 	const [selectedUserId, setSelectedUserId] = useState<number | "">("");
@@ -28,11 +31,43 @@ export function AssignTicketModal({
 
 	const { assignMutation, reassignMutation } = useTicketMutations(ticketId);
 
+	// Desarrolladores vigentes asignados formalmente a este sistema
+	const { data: sistemaData, isLoading: isLoadingSistema } = useQuery({
+		queryKey: ["sistemaDetailForAssign", sistemaId],
+		queryFn: () => sistemaApi.getById(sistemaId!),
+		enabled: isOpen && Boolean(sistemaId),
+	});
+
+	// Desarrolladores técnicos globales registrados en el sistema
 	const { data: usersData, isLoading: isLoadingUsers } = useQuery({
-		queryKey: ["usersListForAssign"],
-		queryFn: () => usersApi.getUsers({ limit: 100 }),
+		queryKey: ["usersListDesarrolladoresGlobal"],
+		queryFn: () => usersApi.getUsers({ limit: 100, role: "DESARROLLADOR" }),
 		enabled: isOpen,
 	});
+
+	// Lista combinada dando prioridad a desarrolladores vinculados al sistema
+	const developersList = useMemo(() => {
+		const devIdsEnSistema = new Set(
+			sistemaData?.desarrolladores
+				?.filter(
+					(d) => !d.fin && (d.estadoId === 1 || d.estadoNombre === "Activo"),
+				)
+				.map((d) => d.usuarioId) ?? [],
+		);
+
+		const allUsers = usersData?.data ?? [];
+		return allUsers
+			.filter((u) => !isReassign || u.id !== currentAsignacion?.usuarioId)
+			.map((u) => ({
+				...u,
+				esDelSistema: devIdsEnSistema.has(u.id),
+			}))
+			.sort((a, b) => {
+				if (a.esDelSistema && !b.esDelSistema) return -1;
+				if (!a.esDelSistema && b.esDelSistema) return 1;
+				return a.name.localeCompare(b.name);
+			});
+	}, [sistemaData, usersData, isReassign, currentAsignacion?.usuarioId]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -101,19 +136,20 @@ export function AssignTicketModal({
 						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 					>
 						<option value="">
-							{isLoadingUsers
-								? "Cargando usuarios..."
-								: "Selecciona un usuario..."}
+							{isLoadingUsers || isLoadingSistema
+								? "Cargando desarrolladores..."
+								: developersList.length === 0
+									? "No hay desarrolladores disponibles"
+									: "Selecciona un desarrollador técnico..."}
 						</option>
-						{usersData?.data
-							.filter(
-								(u) => !isReassign || u.id !== currentAsignacion?.usuarioId,
-							)
-							.map((u) => (
-								<option key={u.id} value={u.id}>
-									{u.name} {u.apellido || ""} ({u.email}) - {u.role}
-								</option>
-							))}
+						{developersList.map((u) => (
+							<option key={u.id} value={u.id}>
+								{u.name} {u.apellido || ""} ({u.email})
+								{u.esDelSistema
+									? " ⭐ [Asignado al Sistema]"
+									: " [Desarrollador General]"}
+							</option>
+						))}
 					</select>
 				</div>
 

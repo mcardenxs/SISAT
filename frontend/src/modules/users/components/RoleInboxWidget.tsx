@@ -49,7 +49,10 @@ export function RoleInboxWidget() {
 
 	// 3. Jefe de Área: actas listas para firma
 	const actasPendingFirma = actas.filter(
-		(a) => a.situacionCodigo === "GENERADA" || a.situacionCodigo === "EN_FIRMA",
+		(a) =>
+			a.situacionCodigo === "GENERADA" ||
+			a.situacionCodigo === "PENDIENTE_DE_FIRMA" ||
+			a.situacionCodigo === "EN_FIRMA",
 	);
 
 	return (

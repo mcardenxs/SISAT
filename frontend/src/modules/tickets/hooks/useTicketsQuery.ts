@@ -6,6 +6,9 @@ export function useTicketsQuery(filters?: {
 	sistemaId?: number;
 	faseId?: number;
 	usuarioId?: number;
+	prioridadId?: number;
+	solicitudId?: number;
+	search?: string;
 }) {
 	return useQuery({
 		queryKey: ["tickets", filters],

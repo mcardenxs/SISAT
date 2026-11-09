@@ -234,6 +234,9 @@ export class TicketUseCases {
 			usuarioId?: number;
 			desarrolladorId?: number;
 			areaId?: number;
+			prioridadId?: number;
+			solicitudId?: number;
+			search?: string;
 		},
 		actorId?: number,
 		actorRole?: string,
@@ -311,6 +314,20 @@ export class TicketUseCases {
 		if (filters?.usuarioId)
 			andConditions.push({ tic_fkusuario: filters.usuarioId });
 		if (filters?.areaId) andConditions.push({ tic_fkarea: filters.areaId });
+		if (filters?.prioridadId)
+			andConditions.push({ tic_fkprioridad: filters.prioridadId });
+		if (filters?.solicitudId)
+			andConditions.push({ tic_fksolicitud: filters.solicitudId });
+		if (filters?.search && filters.search.trim()) {
+			const term = filters.search.trim();
+			andConditions.push({
+				OR: [
+					{ tic_folio: { contains: term } },
+					{ tic_titulo: { contains: term } },
+					{ tic_descripcion: { contains: term } },
+				],
+			});
+		}
 		if (filters?.desarrolladorId) {
 			andConditions.push({
 				asignacion: {
@@ -484,22 +501,25 @@ export class TicketUseCases {
 		actorId: number,
 		actorRole?: string,
 	): Promise<TicketDto> {
-		// Validar que solo Responsables de Sistema vigentes puedan registrar tickets
-		const esResponsable = await prisma.responsable.findFirst({
-			where: {
-				res_fksistema: dto.sistemaId,
-				res_fkusuario: actorId,
-				res_fkestado: 1,
-				res_fin: null,
-				res_inicio: { lte: new Date() },
-			},
-		});
+		// Validar permisos: los Administradores tienen atribución global; los demás usuarios deben ser Responsables vigentes del sistema
+		const isAdmin = actorRole === "ADMINISTRADOR" || actorRole === "ADMIN";
+		if (!isAdmin) {
+			const esResponsable = await prisma.responsable.findFirst({
+				where: {
+					res_fksistema: dto.sistemaId,
+					res_fkusuario: actorId,
+					res_fkestado: 1,
+					res_fin: null,
+					res_inicio: { lte: new Date() },
+				},
+			});
 
-		if (!esResponsable) {
-			throw new BaseError(
-				"Solo un responsable vigente del sistema puede registrar tickets",
-				403,
-			);
+			if (!esResponsable) {
+				throw new BaseError(
+					"Solo un responsable vigente del sistema puede registrar tickets",
+					403,
+				);
+			}
 		}
 
 		// Validar fase 'REGISTRADO' y constancia 'NO_APLICA'

@@ -34,9 +34,15 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 		enabled: isOpen,
 	});
 
-	// Filtrar para mostrar únicamente los sistemas donde el usuario actual es Responsable Activo
+	// Filtrar sistemas: si es Administrador, tiene acceso a todos los sistemas activos; si no, solo donde es Responsable
 	const userSistemas = useMemo(() => {
 		if (!sistemas || !user?.id) return [];
+		const isAdmin = user.role === "ADMINISTRADOR" || user.role === "ADMIN";
+		if (isAdmin) {
+			return sistemas.filter(
+				(s) => s.estadoId === 1 || s.estadoNombre === "Activo",
+			);
+		}
 		return sistemas.filter((s) =>
 			s.responsables?.some(
 				(r) =>
@@ -45,7 +51,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 					(r.estadoId === 1 || r.estadoNombre === "Activo"),
 			),
 		);
-	}, [sistemas, user?.id]);
+	}, [sistemas, user?.id, user?.role]);
 
 	// Auto-seleccionar si el usuario solo tiene un sistema asignado
 	useEffect(() => {
@@ -116,9 +122,9 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 			<form onSubmit={handleSubmit} className="space-y-4">
 				{userSistemas.length === 0 && (
 					<div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 text-xs leading-relaxed">
-						⚠️ No tienes sistemas institucionales asignados como Responsable
-						vigente. Según las normas de SISAT, solo los responsables asignados
-						pueden registrar tickets.
+						⚠️ No tienes sistemas institucionales disponibles para registrar
+						tickets. Debes ser Responsable vigente de un sistema o
+						Administrador.
 					</div>
 				)}
 
@@ -127,7 +133,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
 						htmlFor="ticket-sistema-select"
 						className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
 					>
-						Sistema Institucional (Donde eres Responsable)
+						Sistema Institucional *
 					</label>
 					<select
 						id="ticket-sistema-select"

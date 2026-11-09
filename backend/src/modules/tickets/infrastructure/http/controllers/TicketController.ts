@@ -47,6 +47,13 @@ export class TicketController extends BaseController {
 			const areaId = c.req.query("areaId")
 				? Number(c.req.query("areaId"))
 				: undefined;
+			const prioridadId = c.req.query("prioridadId")
+				? Number(c.req.query("prioridadId"))
+				: undefined;
+			const solicitudId = c.req.query("solicitudId")
+				? Number(c.req.query("solicitudId"))
+				: undefined;
+			const search = c.req.query("search") || c.req.query("q") || undefined;
 
 			const tickets = await this.ticketUseCases.findAll(
 				{
@@ -55,6 +62,9 @@ export class TicketController extends BaseController {
 					usuarioId,
 					desarrolladorId,
 					areaId,
+					prioridadId,
+					solicitudId,
+					search,
 				},
 				user?.id,
 				user?.role,

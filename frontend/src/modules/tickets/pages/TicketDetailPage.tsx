@@ -465,6 +465,7 @@ export function TicketDetailPage({ ticketId }: TicketDetailPageProps) {
 				onClose={() => setIsAssignOpen(false)}
 				ticketId={ticket.id}
 				currentAsignacion={activeAsignacion}
+				sistemaId={ticket.sistemaId}
 			/>
 
 			{currentAtencion && (
