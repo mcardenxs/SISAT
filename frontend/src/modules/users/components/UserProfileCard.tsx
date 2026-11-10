@@ -1,4 +1,5 @@
 import { useAuthStore } from "@/core/auth/store";
+import { formatRole } from "@/core/utils/roleUtils";
 import {
 	Card,
 	CardContent,
@@ -50,7 +51,7 @@ export function UserProfileCard() {
 							Nivel de Autorización
 						</div>
 						<p className="mt-1 text-sm font-semibold text-foreground">
-							{user.role} (Control Basado en Permisos)
+							{formatRole(user.role)} (Control Basado en Permisos)
 						</p>
 					</div>
 

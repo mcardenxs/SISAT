@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { User } from "@/core/auth/types";
+import { formatRole } from "@/core/utils/roleUtils";
 import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
 import { Spinner } from "@/core/components/ui/Spinner";
@@ -142,7 +143,7 @@ export function UsersTable({
 												className="gap-1 text-[10px]"
 											>
 												<Shield className="h-3 w-3" />
-												{u.role}
+												{formatRole(u.role)}
 											</Badge>
 										</td>
 										<td className="px-5 py-3.5">

@@ -183,10 +183,10 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
 								<>
 									<option value="ADMINISTRADOR">ADMINISTRADOR</option>
 									<option value="RESPONSABLE_DE_SISTEMA">
-										RESPONSABLE_DE_SISTEMA
+										RESPONSABLE DE SISTEMA
 									</option>
 									<option value="DESARROLLADOR">DESARROLLADOR</option>
-									<option value="JEFE_DE_AREA">JEFE_DE_AREA</option>
+									<option value="JEFE_DE_AREA">JEFE DE ÁREA</option>
 									<option value="CONSULTA">CONSULTA</option>
 								</>
 							)}

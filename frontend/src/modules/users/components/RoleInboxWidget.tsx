@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useAuthStore } from "@/core/auth/store";
+import { formatRole } from "@/core/utils/roleUtils";
 import { useTicketsQuery } from "@/modules/tickets/hooks/useTicketsQuery";
 import { useActasQuery } from "@/modules/actas/hooks/useActasQuery";
 import { Badge } from "@/core/components/ui/Badge";
@@ -57,7 +58,9 @@ export function RoleInboxWidget() {
 			<div className="flex items-center justify-between">
 				<h2 className="text-base font-semibold text-foreground flex items-center gap-2">
 					<UserCheck className="h-5 w-5 text-primary" />
-					<span>Bandeja de Entrada Operativa &bull; {user?.role}</span>
+					<span>
+						Bandeja de Entrada Operativa &bull; {formatRole(user?.role)}
+					</span>
 				</h2>
 				<span className="text-xs text-foreground-muted">
 					Tareas y flujos priorizados para tu perfil
