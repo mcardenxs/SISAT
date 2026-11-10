@@ -15,7 +15,6 @@ import {
 	X,
 } from "lucide-react";
 import { useAuthStore } from "@/core/auth/store";
-import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
 import { ThemeToggle } from "@/core/components/ui/ThemeToggle";
 import { Can } from "@/core/permissions/Can";
@@ -54,15 +53,6 @@ export function MainLayout({ children }: MainLayoutProps) {
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [mobileOpen]);
-
-	const roleVariant =
-		user?.role === "ADMINISTRADOR" || user?.role === "ADMIN"
-			? "info"
-			: user?.role === "RESPONSABLE_DE_SISTEMA" || user?.role === "MOD"
-				? "warning"
-				: user?.role === "DESARROLLADOR"
-					? "success"
-					: "neutral";
 
 	const navItems = (
 		<nav className="space-y-1.5">
@@ -160,7 +150,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 			</div>
 
 			{user && (
-				<div className="p-2.5 rounded-surface bg-surface-subtle border border-subtle space-y-2">
+				<div className="p-2.5 rounded-surface bg-surface-subtle border border-subtle">
 					<div className="min-w-0">
 						<p className="text-xs font-semibold text-foreground truncate">
 							{user.name}
@@ -169,7 +159,6 @@ export function MainLayout({ children }: MainLayoutProps) {
 							{user.email}
 						</p>
 					</div>
-					<Badge variant={roleVariant}>{user.role}</Badge>
 				</div>
 			)}
 

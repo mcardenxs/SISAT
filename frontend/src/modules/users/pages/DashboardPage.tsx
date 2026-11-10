@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useAuthStore } from "@/core/auth/store";
 import { useDashboardQuery } from "../hooks/useDashboardQuery";
-import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
 import {
 	Card,
@@ -36,15 +35,6 @@ export function DashboardPage() {
 	const [isCreateTicketOpen, setIsCreateTicketOpen] = useState(false);
 	const [isCreateActaOpen, setIsCreateActaOpen] = useState(false);
 
-	const roleVariant =
-		user?.role === "ADMINISTRADOR" || user?.role === "ADMIN"
-			? "info"
-			: user?.role === "RESPONSABLE_DE_SISTEMA" || user?.role === "MOD"
-				? "warning"
-				: user?.role === "DESARROLLADOR"
-					? "success"
-					: "neutral";
-
 	// Métricas cuantitativas
 	const ticketsSinAsignar =
 		stats?.ticketsPorFase.find((f) => f.faseCodigo === "REGISTRADO")?.total ??
@@ -61,15 +51,6 @@ export function DashboardPage() {
 			{/* Banner de Bienvenida y Accesos Rápidos */}
 			<div className="rounded-surface border border-subtle bg-surface p-6 shadow-surface space-y-4">
 				<div className="max-w-3xl space-y-2">
-					<div className="inline-flex items-center gap-2">
-						<Badge variant={roleVariant} className="px-2.5 py-0.5 text-xs">
-							Rol: {user?.role}
-						</Badge>
-						<Badge variant="success" className="px-2.5 py-0.5 text-xs">
-							SISAT Operativo
-						</Badge>
-					</div>
-
 					<h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
 						Panel Operativo &bull; {user?.name}
 					</h1>
