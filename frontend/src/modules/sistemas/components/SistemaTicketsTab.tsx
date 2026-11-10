@@ -44,61 +44,61 @@ export function SistemaTicketsTab({ sistemaId }: SistemaTicketsTabProps) {
 		<div className="space-y-6">
 			{/* Métricas de Resolución del Sistema */}
 			<div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-				<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+				<div className="rounded-surface border border-subtle bg-surface p-4 shadow-surface">
 					<div className="flex items-center justify-between pb-1">
-						<span className="text-xs text-slate-400 font-medium">
+						<span className="text-xs text-foreground-muted font-medium">
 							Total de Tickets
 						</span>
-						<TicketIcon className="h-4 w-4 text-blue-400" />
+						<TicketIcon className="h-4 w-4 text-primary" />
 					</div>
-					<div className="text-2xl font-bold text-white">{total}</div>
+					<div className="text-2xl font-bold text-foreground">{total}</div>
 				</div>
 
-				<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+				<div className="rounded-surface border border-subtle bg-surface p-4 shadow-surface">
 					<div className="flex items-center justify-between pb-1">
-						<span className="text-xs text-slate-400 font-medium">
+						<span className="text-xs text-foreground-muted font-medium">
 							En Atención Activa
 						</span>
-						<AlertCircle className="h-4 w-4 text-amber-400" />
+						<AlertCircle className="h-4 w-4 text-warning" />
 					</div>
-					<div className="text-2xl font-bold text-amber-400">{activos}</div>
+					<div className="text-2xl font-bold text-warning">{activos}</div>
 				</div>
 
-				<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+				<div className="rounded-surface border border-subtle bg-surface p-4 shadow-surface">
 					<div className="flex items-center justify-between pb-1">
-						<span className="text-xs text-slate-400 font-medium">
+						<span className="text-xs text-foreground-muted font-medium">
 							Solventados
 						</span>
-						<CheckCircle2 className="h-4 w-4 text-emerald-400" />
+						<CheckCircle2 className="h-4 w-4 text-success" />
 					</div>
-					<div className="text-2xl font-bold text-emerald-400">{resueltos}</div>
+					<div className="text-2xl font-bold text-success">{resueltos}</div>
 				</div>
 
-				<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+				<div className="rounded-surface border border-subtle bg-surface p-4 shadow-surface">
 					<div className="flex items-center justify-between pb-1">
-						<span className="text-xs text-slate-400 font-medium">
+						<span className="text-xs text-foreground-muted font-medium">
 							Tasa de Resolución
 						</span>
-						<Clock className="h-4 w-4 text-cyan-400" />
+						<Clock className="h-4 w-4 text-primary" />
 					</div>
-					<div className="text-2xl font-bold text-cyan-400">
+					<div className="text-2xl font-bold text-primary">
 						{tasaResolucion}%
 					</div>
 				</div>
 			</div>
 
 			{/* Listado de Tickets */}
-			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-				<h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-4">
+			<div className="rounded-surface border border-subtle bg-surface p-5 shadow-surface">
+				<h4 className="text-xs font-semibold text-foreground-muted uppercase tracking-wider mb-4">
 					Historial de Incidencias y Requerimientos ({total})
 				</h4>
 
 				{total === 0 ? (
-					<p className="text-xs text-slate-500 italic">
+					<p className="text-xs text-foreground-subtle italic">
 						No se han generado tickets de soporte para este sistema.
 					</p>
 				) : (
-					<div className="divide-y divide-slate-800/80">
+					<div className="divide-y divide-subtle">
 						{tickets.map((t) => (
 							<div
 								key={t.id}
@@ -106,19 +106,19 @@ export function SistemaTicketsTab({ sistemaId }: SistemaTicketsTabProps) {
 							>
 								<div className="space-y-1">
 									<div className="flex items-center gap-2">
-										<span className="font-mono text-xs font-semibold text-blue-400">
+										<span className="font-mono text-xs font-semibold text-primary">
 											{t.folio}
 										</span>
 										<Badge variant={getFaseVariant(t.faseCodigo)}>
 											{t.faseNombre || t.faseCodigo}
 										</Badge>
-										<span className="text-slate-500 text-[11px] flex items-center gap-1">
+										<span className="text-foreground-subtle text-[11px] flex items-center gap-1">
 											<Clock className="h-3 w-3" />
 											{formatTimeAgo(t.registro)}
 										</span>
 									</div>
-									<p className="font-medium text-slate-200">{t.titulo}</p>
-									<span className="text-slate-400 text-[11px]">
+									<p className="font-medium text-foreground">{t.titulo}</p>
+									<span className="text-foreground-muted text-[11px]">
 										Solicitado por: {t.usuarioNombre || "Usuario institucional"}
 									</span>
 								</div>
@@ -126,7 +126,7 @@ export function SistemaTicketsTab({ sistemaId }: SistemaTicketsTabProps) {
 								<Link
 									to="/tickets/$ticketId"
 									params={{ ticketId: String(t.id) }}
-									className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 shrink-0"
+									className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary-hover shrink-0"
 								>
 									Ver ticket
 									<ExternalLink className="h-3.5 w-3.5" />

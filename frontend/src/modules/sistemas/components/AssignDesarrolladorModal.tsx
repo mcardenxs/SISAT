@@ -55,7 +55,7 @@ export function AssignDesarrolladorModal({
 				<div>
 					<label
 						htmlFor="dev-user-select"
-						className="block text-xs font-medium text-slate-300 mb-1.5"
+						className="block text-xs font-medium text-foreground-muted mb-1.5"
 					>
 						Seleccionar Usuario Desarrollador *
 					</label>
@@ -64,7 +64,7 @@ export function AssignDesarrolladorModal({
 						value={usuarioId}
 						onChange={(e) => setUsuarioId(Number(e.target.value))}
 						required
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+						className="w-full rounded-control border border-subtle bg-surface px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
 					>
 						<option value="">
 							{isLoadingUsers
@@ -82,7 +82,7 @@ export function AssignDesarrolladorModal({
 				<div>
 					<label
 						htmlFor="dev-inicio-input"
-						className="block text-xs font-medium text-slate-300 mb-1.5"
+						className="block text-xs font-medium text-foreground-muted mb-1.5"
 					>
 						Fecha y Hora de Incorporación
 					</label>
@@ -94,7 +94,7 @@ export function AssignDesarrolladorModal({
 					/>
 				</div>
 
-				<div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+				<div className="flex items-center justify-end gap-3 pt-4 border-t border-subtle">
 					<Button
 						type="button"
 						variant="ghost"

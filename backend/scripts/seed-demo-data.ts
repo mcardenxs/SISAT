@@ -281,6 +281,55 @@ async function main() {
 				sis_url: s.url,
 			},
 		});
+
+		// Asignar Responsable
+		const respUserId = userMap.get(s.responsableEmail);
+		if (respUserId) {
+			const existingResp = await prisma.responsable.findFirst({
+				where: {
+					res_fksistema: s.id,
+					res_fkusuario: respUserId,
+					res_fin: null,
+				},
+			});
+			if (!existingResp) {
+				await prisma.responsable.create({
+					data: {
+						res_fksistema: s.id,
+						res_fkusuario: respUserId,
+						res_fkestado: 1,
+						res_principal: true,
+						res_inicio: new Date("2026-01-01T08:00:00Z"),
+						res_fin: null,
+					},
+				});
+			}
+		}
+
+		// Asignar Desarrolladores
+		for (const devEmail of s.desarrolladoresEmails) {
+			const devUserId = userMap.get(devEmail);
+			if (devUserId) {
+				const existingDev = await prisma.desarrollador.findFirst({
+					where: {
+						des_fksistema: s.id,
+						des_fkusuario: devUserId,
+						des_fin: null,
+					},
+				});
+				if (!existingDev) {
+					await prisma.desarrollador.create({
+						data: {
+							des_fksistema: s.id,
+							des_fkusuario: devUserId,
+							des_fkestado: 1,
+							des_inicio: new Date("2026-01-01T08:00:00Z"),
+							des_fin: null,
+						},
+					});
+				}
+			}
+		}
 	}
 	console.log("   ✅ 3 Sistemas principales con sus responsables y técnicos.");
 

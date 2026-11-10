@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { Responsable } from "../api/sistemaApi";
-import { Badge } from "@/core/components/ui/Badge";
 import { Button } from "@/core/components/ui/Button";
 import { Can } from "@/core/permissions/Can";
 import { UserCheck, ShieldCheck, UserMinus, History } from "lucide-react";
@@ -39,12 +38,12 @@ export function SistemaResponsablesTab({
 	return (
 		<div className="space-y-6">
 			{/* Barra de acción */}
-			<div className="flex items-center justify-between pb-3 border-b border-slate-800">
+			<div className="flex items-center justify-between pb-3 border-b border-subtle">
 				<div>
-					<h3 className="text-sm font-semibold text-white">
+					<h3 className="text-sm font-semibold text-foreground">
 						Equipo de Responsables del Software
 					</h3>
-					<p className="text-xs text-slate-400 mt-0.5">
+					<p className="text-xs text-foreground-muted mt-0.5">
 						Funcionarios autorizados para validación técnica, cierre y emisión
 						de actas.
 					</p>
@@ -63,29 +62,20 @@ export function SistemaResponsablesTab({
 
 			{/* Tarjeta destacada: Responsable Principal Vigente */}
 			{principal ? (
-				<div className="rounded-xl border border-blue-500/30 bg-gradient-to-r from-blue-950/40 via-slate-900 to-slate-900 p-5 shadow-lg">
+				<div className="rounded-surface border border-primary-border bg-surface p-5 shadow-surface">
 					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 						<div className="flex items-start gap-3.5">
-							<div className="p-2.5 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30">
+							<div className="p-2.5 rounded-control bg-primary-light text-primary border border-primary-border">
 								<ShieldCheck className="h-6 w-6" />
 							</div>
 							<div>
-								<div className="flex items-center gap-2">
-									<h4 className="text-base font-bold text-white">
-										{principal.usuarioNombre ||
-											`Usuario #${principal.usuarioId}`}
-									</h4>
-									<Badge variant="blue" className="text-xs">
-										Responsable Principal
-									</Badge>
-									<Badge variant="success" className="text-xs">
-										Vigente
-									</Badge>
-								</div>
-								<p className="text-xs text-slate-300 mt-1">
+								<h4 className="text-base font-semibold text-foreground">
+									{principal.usuarioNombre || `Usuario #${principal.usuarioId}`}
+								</h4>
+								<p className="text-xs text-foreground-muted mt-1">
 									{principal.usuarioEmail}
 								</p>
-								<p className="text-[11px] text-slate-500 mt-0.5">
+								<p className="text-[11px] text-foreground-subtle mt-0.5">
 									En funciones desde:{" "}
 									{new Date(principal.inicio).toLocaleDateString()}
 								</p>
@@ -97,7 +87,7 @@ export function SistemaResponsablesTab({
 								variant="ghost"
 								size="sm"
 								onClick={() => setSelectedToEnd(principal)}
-								className="text-slate-400 hover:text-rose-400 hover:bg-rose-950/20 self-start sm:self-auto gap-1"
+								className="text-foreground-muted hover:text-danger hover:bg-danger-subtle self-start sm:self-auto gap-1"
 							>
 								<UserMinus className="h-3.5 w-3.5" />
 								Finalizar Vigencia
@@ -106,35 +96,37 @@ export function SistemaResponsablesTab({
 					</div>
 				</div>
 			) : (
-				<div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-xs text-amber-300">
+				<div className="rounded-surface border border-warning-border bg-warning-subtle p-4 text-xs text-warning">
 					Este sistema no tiene actualmente un{" "}
 					<strong>Responsable Principal</strong> asignado.
 				</div>
 			)}
 
 			{/* Responsables Secundarios Vigentes */}
-			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-				<h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-3">
+			<div className="rounded-surface border border-subtle bg-surface p-5 shadow-surface">
+				<h4 className="text-xs font-semibold text-foreground-muted uppercase tracking-wider mb-3">
 					Responsables Secundarios / Suplentes Vigentes ({secundarios.length})
 				</h4>
 
 				{secundarios.length === 0 ? (
-					<p className="text-xs text-slate-500 italic">
+					<p className="text-xs text-foreground-subtle italic">
 						No hay responsables secundarios registrados.
 					</p>
 				) : (
-					<div className="divide-y divide-slate-800/80">
+					<div className="divide-y divide-subtle">
 						{secundarios.map((r) => (
 							<div
 								key={r.id}
 								className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-4 text-xs"
 							>
 								<div>
-									<span className="font-semibold text-slate-200">
+									<span className="font-semibold text-foreground">
 										{r.usuarioNombre || `Usuario #${r.usuarioId}`}
 									</span>
-									<p className="text-slate-400 text-[11px]">{r.usuarioEmail}</p>
-									<span className="text-[10px] text-slate-500">
+									<p className="text-foreground-muted text-[11px]">
+										{r.usuarioEmail}
+									</p>
+									<span className="text-[10px] text-foreground-subtle">
 										Inicio: {new Date(r.inicio).toLocaleDateString()}
 									</span>
 								</div>
@@ -144,7 +136,7 @@ export function SistemaResponsablesTab({
 										variant="ghost"
 										size="sm"
 										onClick={() => setSelectedToEnd(r)}
-										className="text-slate-400 hover:text-rose-400 hover:bg-rose-950/20"
+										className="text-foreground-muted hover:text-danger hover:bg-danger-subtle"
 									>
 										Dar de Baja
 									</Button>
@@ -157,26 +149,26 @@ export function SistemaResponsablesTab({
 
 			{/* Historial de Ex-Responsables */}
 			{historico.length > 0 && (
-				<div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-					<h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-						<History className="h-3.5 w-3.5 text-slate-500" />
+				<div className="rounded-surface border border-subtle bg-surface p-5 shadow-surface">
+					<h4 className="text-xs font-semibold text-foreground-subtle uppercase tracking-wider mb-3 flex items-center gap-1.5">
+						<History className="h-3.5 w-3.5 text-foreground-subtle" />
 						Historial de Ex-Responsables ({historico.length})
 					</h4>
-					<div className="divide-y divide-slate-800/60 text-xs">
+					<div className="divide-y divide-subtle text-xs">
 						{historico.map((r) => (
 							<div
 								key={r.id}
-								className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between text-slate-400"
+								className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between text-foreground-muted"
 							>
 								<div>
-									<span className="text-slate-300 font-medium">
+									<span className="text-foreground font-medium">
 										{r.usuarioNombre || `Usuario #${r.usuarioId}`}
 									</span>
-									<span className="text-slate-500 text-[11px] ml-2">
+									<span className="text-foreground-subtle text-[11px] ml-2">
 										({r.usuarioEmail})
 									</span>
 								</div>
-								<div className="text-[11px] text-slate-500">
+								<div className="text-[11px] text-foreground-subtle">
 									{new Date(r.inicio).toLocaleDateString()} &mdash;{" "}
 									{r.fin ? new Date(r.fin).toLocaleDateString() : "Concluido"}
 								</div>
