@@ -3,6 +3,7 @@ import { Button } from "@/core/components/ui/Button";
 import { Badge } from "@/core/components/ui/Badge";
 import { useQuery } from "@tanstack/react-query";
 import { permissionApi } from "@/core/permissions/permissionApi";
+import { formatRole } from "@/core/utils/roleUtils";
 import type { User } from "@/core/auth/types";
 import { KeyRound, Shield } from "lucide-react";
 
@@ -39,8 +40,9 @@ export function UserEffectivePermissionsModal({
 						</p>
 						<p className="text-slate-300 mt-0.5">
 							Rol principal:{" "}
-							<strong className="text-blue-400">{user.role}</strong>. Estos son
-							los privilegios efectivos calculados sobre recursos y acciones.
+							<strong className="text-blue-400">{formatRole(user.role)}</strong>
+							. Estos son los privilegios efectivos calculados sobre recursos y
+							acciones.
 						</p>
 					</div>
 				</div>

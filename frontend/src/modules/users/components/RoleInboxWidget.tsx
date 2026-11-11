@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useAuthStore } from "@/core/auth/store";
+import { formatRole } from "@/core/utils/roleUtils";
 import { useTicketsQuery } from "@/modules/tickets/hooks/useTicketsQuery";
 import { useActasQuery } from "@/modules/actas/hooks/useActasQuery";
 import { Badge } from "@/core/components/ui/Badge";
@@ -55,22 +56,16 @@ export function RoleInboxWidget() {
 			a.situacionCodigo === "EN_FIRMA",
 	);
 
-	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between">
-				<h2 className="text-base font-semibold text-foreground flex items-center gap-2">
-					<UserCheck className="h-5 w-5 text-primary" />
-					<span>Bandeja de Entrada Operativa &bull; {user?.role}</span>
-				</h2>
-				<span className="text-xs text-foreground-muted">
-					Tareas y flujos priorizados para tu perfil
-				</span>
-			</div>
+	// Armamos la lista de widgets activos según el rol
+	const widgets: { key: string; node: React.ReactNode }[] = [];
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-				{/* Widget Desarrollador */}
-				{(isDev || isAdmin) && (
-					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+	// Widget 1: Desarrollador (Mis Atenciones Activas)
+	if (isDev || isAdmin) {
+		widgets.push({
+			key: "dev-active",
+			node: (
+				<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface h-full flex flex-col justify-between">
+					<div>
 						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
 								<Code2 className="h-4 w-4 text-success" />
@@ -86,7 +81,7 @@ export function RoleInboxWidget() {
 								No tienes atenciones técnicas activas asignadas.
 							</p>
 						) : (
-							<div className="space-y-2">
+							<div className="space-y-2 pt-2">
 								{devActiveTickets.slice(0, 3).map((t) => (
 									<Link
 										key={t.id}
@@ -114,11 +109,18 @@ export function RoleInboxWidget() {
 							</div>
 						)}
 					</div>
-				)}
+				</div>
+			),
+		});
+	}
 
-				{/* Widget Responsable: Tickets por Asignar */}
-				{(isResp || isAdmin) && (
-					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+	// Widget 2: Responsable (Pendientes de Asignar Técnico)
+	if (isResp || isAdmin) {
+		widgets.push({
+			key: "resp-unassigned",
+			node: (
+				<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface h-full flex flex-col justify-between">
+					<div>
 						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
 								<AlertCircle className="h-4 w-4 text-warning" />
@@ -134,7 +136,7 @@ export function RoleInboxWidget() {
 								Todos los tickets registrados cuentan con técnico.
 							</p>
 						) : (
-							<div className="space-y-2">
+							<div className="space-y-2 pt-2">
 								{unassignedTickets.slice(0, 3).map((t) => (
 									<Link
 										key={t.id}
@@ -158,11 +160,16 @@ export function RoleInboxWidget() {
 							</div>
 						)}
 					</div>
-				)}
+				</div>
+			),
+		});
 
-				{/* Widget Responsable: Soluciones por Validar */}
-				{(isResp || isAdmin) && (
-					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+		// Widget 3: Responsable (Soluciones por Validar)
+		widgets.push({
+			key: "resp-validation",
+			node: (
+				<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface h-full flex flex-col justify-between">
+					<div>
 						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
 								<CheckCircle2 className="h-4 w-4 text-primary" />
@@ -178,7 +185,7 @@ export function RoleInboxWidget() {
 								No hay soluciones pendientes de evaluación y cierre.
 							</p>
 						) : (
-							<div className="space-y-2">
+							<div className="space-y-2 pt-2">
 								{pendingValidationTickets.slice(0, 3).map((t) => (
 									<Link
 										key={t.id}
@@ -205,52 +212,66 @@ export function RoleInboxWidget() {
 							</div>
 						)}
 					</div>
-				)}
+				</div>
+			),
+		});
 
-				{/* Widget Responsable / Admin: Tickets en Espera de Información */}
-				{(isResp || isAdmin) && waitingInfoTickets.length > 0 && (
-					<div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-5 space-y-3">
-						<div className="flex items-center justify-between pb-2 border-b border-amber-500/30">
-							<div className="flex items-center gap-2">
-								<AlertCircle className="h-4 w-4 text-amber-400 animate-pulse" />
-								<h3 className="text-xs font-semibold text-amber-200">
-									Requiere tu Respuesta (Espera de Info)
-								</h3>
+		// Widget 4: Responsable / Admin (Tickets en Espera de Información)
+		if (waitingInfoTickets.length > 0) {
+			widgets.push({
+				key: "resp-waiting-info",
+				node: (
+					<div className="rounded-surface border border-warning-border bg-warning-subtle p-5 space-y-3 shadow-surface h-full flex flex-col justify-between">
+						<div>
+							<div className="flex items-center justify-between pb-2 border-b border-warning-border">
+								<div className="flex items-center gap-2">
+									<AlertCircle className="h-4 w-4 text-warning animate-pulse" />
+									<h3 className="text-xs font-semibold text-foreground">
+										Requiere tu Respuesta (Espera de Info)
+									</h3>
+								</div>
+								<Badge variant="warning">{waitingInfoTickets.length}</Badge>
 							</div>
-							<Badge variant="warning">{waitingInfoTickets.length}</Badge>
-						</div>
 
-						<div className="space-y-2">
-							{waitingInfoTickets.slice(0, 3).map((t) => (
-								<Link
-									key={t.id}
-									to="/tickets/$ticketId"
-									params={{ ticketId: String(t.id) }}
-									className="block p-2.5 rounded-lg bg-slate-950/60 hover:bg-slate-900 border border-amber-500/30 transition-colors"
-								>
-									<div className="flex items-center justify-between text-xs">
-										<span className="font-mono text-amber-400 font-semibold">
-											{t.folio}
+							<div className="space-y-2 pt-2">
+								{waitingInfoTickets.slice(0, 3).map((t) => (
+									<Link
+										key={t.id}
+										to="/tickets/$ticketId"
+										params={{ ticketId: String(t.id) }}
+										className="block p-2.5 rounded-control bg-surface hover:bg-surface-muted border border-subtle transition-colors"
+									>
+										<div className="flex items-center justify-between text-xs">
+											<span className="font-mono text-warning font-semibold">
+												{t.folio}
+											</span>
+											<Badge variant="warning" className="text-[10px]">
+												Requiere aclaración
+											</Badge>
+										</div>
+										<p className="text-xs font-medium text-foreground truncate mt-1">
+											{t.titulo}
+										</p>
+										<span className="text-[11px] text-warning mt-1 flex items-center gap-1 font-medium">
+											Ver y reanudar atención &rarr;
 										</span>
-										<Badge variant="warning" className="text-[10px]">
-											Requiere aclaración
-										</Badge>
-									</div>
-									<p className="text-xs font-medium text-slate-200 truncate mt-1">
-										{t.titulo}
-									</p>
-									<span className="text-[11px] text-amber-400 mt-1 flex items-center gap-1">
-										Ver y reanudar atención &rarr;
-									</span>
-								</Link>
-							))}
+									</Link>
+								))}
+							</div>
 						</div>
 					</div>
-				)}
+				),
+			});
+		}
+	}
 
-				{/* Widget Jefe de Área: Actas Pendientes de Firma */}
-				{(isJefe || isAdmin) && (
-					<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface">
+	// Widget 5: Jefe de Área (Actas Listas para Firma)
+	if (isJefe || isAdmin) {
+		widgets.push({
+			key: "jefe-actas",
+			node: (
+				<div className="rounded-surface border border-subtle bg-surface p-5 space-y-3 shadow-surface h-full flex flex-col justify-between">
+					<div>
 						<div className="flex items-center justify-between pb-2 border-b border-subtle">
 							<div className="flex items-center gap-2">
 								<FileText className="h-4 w-4 text-primary" />
@@ -266,7 +287,7 @@ export function RoleInboxWidget() {
 								No hay actas semanales pendientes de tu firma.
 							</p>
 						) : (
-							<div className="space-y-2">
+							<div className="space-y-2 pt-2">
 								{actasPendingFirma.slice(0, 3).map((a) => (
 									<Link
 										key={a.id}
@@ -293,7 +314,64 @@ export function RoleInboxWidget() {
 							</div>
 						)}
 					</div>
-				)}
+				</div>
+			),
+		});
+	}
+
+	if (widgets.length === 0) {
+		return null;
+	}
+
+	// Determinamos las columnas de la cuadrícula para cubrir el espacio sin dejar huecos
+	const getGridClass = (count: number) => {
+		switch (count) {
+			case 1:
+				return "grid grid-cols-1";
+			case 2:
+				return "grid grid-cols-1 md:grid-cols-2 gap-4";
+			case 3:
+				return "grid grid-cols-1 md:grid-cols-3 gap-4";
+			case 4:
+				// 4 tarjetas: 2 arriba y 2 abajo cubriendo todo el ancho simétricamente
+				return "grid grid-cols-1 md:grid-cols-2 gap-4";
+			case 5:
+				// 5 tarjetas: 2 arriba (3 cols) y 3 abajo (2 cols) en grid de 6
+				return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4";
+			default:
+				// 6 o más: 3 columnas (ej. 3 arriba y 3 abajo)
+				return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+		}
+	};
+
+	// Clases de span para casos especiales como 5 tarjetas
+	const getItemSpanClass = (count: number, index: number) => {
+		if (count === 5) {
+			return index < 2 ? "lg:col-span-3" : "lg:col-span-2";
+		}
+		return "";
+	};
+
+	return (
+		<div className="space-y-4">
+			<div className="flex items-center justify-between">
+				<h2 className="text-base font-semibold text-foreground flex items-center gap-2">
+					<UserCheck className="h-5 w-5 text-primary" />
+					<span>
+						Bandeja de Entrada Operativa &bull; {formatRole(user?.role)}
+					</span>
+				</h2>
+				<span className="text-xs text-foreground-muted">
+					Tareas y flujos priorizados para tu perfil
+				</span>
+			</div>
+
+			<div className={getGridClass(widgets.length)}>
+				{widgets.map((w, index) => (
+					<div key={w.key} className={getItemSpanClass(widgets.length, index)}>
+						{w.node}
+					</div>
+				))}
 			</div>
 		</div>
 	);

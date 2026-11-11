@@ -58,7 +58,7 @@ export function AssignResponsableModal({
 				<div>
 					<label
 						htmlFor="responsable-user-select"
-						className="block text-xs font-medium text-slate-300 mb-1.5"
+						className="block text-xs font-medium text-foreground-muted mb-1.5"
 					>
 						Usuario Funcionario / Responsable *
 					</label>
@@ -67,7 +67,7 @@ export function AssignResponsableModal({
 						value={usuarioId}
 						onChange={(e) => setUsuarioId(Number(e.target.value))}
 						required
-						className="w-full rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+						className="w-full rounded-control border border-subtle bg-surface px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
 					>
 						<option value="">
 							{isLoadingUsers
@@ -85,7 +85,7 @@ export function AssignResponsableModal({
 				<div>
 					<label
 						htmlFor="responsable-inicio-input"
-						className="block text-xs font-medium text-slate-300 mb-1.5"
+						className="block text-xs font-medium text-foreground-muted mb-1.5"
 					>
 						Fecha y Hora de Inicio de Vigencia
 					</label>
@@ -103,17 +103,17 @@ export function AssignResponsableModal({
 						id="principalResponsableSwitch"
 						checked={principal}
 						onChange={(e) => setPrincipal(e.target.checked)}
-						className="rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500"
+						className="rounded border-subtle bg-surface text-primary focus:ring-primary"
 					/>
 					<label
 						htmlFor="principalResponsableSwitch"
-						className="text-xs text-slate-300"
+						className="text-xs text-foreground-muted"
 					>
 						Nombrar como <strong>Responsable Principal</strong> vigente
 					</label>
 				</div>
 
-				<div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+				<div className="flex items-center justify-end gap-3 pt-4 border-t border-subtle">
 					<Button
 						type="button"
 						variant="ghost"

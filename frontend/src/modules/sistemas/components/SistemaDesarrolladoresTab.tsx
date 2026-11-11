@@ -39,12 +39,12 @@ export function SistemaDesarrolladoresTab({
 	return (
 		<div className="space-y-6">
 			{/* Barra de acción */}
-			<div className="flex items-center justify-between pb-3 border-b border-slate-800">
+			<div className="flex items-center justify-between pb-3 border-b border-subtle">
 				<div>
-					<h3 className="text-sm font-semibold text-white">
+					<h3 className="text-sm font-semibold text-foreground">
 						Equipo de Desarrollo Asignado
 					</h3>
-					<p className="text-xs text-slate-400 mt-0.5">
+					<p className="text-xs text-foreground-muted mt-0.5">
 						Desarrolladores autorizados para atender incidencias y emitir
 						diagnósticos en este software.
 					</p>
@@ -62,14 +62,14 @@ export function SistemaDesarrolladoresTab({
 			</div>
 
 			{/* Grilla de Desarrolladores Vigentes */}
-			<div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-				<h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
-					<Code2 className="h-4 w-4 text-blue-400" />
+			<div className="rounded-surface border border-subtle bg-surface p-5 shadow-surface">
+				<h4 className="text-xs font-semibold text-foreground-muted uppercase tracking-wider mb-4 flex items-center gap-2">
+					<Code2 className="h-4 w-4 text-primary" />
 					Técnicos y Programadores en Activo ({vigentes.length})
 				</h4>
 
 				{vigentes.length === 0 ? (
-					<p className="text-xs text-slate-500 italic">
+					<p className="text-xs text-foreground-subtle italic">
 						No hay desarrolladores asignados activamente a este sistema.
 					</p>
 				) : (
@@ -77,19 +77,21 @@ export function SistemaDesarrolladoresTab({
 						{vigentes.map((dev) => (
 							<div
 								key={dev.id}
-								className="p-4 rounded-xl border border-slate-800 bg-slate-950/50 flex items-start justify-between gap-3"
+								className="p-4 rounded-control border border-subtle bg-surface-subtle flex items-start justify-between gap-3"
 							>
 								<div className="space-y-1">
 									<div className="flex items-center gap-2">
-										<span className="font-semibold text-sm text-slate-200">
+										<span className="font-semibold text-sm text-foreground">
 											{dev.usuarioNombre || `Desarrollador #${dev.usuarioId}`}
 										</span>
 										<Badge variant="success" className="text-[10px]">
 											Activo
 										</Badge>
 									</div>
-									<p className="text-xs text-slate-400">{dev.usuarioEmail}</p>
-									<span className="text-[11px] text-slate-500 block pt-1">
+									<p className="text-xs text-foreground-muted">
+										{dev.usuarioEmail}
+									</p>
+									<span className="text-[11px] text-foreground-subtle block pt-1">
 										Incorporación: {new Date(dev.inicio).toLocaleDateString()}
 									</span>
 								</div>
@@ -99,7 +101,7 @@ export function SistemaDesarrolladoresTab({
 										variant="ghost"
 										size="sm"
 										onClick={() => setSelectedToEnd(dev)}
-										className="text-slate-400 hover:text-rose-400 hover:bg-rose-950/20"
+										className="text-foreground-muted hover:text-danger hover:bg-danger-subtle"
 										title="Finalizar asignación"
 									>
 										<UserMinus className="h-3.5 w-3.5" />
@@ -113,26 +115,26 @@ export function SistemaDesarrolladoresTab({
 
 			{/* Histórico de Ex-Desarrolladores */}
 			{historico.length > 0 && (
-				<div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-					<h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-						<History className="h-3.5 w-3.5 text-slate-500" />
+				<div className="rounded-surface border border-subtle bg-surface p-5 shadow-surface">
+					<h4 className="text-xs font-semibold text-foreground-subtle uppercase tracking-wider mb-3 flex items-center gap-1.5">
+						<History className="h-3.5 w-3.5 text-foreground-subtle" />
 						Historial de Desarrolladores Anteriores ({historico.length})
 					</h4>
-					<div className="divide-y divide-slate-800/60 text-xs">
+					<div className="divide-y divide-subtle text-xs">
 						{historico.map((dev) => (
 							<div
 								key={dev.id}
-								className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between text-slate-400"
+								className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between text-foreground-muted"
 							>
 								<div>
-									<span className="text-slate-300 font-medium">
+									<span className="text-foreground font-medium">
 										{dev.usuarioNombre || `Usuario #${dev.usuarioId}`}
 									</span>
-									<span className="text-slate-500 text-[11px] ml-2">
+									<span className="text-foreground-subtle text-[11px] ml-2">
 										({dev.usuarioEmail})
 									</span>
 								</div>
-								<div className="text-[11px] text-slate-500">
+								<div className="text-[11px] text-foreground-subtle">
 									{new Date(dev.inicio).toLocaleDateString()} &mdash;{" "}
 									{dev.fin
 										? new Date(dev.fin).toLocaleDateString()
