@@ -176,9 +176,9 @@ export function MainLayout({ children }: MainLayoutProps) {
 	);
 
 	return (
-		<div className="min-h-screen flex bg-canvas text-foreground">
+		<div className="min-h-screen flex bg-canvas text-foreground print:min-h-0 print:block print:w-full print:bg-white print:text-black print:m-0 print:p-0">
 			{/* Sidebar de Escritorio */}
-			<aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 md:left-0 z-30 h-screen bg-surface border-r border-subtle">
+			<aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 md:left-0 z-30 h-screen bg-surface border-r border-subtle print:hidden">
 				<div className="flex h-16 items-center px-6 border-b border-subtle gap-3 shrink-0">
 					<Link to="/dashboard" className="flex items-center gap-2.5 group">
 						<div className="flex h-8 w-8 items-center justify-center rounded-control bg-primary-light border border-primary-border text-primary group-hover:bg-primary group-hover:text-white transition-colors">
@@ -210,7 +210,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 			</aside>
 
 			{/* Barra móvil */}
-			<div className="md:hidden fixed top-0 left-0 right-0 z-30 h-14 bg-surface border-b border-subtle px-4 flex items-center justify-between">
+			<div className="md:hidden fixed top-0 left-0 right-0 z-30 h-14 bg-surface border-b border-subtle px-4 flex items-center justify-between print:hidden">
 				<div className="flex items-center gap-3">
 					<button
 						type="button"
@@ -237,7 +237,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
 			{/* Modal Drawer Móvil */}
 			{mobileOpen && (
-				<div className="md:hidden fixed inset-0 z-50 flex">
+				<div className="md:hidden fixed inset-0 z-50 flex print:hidden">
 					<div
 						className="fixed inset-0 bg-black/60 backdrop-fade"
 						onClick={() => setMobileOpen(false)}
@@ -280,12 +280,12 @@ export function MainLayout({ children }: MainLayoutProps) {
 			)}
 
 			{/* Área de contenido principal */}
-			<div className="flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0 md:pl-64">
-				<main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+			<div className="flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0 md:pl-64 print:pt-0 print:pl-0 print:m-0 print:min-h-0 print:block print:w-full">
+				<main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 print:p-0 print:m-0 print:max-w-none print:w-full">
 					{children}
 				</main>
 
-				<footer className="border-t border-subtle py-4 px-4 text-center text-xs text-foreground-subtle">
+				<footer className="border-t border-subtle py-4 px-4 text-center text-xs text-foreground-subtle print:hidden">
 					SISAT &copy; {new Date().getFullYear()} &mdash; Sistema de Atención
 					Técnica
 				</footer>

@@ -64,12 +64,12 @@ export function ActaDetailPage({ actaId }: ActaDetailPageProps) {
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 print:space-y-0 print:m-0 print:p-0 print:h-full">
 			{/* Barra superior de navegación */}
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-between print:hidden">
 				<Link
 					to="/actas"
-					className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+					className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-foreground transition-colors"
 				>
 					<ArrowLeft className="h-4 w-4" />
 					Volver a Actas
